@@ -12,7 +12,11 @@ public class dataRecorder : MonoBehaviour {
 
     // These must match in length
     public GameObject[] angleObjects;
-    public static int numberOfAngles = 4;
+    public GameObject[] dockAngleObjects;
+    public static int numberOfAngles = 7;
+    public GameObject shape;
+    public GameObject dockShape;
+    public Vector3 shapeOrientation;
 
     [System.Serializable]
     public class TextLog : System.Object
@@ -28,9 +32,21 @@ public class dataRecorder : MonoBehaviour {
     public class AngleSummary : System.Object
     {
         public float[] currAngles = new float[numberOfAngles];
+        public float[] shapeRot = new float[3];
         public List<string> anglesOverTime;
     }
     public AngleSummary angleSummary = new AngleSummary();
+
+    // This will be the generic table method
+    [System.Serializable]
+    public class Table : System.Object
+    {
+        // 
+        public List<List<string>> cell = new List<List<string>>();
+        public List<List<string>> row = new List<List<string>>();
+        public List<string> col = new List<string>();
+    }
+    public Table allData = new Table();
 
 
     // Use this for initialization
@@ -38,7 +54,55 @@ public class dataRecorder : MonoBehaviour {
         // Add filename to path
         textLog.path += textLog.fileName + ".txt";
 
+        // Clear File before using
         Clear();
+
+        // Generic list creating code 
+        // Impliment with data write/read to consolidate code below in ExportData()
+        // Create variables that set the sizes of 5 and 5
+
+        // CREATE DATA TABLE
+        for (int x = 0; x < 5; x++)
+        {
+            for (int y = 0; y < 5; y++)
+            {
+                if (allData.col.Count < 5)
+                {
+                    allData.col.Add("test");
+                }
+                else
+                {
+                    allData.col[y] = "test";
+                }
+            }
+
+
+            if (allData.row.Count < 5)
+            {
+                allData.row.Add(allData.col);
+            }
+            else
+            {
+                allData.row[x] = allData.col;
+            }
+            
+            //allData.row[x] = allData.col;
+        }
+
+        // COLLECT TEXT FORMATTING
+        foreach (List<string> row in allData.row)
+        {
+            foreach (string col in row)
+            {
+                textLog.exportedText += col + "\t";
+            }
+
+            textLog.exportedText += "\n";
+        }
+
+        // EXPORT
+        Append(textLog.exportedText);
+
         Read();
         UpdateEditor();
     }
@@ -64,28 +128,34 @@ public class dataRecorder : MonoBehaviour {
         }
     }
 
-
-
-    //// Test Scripts ////////////////////////////////////////////////////////////
-
-    // Test creating a table (for testing the script only)
-    void TestTable()
+    //// Generic Math Functions ///////////////////////////////////////////////////
+    float ProtratorAngle(float angle)
     {
-        Append("\t" + "Column 1" + "\t" + "Column 2" +
-                "\n" + "Row 1" + "\t" + "11" + "\t" + "12" +
-                "\n" + "Row 2" + "\t" + "21" + "\t" + "22");
-        Read();
-        UpdateEditor();
+        angle = (angle > 180) ? angle - 360 : angle;
+        return angle;
     }
-
 
     //// Read From Device /////////////////////////////////////////////////////////
     void GetAngles()
     {
+        // Remove ProtratorAngle() to get positive/raw angles
+        // Get overall object orientation
+        angleSummary.shapeRot[0] = ProtratorAngle(shape.transform.rotation.eulerAngles.x);
+        angleSummary.shapeRot[1] = ProtratorAngle(shape.transform.rotation.eulerAngles.y);
+        angleSummary.shapeRot[2] = ProtratorAngle(shape.transform.rotation.eulerAngles.z);
+
         // Fetch data for currAngles from the virtual objects by their z value in unity
-        for (int i = 0; i < numberOfAngles - 1; i++)
+        for (int i = 0; i < numberOfAngles; i++)
         {
-            angleSummary.currAngles[i] = angleObjects[i].transform.rotation.z;
+            if (i < numberOfAngles - angleSummary.shapeRot.Length)
+            {
+                angleSummary.currAngles[i] = ProtratorAngle(angleObjects[i].transform.rotation.eulerAngles.z);
+            }
+            else
+            {
+                angleSummary.currAngles[i] = angleSummary.shapeRot[i - (angleSummary.currAngles.Length - angleSummary.shapeRot.Length)];
+            }
+            
         }
     }
 
@@ -121,7 +191,26 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += "Frames" + "\t";
         for (int i = 0; i < angleSummary.currAngles.Length; i++)
         {
-            textLog.exportedText += angleObjects[i].name;
+            if (i < angleSummary.currAngles.Length - angleSummary.shapeRot.Length)
+            {
+                textLog.exportedText += angleObjects[i].name;
+            }
+            else
+            {
+                if (i == angleSummary.currAngles.Length - 3)
+                {
+                    textLog.exportedText += "Docking x";
+                }
+                else if (i == angleSummary.currAngles.Length - 2)
+                {
+                    textLog.exportedText += "Docking y";
+                }
+                else if (i == angleSummary.currAngles.Length - 1)
+                {
+                    textLog.exportedText += "Docking z";
+                }
+            }
+
 
             // tab between each angle data to seperate into columns
             if (i < angleSummary.currAngles.Length - 1)
@@ -129,6 +218,7 @@ public class dataRecorder : MonoBehaviour {
                 textLog.exportedText += "\t";
             }
         }
+        
 
         /// DATA LINES
         for (int i = 0; i < angleSummary.anglesOverTime.Count; i++)

@@ -6,6 +6,8 @@ using System.IO;
 
 public class dataRecorder : MonoBehaviour {
 
+    public bool noOverwrite = true;
+    bool stopWriting = false; 
     public bool recordAngles = false;
     bool recodAnglesDone = false;
     public bool readyToExportData = false;
@@ -22,7 +24,7 @@ public class dataRecorder : MonoBehaviour {
     public class TextLog : System.Object
     {
         public string path = "Assets/Resources/";
-        public string fileName = "Report_Hammer";
+        public string fileName = "Report_Raw";
         public string exportedText;
         public string[] correctAngles = new string[numberOfAngles];
     }
@@ -41,15 +43,19 @@ public class dataRecorder : MonoBehaviour {
     [System.Serializable]
     public class Table : System.Object
     {
-        // 
-        public List<List<string>> cell = new List<List<string>>();
+        // Generic Row Column stores for 1 table
         public List<List<string>> row = new List<List<string>>();
         public List<string> col = new List<string>();
     }
-    public Table allData = new Table();
+    // Main Table
+    public Table allRawData = new Table();
+    // Sub Tables
+    public Table topHeader = new Table();
+    public Table accuracyResults = new Table();
+    public Table timeResults = new Table();
+    public Table efficiencyResults = new Table();
 
-
-    // Use this for initialization
+    // Start
     void Start() {
         // Add filename to path
         textLog.path += textLog.fileName + ".txt";
@@ -61,36 +67,36 @@ public class dataRecorder : MonoBehaviour {
         // Impliment with data write/read to consolidate code below in ExportData()
         // Create variables that set the sizes of 5 and 5
 
-        // CREATE DATA TABLE
+        //+++ CREATE DATA TABLE
         for (int x = 0; x < 5; x++)
         {
             for (int y = 0; y < 5; y++)
             {
-                if (allData.col.Count < 5)
+                if (allRawData.col.Count < 5)
                 {
-                    allData.col.Add("test");
+                    allRawData.col.Add("test");
                 }
                 else
                 {
-                    allData.col[y] = "test";
+                    allRawData.col[y] = "test";
                 }
             }
 
 
-            if (allData.row.Count < 5)
+            if (allRawData.row.Count < 5)
             {
-                allData.row.Add(allData.col);
+                allRawData.row.Add(allRawData.col);
             }
             else
             {
-                allData.row[x] = allData.col;
+                allRawData.row[x] = allRawData.col;
             }
             
-            //allData.row[x] = allData.col;
+            //allRawData.row[x] = allRawData.col;
         }
 
-        // COLLECT TEXT FORMATTING
-        foreach (List<string> row in allData.row)
+        //+++ COLLECT TEXT FORMATTING
+        foreach (List<string> row in allRawData.row)
         {
             foreach (string col in row)
             {
@@ -100,21 +106,21 @@ public class dataRecorder : MonoBehaviour {
             textLog.exportedText += "\n";
         }
 
-        // EXPORT
+        //+++ EXPORT
         Append(textLog.exportedText);
 
         Read();
         UpdateEditor();
     }
 
-    // Update is called once per frame
+    // Update
     void Update() {
 
-        // Always reading virtual object position every frame
+        // Always reading virtual objects position every frame
         GetAngles();
 
         // you can call AngleRecord seperately (for testing the script only)
-        if (recordAngles)
+        if (recordAngles && !stopWriting)
         {
             AngleRecord();
             readyToExportData = true;
@@ -125,17 +131,19 @@ public class dataRecorder : MonoBehaviour {
         {
             ExportData();
             readyToExportData = false;
+
+            // If noOverwrite is enabled you cannot write over the test data because of this bool that's tripped
+            if (noOverwrite)
+            {
+                stopWriting = true;
+            }
         }
     }
 
-    //// Generic Math Functions ///////////////////////////////////////////////////
-    float ProtratorAngle(float angle)
-    {
-        angle = (angle > 180) ? angle - 360 : angle;
-        return angle;
-    }
+    
 
-    //// Read From Device /////////////////////////////////////////////////////////
+
+    //// READ ANGLE DATA ////
     void GetAngles()
     {
         // Remove ProtratorAngle() to get positive/raw angles
@@ -160,8 +168,9 @@ public class dataRecorder : MonoBehaviour {
     }
 
 
-    //// Recording Data ///////////////////////////////////////////////////////////
 
+
+    //// COMPILE ANGLES INTO TABLE ////
     // Take total angles recorded every second and compile into single line array of angles in time increments
     void AngleRecord()
     {
@@ -181,6 +190,7 @@ public class dataRecorder : MonoBehaviour {
         angleSummary.anglesOverTime.Add(totalAnglesLine);
     }
 
+    //// WRITING DATA TO FILE ////
     // Create Single Mass String
     void ExportData()
     {
@@ -228,7 +238,6 @@ public class dataRecorder : MonoBehaviour {
 
 
         /// FINAL LINES
-        // other metadata?
         textLog.exportedText += "\n" + "Correct Angles" + "\t";
         for (int i = 0; i < textLog.correctAngles.Length; i++)
         {
@@ -250,8 +259,25 @@ public class dataRecorder : MonoBehaviour {
     }
 
 
-    //// Reading and Writing File /////////////////////////////////////////////////
 
+
+    //// GENERIC FUNCTIONS //// 
+
+    // MATH OPERATIONS //
+    // Give protractor angles (180 relevant)
+    float ProtratorAngle(float angle)
+    {
+        angle = (angle > 180) ? angle - 360 : angle;
+        return angle;
+    }
+
+
+    // TABLE OPERATIONS //
+    // Add a table to All Raw Data
+
+
+
+    // FILE OPERATIONS //
     // Clear the file
     void Clear()
     {
@@ -259,7 +285,7 @@ public class dataRecorder : MonoBehaviour {
         File.WriteAllText(textLog.path, "");
     }
 
-    // Write a single line
+    // Write a line
     void Append(string text)
     {
         //Write some text to the Report.txt file
@@ -268,7 +294,7 @@ public class dataRecorder : MonoBehaviour {
         writer.Close();
     }
 
-    // Overwrite with a new whole body of text
+    // Overwrite text
     void Write(string text)
     {
         //Write some text to the Report.txt file
@@ -277,15 +303,17 @@ public class dataRecorder : MonoBehaviour {
         writer.Close();
     }
 
-    // Read and update the inspector
+#if UNITY_EDITOR
+    // Update the inspector
     void UpdateEditor()
     {
         //Re-import the file to update the reference in the editor
         AssetDatabase.ImportAsset(textLog.path);
         TextAsset asset = Resources.Load(textLog.fileName) as TextAsset;
     }
+#endif
 
-    // Read and send data to console
+    // Read to console
     void Read()
     {
         //Read the text from directly from the test.txt file

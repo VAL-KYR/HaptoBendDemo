@@ -39,17 +39,29 @@ public class dataRecorder : MonoBehaviour {
     }
     public AngleSummary angleSummary = new AngleSummary();
 
-    // This will be the generic table method
+    // Efficiency summary TIME && PRECISION
+    [System.Serializable]
+    public class Efficiency : System.Object
+    {
+        public float secondsTaken;
+        public string completionTime;
+        public List<float> rawCompletionTime;
+        public float precision;
+    }
+    public Efficiency efficiency = new Efficiency();
+    
+
+    //+++ This will be the generic table method
     [System.Serializable]
     public class Table : System.Object
     {
-        // Generic Row Column stores for 1 table
+        //+++ Generic Row Column stores for 1 table
         public List<List<string>> row = new List<List<string>>();
         public List<string> col = new List<string>();
     }
-    // Main Table
+    //+++ Main Table
     public Table allRawData = new Table();
-    // Sub Tables
+    //+++ Sub Tables
     public Table topHeader = new Table();
     public Table accuracyResults = new Table();
     public Table timeResults = new Table();
@@ -63,9 +75,9 @@ public class dataRecorder : MonoBehaviour {
         // Clear File before using
         Clear();
 
-        // Generic list creating code 
-        // Impliment with data write/read to consolidate code below in ExportData()
-        // Create variables that set the sizes of 5 and 5
+        //+++ Generic list creating code 
+        //+++ Impliment with data write/read to consolidate code below in ExportData()
+        //+++ Create variables that set the sizes of 5 and 5
 
         //+++ CREATE DATA TABLE
         for (int x = 0; x < 5; x++)
@@ -109,6 +121,7 @@ public class dataRecorder : MonoBehaviour {
         //+++ EXPORT
         Append(textLog.exportedText);
 
+        // Read the file before starting any testing
         Read();
         UpdateEditor();
     }
@@ -124,11 +137,20 @@ public class dataRecorder : MonoBehaviour {
         {
             AngleRecord();
             readyToExportData = true;
+
+            // efficiency framerate measurements
+            efficiency.secondsTaken += 1.0f * Time.smoothDeltaTime;
+
         }
 
         // Once Angle Recording stops the report is generated
         if (readyToExportData && !recordAngles)
         {
+            // Calculate final efficiency results from data tables
+            efficiency.completionTime = NiceTimeFromSeconds(efficiency.secondsTaken);
+            efficiency.rawCompletionTime = RawTimeFromSeconds(efficiency.secondsTaken);
+
+            // Export Report
             ExportData();
             readyToExportData = false;
 
@@ -269,6 +291,25 @@ public class dataRecorder : MonoBehaviour {
     {
         angle = (angle > 180) ? angle - 360 : angle;
         return angle;
+    }
+
+    // Get a nice time from seconds
+    string NiceTimeFromSeconds(float seconds)
+    {
+        System.TimeSpan t = System.TimeSpan.FromSeconds(seconds);
+        return string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
+    }
+
+    // Get a nice time from seconds
+    List<float> RawTimeFromSeconds(float seconds)
+    {
+        System.TimeSpan t = System.TimeSpan.FromSeconds(seconds);
+        List<float> rawTime = new List<float>(4);
+        rawTime.Add(t.Hours);
+        rawTime.Add(t.Minutes);
+        rawTime.Add(t.Seconds);
+        rawTime.Add(t.Milliseconds);
+        return rawTime;
     }
 
 

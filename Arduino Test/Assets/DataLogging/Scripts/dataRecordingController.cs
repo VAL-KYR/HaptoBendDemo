@@ -7,7 +7,7 @@ using UnityEngine;
 public class dataRecordingController : MonoBehaviour {
 
     public string filePrefix = "Report_Raw_";
-    public string filePath = "Assets/Resources/";
+    public string filePath = "Assets/DataLogging/Reports/";
     public GameObject testObject;
     public List<GameObject> tests = new List<GameObject>();
 

@@ -8,17 +8,6 @@ public class dataRecordingController : MonoBehaviour {
     public GameObject testObject;
     public List<GameObject> tests = new List<GameObject>();
 
-	// Use this for initialization
-	void Start () {
-        newTest();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        
-	}
-
-
     //// GENERIC TEST FUNCTIONS ////
     // Create a new test object
     public void newTest()
@@ -45,18 +34,14 @@ public class dataRecordingController : MonoBehaviour {
     // Delete all tests
     public void clearTests()
     {
-        foreach (GameObject t in tests)
-        {
-            Destroy(t);
-        }
-
+        // Destroy the Test Objects
         foreach (Transform child in this.transform)
         {
             Destroy(child.gameObject);
         }
 
+        // Reset Test List
         tests.Clear();
-        //tests = null;
     }
     
 }

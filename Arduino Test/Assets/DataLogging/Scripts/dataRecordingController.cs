@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
 public class dataRecordingController : MonoBehaviour {
 
+    public string filePrefix = "Report_Raw_";
+    public string filePath = "Assets/Resources/";
     public GameObject testObject;
     public List<GameObject> tests = new List<GameObject>();
 
@@ -14,8 +17,8 @@ public class dataRecordingController : MonoBehaviour {
     {
         GameObject test = Instantiate<GameObject>(testObject, Vector3.zero, Quaternion.identity, this.transform);
         // Init file settings
-        test.GetComponent<dataRecorder>().textLog.path = "Assets/Resources/";
-        test.GetComponent<dataRecorder>().textLog.fileName = "Report_Raw_" + tests.Count;
+        test.GetComponent<dataRecorder>().textLog.path = filePath;
+        test.GetComponent<dataRecorder>().textLog.fileName = filePrefix + tests.Count;
         // Init shape angles
         test.GetComponent<dataRecorder>().angleObjects[0] = GameObject.FindGameObjectWithTag("rotate");
         test.GetComponent<dataRecorder>().angleObjects[1] = GameObject.FindGameObjectWithTag("childRotate");
@@ -42,6 +45,23 @@ public class dataRecordingController : MonoBehaviour {
 
         // Reset Test List
         tests.Clear();
+    }
+
+    // Clear all Reports
+    public void clearReports()
+    {
+        /*
+        if (Directory.Exists(filePath))
+        {
+            Directory.Delete(filePath, true);
+        }
+
+        Directory.CreateDirectory(filePath);
+        */
+
+        string[] filePaths = Directory.GetFiles(filePath);
+        foreach (string filePath in filePaths)
+            File.Delete(filePath);
     }
     
 }

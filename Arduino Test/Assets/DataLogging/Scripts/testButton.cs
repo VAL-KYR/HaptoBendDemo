@@ -22,6 +22,10 @@ public class testButton : Editor
         {
             myScript.clearTests();
         }
+        if (GUILayout.Button("Delete All Reports"))
+        {
+            myScript.clearReports();
+        }
     }
 }
 

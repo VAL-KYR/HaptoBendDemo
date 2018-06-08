@@ -11,6 +11,13 @@ public class dataRecordingController : MonoBehaviour {
     public GameObject testObject;
     public List<GameObject> tests = new List<GameObject>();
 
+    // Delete all Test Objects and files before starting
+    public void Start()
+    {
+        clearTests();
+        clearReports();
+    }
+
     //// GENERIC TEST FUNCTIONS ////
     // Create a new test object
     public void newTest()
@@ -50,18 +57,16 @@ public class dataRecordingController : MonoBehaviour {
     // Clear all Reports
     public void clearReports()
     {
-        /*
+        // If the path exists delete every file in it and refresh the unity editor if we're using it
         if (Directory.Exists(filePath))
         {
             Directory.Delete(filePath, true);
         }
 
         Directory.CreateDirectory(filePath);
-        */
-
-        string[] filePaths = Directory.GetFiles(filePath);
-        foreach (string filePath in filePaths)
-            File.Delete(filePath);
+#if UNITY_EDITOR
+        UnityEditor.AssetDatabase.Refresh();
+#endif
     }
     
 }

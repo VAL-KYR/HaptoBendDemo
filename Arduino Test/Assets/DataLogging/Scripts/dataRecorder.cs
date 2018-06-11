@@ -56,6 +56,8 @@ public class dataRecorder : MonoBehaviour {
     public class Table : System.Object
     {
         //+++ Generic Row Column stores for 1 table
+        public int totalRows = 10;
+        public int totalCols = 10;
         public List<List<string>> row = new List<List<string>>();
         public List<string> col = new List<string>();
     }
@@ -66,6 +68,7 @@ public class dataRecorder : MonoBehaviour {
     public Table accuracyResults = new Table();
     public Table timeResults = new Table();
     public Table efficiencyResults = new Table();
+    public Table botFooter = new Table();
 
     // Start
     void Start() {
@@ -78,48 +81,9 @@ public class dataRecorder : MonoBehaviour {
         //+++ Generic list creating code 
         //+++ Impliment with data write/read to consolidate code below in ExportData()
         //+++ Create variables that set the sizes of 5 and 5
-
-        //+++ CREATE DATA TABLE
-        for (int x = 0; x < 5; x++)
-        {
-            for (int y = 0; y < 5; y++)
-            {
-                if (allRawData.col.Count < 5)
-                {
-                    allRawData.col.Add("test");
-                }
-                else
-                {
-                    allRawData.col[y] = "test";
-                }
-            }
-
-
-            if (allRawData.row.Count < 5)
-            {
-                allRawData.row.Add(allRawData.col);
-            }
-            else
-            {
-                allRawData.row[x] = allRawData.col;
-            }
-            
-            //allRawData.row[x] = allRawData.col;
-        }
-
-        //+++ COLLECT TEXT FORMATTING
-        foreach (List<string> row in allRawData.row)
-        {
-            foreach (string col in row)
-            {
-                textLog.exportedText += col + "\t";
-            }
-
-            textLog.exportedText += "\n";
-        }
-
-        //+++ EXPORT
-        Append(textLog.exportedText);
+        CompileAllDataTable();
+        FormatAllDataTable();
+        ExportAllData();
 
         // Read the file before starting any testing
         Read();
@@ -283,24 +247,24 @@ public class dataRecorder : MonoBehaviour {
 
 
 
-    //// GENERIC FUNCTIONS //// 
+    /// GENERIC FUNCTIONS /// 
 
-    // MATH OPERATIONS //
-    // Give protractor angles (180 relevant)
+    //// MATH OPERATIONS ////
+    // Give nice protractor angles (180 relevant)
     float ProtratorAngle(float angle)
     {
         angle = (angle > 180) ? angle - 360 : angle;
         return angle;
     }
 
-    // Get a nice time from seconds
+    // Get a nice time from seconds as a fromatted single string
     string NiceTimeFromSeconds(float seconds)
     {
         System.TimeSpan t = System.TimeSpan.FromSeconds(seconds);
         return string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
     }
 
-    // Get a nice time from seconds
+    // Get a raw time from seconds as a list of floats
     List<float> RawTimeFromSeconds(float seconds)
     {
         System.TimeSpan t = System.TimeSpan.FromSeconds(seconds);
@@ -313,12 +277,68 @@ public class dataRecorder : MonoBehaviour {
     }
 
 
-    // TABLE OPERATIONS //
-    // Add a table to All Raw Data
+
+
+    //// TABLE OPERATIONS ////
+    //+++ CREATE MASS DATA TABLE
+    public void CompileAllDataTable(List<Table> subTables)
+    {
+        /// data compiled into a generic table
+        /// 
+
+        for (int x = 0; x < allRawData.totalRows; x++)
+        {
+            for (int y = 0; y < allRawData.totalCols; y++)
+            {
+                if (allRawData.col.Count < allRawData.totalCols)
+                {
+                    allRawData.col.Add("test");
+                }
+                else
+                {
+                    allRawData.col[y] = "test";
+                }
+            }
+
+
+            if (allRawData.row.Count < allRawData.totalRows)
+            {
+                allRawData.row.Add(allRawData.col);
+            }
+            else
+            {
+                allRawData.row[x] = allRawData.col;
+            }
+
+            //allRawData.row[x] = allRawData.col;
+        }
+    }
+
+    //+++ MASS TEXT FORMATTING
+    public void FormatAllDataTable()
+    {
+        /// data sent to the export string
+        foreach (List<string> row in allRawData.row)
+        {
+            foreach (string col in row)
+            {
+                textLog.exportedText += col + "\t";
+            }
+
+            textLog.exportedText += "\n";
+        }
+    }
+
+    //+++ EXPORT
+    public void ExportAllData()
+    {
+        Append(textLog.exportedText);
+    }
 
 
 
-    // FILE OPERATIONS //
+
+    //// FILE OPERATIONS ////
     // Clear the file
     void Clear()
     {

@@ -1,0 +1,17 @@
+Frames	Rotate	ChildRotate	RotateInverse	ChildRotateInverse	Docking x	Docking y	Docking z
+0	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+1	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+2	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+3	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+4	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+5	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+6	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+7	-18.63922	119.912	-18.63922	-119.912	15	-15	15
+
+Correct Angles	-18.63901	119.912	-18.63901	99.99999	15	-15	15
+
+Angle Error	Rotate error	ChildRotate error	RotateInverse error	ChildRotateInverse error	Docking x error	Docking y error	Docking z error
+	0.000213623	7.629395E-06	0.000213623	-140.088	0	0	0
+
+Time Taken	Hours	Minutes	Seconds	Milliseconds	Seconds float	Completion time
+	0	0	0	135	0.1349777	00h:00m:00s:135ms

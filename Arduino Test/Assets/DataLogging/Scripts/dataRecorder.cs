@@ -7,6 +7,7 @@ using System.IO;
 public class dataRecorder : MonoBehaviour {
 
     public bool noOverwrite = true;
+    public bool compareToDock = true;
     bool stopWriting = false; 
     public bool recordAngles = false;
     bool recodAnglesDone = false;
@@ -25,8 +26,9 @@ public class dataRecorder : MonoBehaviour {
     {
         public string path = "Assets/Resources/";
         public string fileName = "Report_Raw";
+        public string cellSeperatorType = "\t";
         public string exportedText;
-        public string[] correctAngles = new string[numberOfAngles];
+        public float[] correctAngles = new float[numberOfAngles];
     }
     public TextLog textLog = new TextLog();
 
@@ -46,7 +48,7 @@ public class dataRecorder : MonoBehaviour {
         public float secondsTaken;
         public string completionTime;
         public List<float> rawCompletionTime;
-        public float precision;
+        public float[] precision = new float[numberOfAngles];
     }
     public Efficiency efficiency = new Efficiency();
     
@@ -56,8 +58,8 @@ public class dataRecorder : MonoBehaviour {
     public class Table : System.Object
     {
         //+++ Generic Row Column stores for 1 table
-        public int totalRows = 10;
-        public int totalCols = 10;
+        public int totalRows = 5;
+        public int totalCols = 5;
         public List<List<string>> row = new List<List<string>>();
         public List<string> col = new List<string>();
     }
@@ -67,6 +69,7 @@ public class dataRecorder : MonoBehaviour {
     public Table topHeader = new Table();
     public Table accuracyResults = new Table();
     public Table timeResults = new Table();
+    public Table precisionResults = new Table();
     public Table efficiencyResults = new Table();
     public Table botFooter = new Table();
 
@@ -77,11 +80,12 @@ public class dataRecorder : MonoBehaviour {
 
         // Clear File before using
         Clear();
+        textLog.exportedText = "";
 
         //+++ Generic list creating code 
         //+++ Impliment with data write/read to consolidate code below in ExportData()
         //+++ Create variables that set the sizes of 5 and 5
-        CompileAllDataTable();
+        CompileAllDataTable(topHeader, accuracyResults, timeResults, precisionResults, efficiencyResults, botFooter);
         FormatAllDataTable();
         ExportAllData();
 
@@ -100,6 +104,8 @@ public class dataRecorder : MonoBehaviour {
         if (recordAngles && !stopWriting)
         {
             AngleRecord();
+            if (compareToDock)
+                GetDockAngles();
             readyToExportData = true;
 
             // efficiency framerate measurements
@@ -134,16 +140,16 @@ public class dataRecorder : MonoBehaviour {
     {
         // Remove ProtratorAngle() to get positive/raw angles
         // Get overall object orientation
-        angleSummary.shapeRot[0] = ProtratorAngle(shape.transform.rotation.eulerAngles.x);
-        angleSummary.shapeRot[1] = ProtratorAngle(shape.transform.rotation.eulerAngles.y);
-        angleSummary.shapeRot[2] = ProtratorAngle(shape.transform.rotation.eulerAngles.z);
-
+        angleSummary.shapeRot[0] = ProtractorAngle(shape.transform.localRotation.eulerAngles.x);
+        angleSummary.shapeRot[1] = ProtractorAngle(shape.transform.localRotation.eulerAngles.y);
+        angleSummary.shapeRot[2] = ProtractorAngle(shape.transform.localRotation.eulerAngles.z);
+        
         // Fetch data for currAngles from the virtual objects by their z value in unity
         for (int i = 0; i < numberOfAngles; i++)
         {
             if (i < numberOfAngles - angleSummary.shapeRot.Length)
             {
-                angleSummary.currAngles[i] = ProtratorAngle(angleObjects[i].transform.rotation.eulerAngles.z);
+                angleSummary.currAngles[i] = ProtractorAngle(angleObjects[i].transform.localRotation.eulerAngles.z);
             }
             else
             {
@@ -153,10 +159,48 @@ public class dataRecorder : MonoBehaviour {
         }
     }
 
+    // Get the dock's current angles
+    void GetDockAngles()
+    {
+        for (int i = 0; i < textLog.correctAngles.Length; i++)
+        {
+            // Make last three correct angles from dock orientation
+            if (i == textLog.correctAngles.Length - 3)
+            {
+                textLog.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.x);
+            }
+            else if (i == textLog.correctAngles.Length - 2)
+            {
+                textLog.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.y);
+            }
+            else if (i == textLog.correctAngles.Length - 1)
+            {
+                textLog.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.z);
+            }
+
+            // Make first four correct angles from dockShapeAngles 
+            else
+            {
+                textLog.correctAngles[i] = ProtractorAngle(dockAngleObjects[i].transform.localRotation.eulerAngles.z);
+            }
+        }
+    }
 
 
 
-    //// COMPILE ANGLES INTO TABLE ////
+
+    //// COMPARE ANGLES ////
+    void CompareAngles()
+    {
+        for (int i = 0; i < efficiency.precision.Length; i++)
+        {
+            efficiency.precision[i] = ProtractorAngle(Mathf.Abs(textLog.correctAngles[i] - angleSummary.currAngles[i]));
+        }
+    }
+
+
+
+    //// COMPILE CURRANGLES INTO TABLE ////
     // Take total angles recorded every second and compile into single line array of angles in time increments
     void AngleRecord()
     {
@@ -169,22 +213,26 @@ public class dataRecorder : MonoBehaviour {
             // tab between each angle data to seperate into columns
             if (i < angleSummary.currAngles.Length - 1)
             {
-                totalAnglesLine += "\t";
+                totalAnglesLine += textLog.cellSeperatorType;
             }
         }
 
         angleSummary.anglesOverTime.Add(totalAnglesLine);
     }
 
+
+
+
     //// WRITING DATA TO FILE ////
     // Create Single Mass String
+    //+++ SPLIT THIS WHOLE THING INTO BASIC FLOATS AND STRINGS TO SEND TO THE SUB TABLES AND LATER COMPILE AS A EXPORT STRING
     void ExportData()
     {
         Clear();
         textLog.exportedText = "";
 
-        /// FIRST LINE
-        textLog.exportedText += "Frames" + "\t";
+        /// FIRST ANGLES LINE
+        textLog.exportedText += "Frames" + textLog.cellSeperatorType;
         for (int i = 0; i < angleSummary.currAngles.Length; i++)
         {
             if (i < angleSummary.currAngles.Length - angleSummary.shapeRot.Length)
@@ -211,20 +259,21 @@ public class dataRecorder : MonoBehaviour {
             // tab between each angle data to seperate into columns
             if (i < angleSummary.currAngles.Length - 1)
             {
-                textLog.exportedText += "\t";
+                textLog.exportedText += textLog.cellSeperatorType;
             }
         }
-        
 
-        /// DATA LINES
+
+        /// RECORDED ANGLE LINES
         for (int i = 0; i < angleSummary.anglesOverTime.Count; i++)
         {
-            textLog.exportedText += "\n" + i + "\t" + angleSummary.anglesOverTime[i];
+            textLog.exportedText += "\n" + i + textLog.cellSeperatorType + angleSummary.anglesOverTime[i];
         }
 
 
-        /// FINAL LINES
-        textLog.exportedText += "\n" + "Correct Angles" + "\t";
+        /// CORRECT ANGLE LINES
+        textLog.exportedText += "\n";
+        textLog.exportedText += "\n" + "Correct Angles" + textLog.cellSeperatorType;
         for (int i = 0; i < textLog.correctAngles.Length; i++)
         {
             textLog.exportedText += textLog.correctAngles[i];
@@ -232,9 +281,129 @@ public class dataRecorder : MonoBehaviour {
             // tab between each angle data to seperate into columns
             if (i < angleSummary.currAngles.Length - 1)
             {
-                textLog.exportedText += "\t";
+                textLog.exportedText += textLog.cellSeperatorType;
             }
         }
+
+        /// EXECUTE PRECISION CALCULATION
+        CompareAngles();
+
+        /// FIRST PRECISION LINE
+        textLog.exportedText += "\n";
+        textLog.exportedText += "\n" + "Angle Error" + textLog.cellSeperatorType;
+        for (int i = 0; i < efficiency.precision.Length; i++)
+        {
+
+            if (i < angleObjects.Length)
+            {
+                textLog.exportedText += angleObjects[i].name + " error";
+            }
+            else
+            {
+                if (i == efficiency.precision.Length - 3)
+                {
+                    textLog.exportedText += "Docking x error";
+                }
+                else if (i == efficiency.precision.Length - 2)
+                {
+                    textLog.exportedText += "Docking y error";
+                }
+                else if (i == efficiency.precision.Length - 1)
+                {
+                    textLog.exportedText += "Docking z error";
+                }
+            }
+
+            // tab between each angle data to seperate into columns
+            if (i < efficiency.precision.Length - 1)
+            {
+                textLog.exportedText += textLog.cellSeperatorType;
+            }
+        }
+
+        /// PRECISION LINES
+        textLog.exportedText += "\n" + "" + textLog.cellSeperatorType;
+        for (int i = 0; i < efficiency.precision.Length; i++)
+        {
+            textLog.exportedText += efficiency.precision[i];
+
+            // tab between each angle data to seperate into columns
+            if (i < efficiency.precision.Length - 1)
+            {
+                textLog.exportedText += textLog.cellSeperatorType;
+            }
+        }
+
+        /// FIRST TIME LINE
+        textLog.exportedText += "\n";
+        textLog.exportedText += "\n" + "Time Taken" + textLog.cellSeperatorType;
+        for (int i = 0; i < efficiency.rawCompletionTime.Count + 2; i++)
+        {
+            if (i == 0)
+            {
+                textLog.exportedText += "Hours";
+            }
+
+            else if (i == 1)
+            {
+                textLog.exportedText += "Minutes";
+            }
+
+            else if (i == 2)
+            {
+                textLog.exportedText += "Seconds";
+            }
+
+            else if (i == 3)
+            {
+                textLog.exportedText += "Milliseconds";
+            }
+
+            else if (i == 4)
+            {
+                textLog.exportedText += "Seconds float";
+            }
+
+            else if (i == 5)
+            {
+                textLog.exportedText += "Completion time";
+            }
+
+            // tab between each angle data to seperate into columns
+            if (i < efficiency.rawCompletionTime.Count + 2 - 1)
+            {
+                textLog.exportedText += textLog.cellSeperatorType;
+            }
+        }
+
+        /// TIME LINES
+        textLog.exportedText += "\n" + "" + textLog.cellSeperatorType;
+        for (int i = 0; i < efficiency.rawCompletionTime.Count + 2; i++)
+        {
+            // first name
+            if (i < efficiency.rawCompletionTime.Count)
+            {
+                textLog.exportedText += efficiency.rawCompletionTime[i];
+            }
+            else
+            {
+                if (i == 4)
+                {
+                    textLog.exportedText += efficiency.secondsTaken;
+                }
+                else if (i == 5)
+                {
+                    textLog.exportedText += efficiency.completionTime;
+                }
+            }
+
+            // tab between each angle data to seperate into columns
+            if (i < efficiency.rawCompletionTime.Count + 2 - 1)
+            {
+                textLog.exportedText += textLog.cellSeperatorType;
+            }
+        }
+
 
         // Send the data
         Append(textLog.exportedText);
@@ -250,10 +419,14 @@ public class dataRecorder : MonoBehaviour {
     /// GENERIC FUNCTIONS /// 
 
     //// MATH OPERATIONS ////
-    // Give nice protractor angles (180 relevant)
-    float ProtratorAngle(float angle)
+    // Give nice protractor angles (180 relevant) // THIS COULD BE COMPLETELY WRONG
+    float ProtractorAngle(float angle)
     {
+        // get the remainder of an angle within a 0 to 360 degree sweep
+        angle = angle % 360;
+        // get the angle relative to which side of the 180 line it lies on
         angle = (angle > 180) ? angle - 360 : angle;
+        // give a reasonable angle back
         return angle;
     }
 
@@ -281,37 +454,65 @@ public class dataRecorder : MonoBehaviour {
 
     //// TABLE OPERATIONS ////
     //+++ CREATE MASS DATA TABLE
-    public void CompileAllDataTable(List<Table> subTables)
+    public void CompileAllDataTable(params Table[] subTables)
     {
         /// data compiled into a generic table
-        /// 
 
-        for (int x = 0; x < allRawData.totalRows; x++)
+        int finalRows = 0;
+        int finalCols = 0;
+
+        // find out how large the final table will be
+        foreach (Table sub in subTables)
         {
-            for (int y = 0; y < allRawData.totalCols; y++)
+            finalRows += sub.totalRows;
+            finalCols += sub.totalCols;
+        }
+
+        // set the allRawData final table to have the appropriate size
+        allRawData.totalRows = finalRows;
+        allRawData.totalCols = finalCols;
+
+        /// FILL TABLE ALL
+        int currentRows = 0;
+        int currentCols = 0;
+
+        foreach (Table sub in subTables)
+        {
+            // rows
+            for (int x = currentRows; x < allRawData.totalRows; x++)
             {
-                if (allRawData.col.Count < allRawData.totalCols)
+                // columns compile
+                for (int y = currentCols; y < allRawData.totalCols; y++)
                 {
-                    allRawData.col.Add("test");
+                    if (allRawData.col.Count < allRawData.totalCols)
+                    {
+                        //allRawData.col.Add(sub.col[y]);
+                        allRawData.col.Add("test");
+                    }
+                    else
+                    {
+                        //allRawData.col[y] = sub.col[y];
+                        allRawData.col[y] = "test";
+                    }
+                }
+
+                // rows compile
+                if (allRawData.row.Count < allRawData.totalRows)
+                {
+                    allRawData.row.Add(allRawData.col);
                 }
                 else
                 {
-                    allRawData.col[y] = "test";
+                    allRawData.row[x] = allRawData.col;
                 }
             }
 
+            // Running starting point for a table's appending
+            currentRows += sub.totalRows;
+            currentCols += sub.totalCols;
 
-            if (allRawData.row.Count < allRawData.totalRows)
-            {
-                allRawData.row.Add(allRawData.col);
-            }
-            else
-            {
-                allRawData.row[x] = allRawData.col;
-            }
-
-            //allRawData.row[x] = allRawData.col;
         }
+
     }
 
     //+++ MASS TEXT FORMATTING
@@ -322,7 +523,7 @@ public class dataRecorder : MonoBehaviour {
         {
             foreach (string col in row)
             {
-                textLog.exportedText += col + "\t";
+                textLog.exportedText += col + textLog.cellSeperatorType;
             }
 
             textLog.exportedText += "\n";

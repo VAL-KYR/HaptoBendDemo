@@ -10,12 +10,19 @@ public class dataRecordingController : MonoBehaviour {
     public string filePath = "Assets/DataLogging/Reports/";
     public GameObject testObject;
     public List<GameObject> tests = new List<GameObject>();
+    public GameObject currTest;
+    public Vector2 deviceLimits;
 
     // Delete all Test Objects and files before starting
     public void Start()
     {
         clearTests();
         clearReports();
+    }
+
+    public void Update()
+    {
+
     }
 
     //// GENERIC TEST FUNCTIONS ////
@@ -46,10 +53,37 @@ public class dataRecordingController : MonoBehaviour {
         // Name the TestObject
         test.name = "Test_" + tests.Count;
 
-
+        // Set current test to whichever was last made
+        currTest = test;
+        // Add to test list
         tests.Add(test);
     }
 
+    // Get a new shape to dock to
+    public void newDockShape()
+    {
+        // dock reorientation
+        currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(newAngle(deviceLimits[0], deviceLimits[1]), newAngle(deviceLimits[0], deviceLimits[1]), newAngle(deviceLimits[0], deviceLimits[1])));
+
+        // dock angles reorientation
+        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+        {
+            angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, newAngle(deviceLimits[0], deviceLimits[1])));
+        }
+    }
+
+    // Test Dock Shape
+    public void zeroDockShape()
+    {
+        // dock reorientation
+        currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
+
+        // dock angles reorientation
+        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+        {
+            angle.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
+        }
+    }
 
     // Delete all tests
     public void clearTests()
@@ -77,6 +111,13 @@ public class dataRecordingController : MonoBehaviour {
 #if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
 #endif
+    }
+
+
+    /// GENERIC FUNCTIONS ///
+    float newAngle(float negativeLimit, float positiveLimit)
+    {
+        return Random.Range(negativeLimit, positiveLimit);
     }
     
 }

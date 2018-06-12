@@ -60,15 +60,28 @@ Frames	Rotate	ChildRotate	RotateInverse	ChildRotateInverse	Docking x	Docking y	D
 58	0	119.912	0	-119.912	0	0	0
 59	0	119.912	0	-119.912	0	0	0
 60	0	119.912	0	-119.912	0	0	0
+61	0	119.912	0	-119.912	0	0	0
+62	0	119.912	0	-119.912	0	0	0
+63	0	119.912	0	-119.912	0	0	0
+64	0	119.912	0	-119.912	0	0	0
+65	0	119.912	0	-119.912	0	0	0
+66	0	119.912	0	-119.912	0	0	0
+67	0	119.912	0	-119.912	0	0	0
+68	0	119.912	0	-119.912	0	0	0
+69	0	119.912	0	-119.912	0	0	0
+70	0	119.912	0	-119.912	0	0	0
+71	0	119.912	0	-119.912	0	0	0
+72	0	119.912	0	-119.912	0	0	0
+73	0	119.912	0	-119.912	0	0	0
 
 Correct Angles	Rotate	ChildRotate	RotateInverse	ChildRotateInverse	Docking x	Docking y	Docking z
-	0	119.912	0	-119.912	0	0	0
+	-157.5175	41.157	160.3241	116.979	-5.447266	46.19275	-33.62045
 
 Angle Error	Rotate	ChildRotate	RotateInverse	ChildRotateInverse	Docking x	Docking y	Docking z
-	0	7.629395E-06	0	0	0	0	0
+	157.5175	78.75498	160.3241	-123.109	5.447266	46.19275	33.62045
 
 Time Taken	Hours	Minutes	Seconds	Milliseconds	Seconds float	Completion time
-	0	0	1	64	1.064195	00h:00m:01s:064ms
+	0	0	1	273	1.272865	00h:00m:01s:273ms
 
 Final Results	Time Taken	Precision %	Efficiency %	
-	00h:00m:01s:064ms	100	93.96776	
+	00h:00m:01s:273ms	51.98681	40.84235	

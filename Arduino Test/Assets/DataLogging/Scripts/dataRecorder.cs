@@ -41,7 +41,7 @@ public class dataRecorder : MonoBehaviour {
     }
     public AngleSummary angleSummary = new AngleSummary();
 
-    // Efficiency summary TIME && PRECISION
+    // Efficiency factors
     [System.Serializable]
     public class Efficiency : System.Object
     {
@@ -51,7 +51,17 @@ public class dataRecorder : MonoBehaviour {
         public float[] precision = new float[numberOfAngles];
     }
     public Efficiency efficiency = new Efficiency();
-    
+
+    // Efficiency results
+    [System.Serializable]
+    public class FinalSummary : System.Object
+    {
+        public float timeTaken;
+        public float precision;
+        public float efficiency;
+    }
+    public FinalSummary finalResults = new FinalSummary();
+
 
     //+++ This will be the generic table method
     [System.Serializable]
@@ -90,7 +100,7 @@ public class dataRecorder : MonoBehaviour {
         ExportAllData();
 
         // Read the file before starting any testing
-        Read();
+        //Read();
         UpdateEditor();
     }
 
@@ -270,16 +280,47 @@ public class dataRecorder : MonoBehaviour {
             textLog.exportedText += "\n" + i + textLog.cellSeperatorType + angleSummary.anglesOverTime[i];
         }
 
-
-        /// CORRECT ANGLE LINES
+        /// FIRST CORRECT ANGLE LINE
         textLog.exportedText += "\n";
         textLog.exportedText += "\n" + "Correct Angles" + textLog.cellSeperatorType;
+        for (int i = 0; i < textLog.correctAngles.Length; i++)
+        {
+
+            if (i < angleObjects.Length)
+            {
+                textLog.exportedText += angleObjects[i].name;
+            }
+            else
+            {
+                if (i == textLog.correctAngles.Length - 3)
+                {
+                    textLog.exportedText += "Docking x";
+                }
+                else if (i == textLog.correctAngles.Length - 2)
+                {
+                    textLog.exportedText += "Docking y";
+                }
+                else if (i == textLog.correctAngles.Length - 1)
+                {
+                    textLog.exportedText += "Docking z";
+                }
+            }
+
+            // tab between each angle data to seperate into columns
+            if (i < textLog.correctAngles.Length - 1)
+            {
+                textLog.exportedText += textLog.cellSeperatorType;
+            }
+        }
+
+        /// CORRECT ANGLE LINES
+        textLog.exportedText += "\n" + textLog.cellSeperatorType;
         for (int i = 0; i < textLog.correctAngles.Length; i++)
         {
             textLog.exportedText += textLog.correctAngles[i];
 
             // tab between each angle data to seperate into columns
-            if (i < angleSummary.currAngles.Length - 1)
+            if (i < textLog.correctAngles.Length - 1)
             {
                 textLog.exportedText += textLog.cellSeperatorType;
             }
@@ -296,21 +337,21 @@ public class dataRecorder : MonoBehaviour {
 
             if (i < angleObjects.Length)
             {
-                textLog.exportedText += angleObjects[i].name + " error";
+                textLog.exportedText += angleObjects[i].name;
             }
             else
             {
                 if (i == efficiency.precision.Length - 3)
                 {
-                    textLog.exportedText += "Docking x error";
+                    textLog.exportedText += "Docking x";
                 }
                 else if (i == efficiency.precision.Length - 2)
                 {
-                    textLog.exportedText += "Docking y error";
+                    textLog.exportedText += "Docking y";
                 }
                 else if (i == efficiency.precision.Length - 1)
                 {
-                    textLog.exportedText += "Docking z error";
+                    textLog.exportedText += "Docking z";
                 }
             }
 
@@ -404,6 +445,21 @@ public class dataRecorder : MonoBehaviour {
             }
         }
 
+        // Calculate final results and efficiency scores
+        FinalResults();
+
+        /// FIRST SUMMARY LINE
+        textLog.exportedText += "\n";
+        textLog.exportedText += "\n" + "Final Results" + textLog.cellSeperatorType;
+        textLog.exportedText += "Time Taken" + textLog.cellSeperatorType;
+        textLog.exportedText += "Precision %" + textLog.cellSeperatorType;
+        textLog.exportedText += "Efficiency %" + textLog.cellSeperatorType;
+
+        /// SUMMARY LINES
+        textLog.exportedText += "\n" + textLog.cellSeperatorType;
+        textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
 
         // Send the data
         Append(textLog.exportedText);
@@ -413,6 +469,22 @@ public class dataRecorder : MonoBehaviour {
         UpdateEditor();
     }
 
+    ////+++ FINAL RESULTS MATH ////
+    public void FinalResults()
+    {
+        // timetaken math
+        finalResults.timeTaken = efficiency.secondsTaken;
+
+        // precision math (out of 100) | the 180 is maximum error possible | 100f is to move up the decimals so add a % in the formatting
+        // we want the amount of error angle absolutes on average thus we ABS() each precision value for this measurement before avg
+        float[] angleErrors = efficiency.precision;
+        for (int i = 0; i < angleErrors.Length; i++){ angleErrors[i] = Mathf.Abs(angleErrors[i]); }
+
+        finalResults.precision = 100f - (((unweightedAverage(angleErrors))/180) * 100f);
+
+        // efficiency math (reduce the effect of timeTaken's reduction of the efficiency rating for better numbers)
+        finalResults.efficiency = finalResults.precision / (finalResults.timeTaken);
+    }
 
 
 
@@ -447,6 +519,18 @@ public class dataRecorder : MonoBehaviour {
         rawTime.Add(t.Seconds);
         rawTime.Add(t.Milliseconds);
         return rawTime;
+    }
+
+    // Get an average with no weight
+    public float unweightedAverage(params float[] numbers)
+    {
+        float total = 0;
+        foreach (float n in numbers)
+        {
+            total += n;
+        }
+
+        return total / numbers.Length;
     }
 
 

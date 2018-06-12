@@ -26,6 +26,14 @@ public class testButton : Editor
         {
             myScript.clearReports();
         }
+        if (GUILayout.Button("New Dock Shape"))
+        {
+            myScript.newDockShape();
+        }
+        if (GUILayout.Button("Zero Dock Shape"))
+        {
+            myScript.zeroDockShape();
+        }
     }
 }
 

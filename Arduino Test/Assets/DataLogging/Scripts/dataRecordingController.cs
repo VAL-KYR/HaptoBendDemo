@@ -59,6 +59,12 @@ public class dataRecordingController : MonoBehaviour {
         tests.Add(test);
     }
 
+    // Create Final Report Summary
+    public void finalReport()
+    {
+        this.GetComponent<dataSummary>().createReport = true;
+    }
+
     // Get a new shape to dock to
     public void newDockShape()
     {

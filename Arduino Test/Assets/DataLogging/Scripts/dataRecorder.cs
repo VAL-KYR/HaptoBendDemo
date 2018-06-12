@@ -95,9 +95,9 @@ public class dataRecorder : MonoBehaviour {
         //+++ Generic list creating code 
         //+++ Impliment with data write/read to consolidate code below in ExportData()
         //+++ Create variables that set the sizes of 5 and 5
-        CompileAllDataTable(topHeader, accuracyResults, timeResults, precisionResults, efficiencyResults, botFooter);
-        FormatAllDataTable();
-        ExportAllData();
+        //CompileAllDataTable(topHeader, accuracyResults, timeResults, precisionResults, efficiencyResults, botFooter);
+        //FormatAllDataTable();
+        //ExportAllData();
 
         // Read the file before starting any testing
         //Read();

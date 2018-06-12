@@ -18,14 +18,7 @@ public class testButton : Editor
         {
             myScript.newTest();
         }
-        if (GUILayout.Button("Delete All Tests"))
-        {
-            myScript.clearTests();
-        }
-        if (GUILayout.Button("Delete All Reports"))
-        {
-            myScript.clearReports();
-        }
+        
         if (GUILayout.Button("New Dock Shape"))
         {
             myScript.newDockShape();
@@ -33,6 +26,20 @@ public class testButton : Editor
         if (GUILayout.Button("Zero Dock Shape"))
         {
             myScript.zeroDockShape();
+        }
+
+        if (GUILayout.Button("Summarize Results (Final Report)"))
+        {
+            myScript.finalReport();
+        }
+
+        if (GUILayout.Button("Delete All Tests"))
+        {
+            myScript.clearTests();
+        }
+        if (GUILayout.Button("Delete All Reports"))
+        {
+            myScript.clearReports();
         }
     }
 }

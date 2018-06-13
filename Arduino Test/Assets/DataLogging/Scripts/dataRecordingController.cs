@@ -16,8 +16,8 @@ public class dataRecordingController : MonoBehaviour {
     // Delete all Test Objects and files before starting
     public void Start()
     {
-        clearTests();
-        clearReports();
+        ClearTests();
+        ClearReports();
     }
 
     public void Update()
@@ -27,7 +27,7 @@ public class dataRecordingController : MonoBehaviour {
 
     //// GENERIC TEST FUNCTIONS ////
     // Create a new test object
-    public void newTest()
+    public void NewTest()
     {
         // Create test Object
         GameObject test = Instantiate<GameObject>(testObject, Vector3.zero, Quaternion.identity, this.transform);
@@ -59,27 +59,27 @@ public class dataRecordingController : MonoBehaviour {
     }
 
     // Create Final Report Summary
-    public void finalReport()
+    public void FinalReport()
     {
         this.GetComponent<dataSummary>().CalculateFinalResults();
         this.GetComponent<dataSummary>().ExportSummaryFile();
     }
 
     // Get a new shape to dock to
-    public void newDockShape()
+    public void NewDockShape()
     {
         // dock reorientation
-        currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(newAngle(deviceLimits[0], deviceLimits[1]), newAngle(deviceLimits[0], deviceLimits[1]), newAngle(deviceLimits[0], deviceLimits[1])));
+        currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(NewAngle(deviceLimits[0], deviceLimits[1]), NewAngle(deviceLimits[0], deviceLimits[1]), NewAngle(deviceLimits[0], deviceLimits[1])));
 
         // dock angles reorientation
         foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
         {
-            angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, newAngle(deviceLimits[0], deviceLimits[1])));
+            angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, NewAngle(deviceLimits[0], deviceLimits[1])));
         }
     }
 
     // Test Dock Shape
-    public void zeroDockShape()
+    public void ZeroDockShape()
     {
         // dock reorientation
         currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
@@ -92,7 +92,7 @@ public class dataRecordingController : MonoBehaviour {
     }
 
     // Delete all tests
-    public void clearTests()
+    public void ClearTests()
     {
         // Destroy the Test Objects
         foreach (Transform child in this.transform)
@@ -105,7 +105,7 @@ public class dataRecordingController : MonoBehaviour {
     }
 
     // Clear all Reports
-    public void clearReports()
+    public void ClearReports()
     {
         // If the path exists delete every file in it and refresh the unity editor if we're using it
         if (Directory.Exists(filePath))
@@ -115,13 +115,13 @@ public class dataRecordingController : MonoBehaviour {
 
         Directory.CreateDirectory(filePath);
 #if UNITY_EDITOR
-        UnityEditor.AssetDatabase.Refresh();
+        AssetDatabase.Refresh();
 #endif
     }
 
 
     /// GENERIC FUNCTIONS ///
-    float newAngle(float negativeLimit, float positiveLimit)
+    float NewAngle(float negativeLimit, float positiveLimit)
     {
         return Random.Range(negativeLimit, positiveLimit);
     }

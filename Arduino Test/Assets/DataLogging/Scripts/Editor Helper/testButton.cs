@@ -16,30 +16,30 @@ public class testButton : Editor
         dataRecordingController dataRecControl = (dataRecordingController)target;
         if (GUILayout.Button("Create Test"))
         {
-            dataRecControl.newTest();
+            dataRecControl.NewTest();
         }
         
         if (GUILayout.Button("New Dock Shape"))
         {
-            dataRecControl.newDockShape();
+            dataRecControl.NewDockShape();
         }
         if (GUILayout.Button("Zero Dock Shape"))
         {
-            dataRecControl.zeroDockShape();
+            dataRecControl.ZeroDockShape();
         }
 
         if (GUILayout.Button("Summarize Results (Final Report)"))
         {
-            dataRecControl.finalReport();
+            dataRecControl.FinalReport();
         }
 
         if (GUILayout.Button("Delete All Tests"))
         {
-            dataRecControl.clearTests();
+            dataRecControl.ClearTests();
         }
         if (GUILayout.Button("Delete All Reports"))
         {
-            dataRecControl.clearReports();
+            dataRecControl.ClearReports();
         }
     }
 }

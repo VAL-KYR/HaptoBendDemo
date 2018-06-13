@@ -102,7 +102,7 @@ public class dataRecorder : MonoBehaviour {
 
         // Read the file before starting any testing
         //Read();
-        UpdateEditor();
+        fileEditor.UpdateEditor(textLog.path, textLog.fileName);
     }
 
     // Update
@@ -239,7 +239,7 @@ public class dataRecorder : MonoBehaviour {
     //+++ SPLIT THIS WHOLE THING INTO BASIC FLOATS AND STRINGS TO SEND TO THE SUB TABLES AND LATER COMPILE AS A EXPORT STRING
     void ExportData()
     {
-        Clear();
+        fileEditor.Clear(textLog.path);
         textLog.exportedText = "";
 
         /// FIRST ANGLES LINE
@@ -463,11 +463,11 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
 
         // Send the data
-        Append(textLog.exportedText);
+        fileEditor.Append(textLog.path, textLog.exportedText);
 
         // Update the debug and inspector
-        Read();
-        UpdateEditor();
+        fileEditor.Read(textLog.path);
+        fileEditor.UpdateEditor(textLog.path, textLog.fileName);
     }
 
     //// FINAL RESULTS MATH ////
@@ -619,54 +619,6 @@ public class dataRecorder : MonoBehaviour {
     //+++ EXPORT
     public void ExportAllData()
     {
-        Append(textLog.exportedText);
-    }
-
-
-
-
-    //// FILE OPERATIONS ////
-    // Clear the file
-    void Clear()
-    {
-        // Clear file
-        File.WriteAllText(textLog.path, "");
-    }
-
-    // Write a line
-    void Append(string text)
-    {
-        //Write some text to the Report.txt file
-        StreamWriter writer = new StreamWriter(textLog.path, true);
-        writer.WriteLine(text);
-        writer.Close();
-    }
-
-    // Overwrite text
-    void Write(string text)
-    {
-        //Write some text to the Report.txt file
-        StreamWriter writer = new StreamWriter(textLog.path, true);
-        writer.Write(text);
-        writer.Close();
-    }
-
-#if UNITY_EDITOR
-    // Update the inspector
-    void UpdateEditor()
-    {
-        //Re-import the file to update the reference in the editor
-        AssetDatabase.ImportAsset(textLog.path);
-        TextAsset asset = Resources.Load(textLog.fileName) as TextAsset;
-    }
-#endif
-
-    // Read to console
-    void Read()
-    {
-        //Read the text from directly from the test.txt file
-        StreamReader reader = new StreamReader(textLog.path);
-        Debug.Log(reader.ReadToEnd());
-        reader.Close();
+        fileEditor.Append(textLog.path, textLog.exportedText);
     }
 }

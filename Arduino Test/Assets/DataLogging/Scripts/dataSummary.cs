@@ -36,7 +36,7 @@ public class dataSummary : MonoBehaviour {
         textLog.path += textLog.fileName + ".txt";
 
         // Clear File before using
-        Clear();
+        fileEditor.Clear(textLog.path);
         textLog.exportedText = "";
     }
 
@@ -70,11 +70,11 @@ public class dataSummary : MonoBehaviour {
         textLog.exportedText += summary.efficiency + textLog.cellSeperatorType;
 
         // Send the data
-        Append(textLog.exportedText);
+        fileEditor.Append(textLog.path, textLog.exportedText);
 
         // Update the debug and inspector
-        Read();
-        UpdateEditor();
+        fileEditor.Read(textLog.path);
+        fileEditor.UpdateEditor(textLog.path, textLog.fileName);
     }
 
     public void CalculateFinalResults()
@@ -93,49 +93,5 @@ public class dataSummary : MonoBehaviour {
         summary.precision = unweightedAverage(summary.allPrecision);
         summary.efficiency = unweightedAverage(summary.allEfficiency);
     }
-
-    //// FILE OPERATIONS ////
-    // Clear the file
-    void Clear()
-    {
-        // Clear file
-        File.WriteAllText(textLog.path, "");
-    }
-
-    // Write a line
-    void Append(string text)
-    {
-        //Write some text to the Report.txt file
-        StreamWriter writer = new StreamWriter(textLog.path, true);
-        writer.WriteLine(text);
-        writer.Close();
-    }
-
-    // Overwrite text
-    void Write(string text)
-    {
-        //Write some text to the Report.txt file
-        StreamWriter writer = new StreamWriter(textLog.path, true);
-        writer.Write(text);
-        writer.Close();
-    }
-
-#if UNITY_EDITOR
-    // Update the inspector
-    void UpdateEditor()
-    {
-        //Re-import the file to update the reference in the editor
-        AssetDatabase.ImportAsset(textLog.path);
-        TextAsset asset = Resources.Load(textLog.fileName) as TextAsset;
-    }
-#endif
-
-    // Read to console
-    void Read()
-    {
-        //Read the text from directly from the test.txt file
-        StreamReader reader = new StreamReader(textLog.path);
-        Debug.Log(reader.ReadToEnd());
-        reader.Close();
-    }
+    
 }

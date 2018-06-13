@@ -62,26 +62,16 @@ public class dataRecorder : MonoBehaviour {
     }
     public FinalSummary finalResults = new FinalSummary();
 
-
-    //+++ This will be the generic table method
-    [System.Serializable]
-    public class Table : System.Object
-    {
-        //+++ Generic Row Column stores for 1 table
-        public int totalRows = 5;
-        public int totalCols = 5;
-        public List<List<string>> row = new List<List<string>>();
-        public List<string> col = new List<string>();
-    }
+    //+++ Mass Table Compiler Method
     //+++ Main Table
-    Table allRawData = new Table();
+    //public Table allData = new Table();
     //+++ Sub Tables
-    Table topHeader = new Table();
-    Table accuracyResults = new Table();
-    Table timeResults = new Table();
-    Table precisionResults = new Table();
-    Table efficiencyResults = new Table();
-    Table botFooter = new Table();
+    //public Table topHeader = new Table();
+    //public Table accuracyResults = new Table();
+    //public Table timeResults = new Table();
+    //public Table precisionResults = new Table();
+    //public Table efficiencyResults = new Table();
+    //public Table botFooter = new Table();
 
     // Start
     void Start() {
@@ -89,20 +79,18 @@ public class dataRecorder : MonoBehaviour {
         textLog.path += textLog.fileName + ".txt";
 
         // Clear File before using
-        //Clear();
         fileEditor.Clear(textLog.path);
         textLog.exportedText = "";
 
         //+++ Generic list creating code 
         //+++ Impliment with data write/read to consolidate code below in ExportData()
         //+++ Create variables that set the sizes of 5 and 5
-        //CompileAllDataTable(topHeader, accuracyResults, timeResults, precisionResults, efficiencyResults, botFooter);
-        //FormatAllDataTable();
-        //ExportAllData();
+        //allData = textTableCompiler.CombineTables(topHeader, accuracyResults, timeResults, precisionResults, efficiencyResults, botFooter);
+        //textTableCompiler.FormatTable();
+        //fileEditor.Append(textLog.path, textTableCompiler.FormatTable(allData, textLog.cellSeperatorType, "\n"));
 
         // Read the file before starting any testing
-        //Read();
-        fileEditor.UpdateEditor(textLog.path, textLog.fileName);
+        //fileEditor.UpdateEditor(textLog.path, textLog.fileName);
     }
 
     // Update
@@ -533,92 +521,5 @@ public class dataRecorder : MonoBehaviour {
         }
 
         return total / numbers.Length;
-    }
-
-
-
-
-    //// TABLE OPERATIONS ////
-    //+++ CREATE MASS DATA TABLE
-    public void CompileAllDataTable(params Table[] subTables)
-    {
-        /// data compiled into a generic table
-
-        int finalRows = 0;
-        int finalCols = 0;
-
-        // find out how large the final table will be
-        foreach (Table sub in subTables)
-        {
-            finalRows += sub.totalRows;
-            finalCols += sub.totalCols;
-        }
-
-        // set the allRawData final table to have the appropriate size
-        allRawData.totalRows = finalRows;
-        allRawData.totalCols = finalCols;
-
-        /// FILL TABLE ALL
-        int currentRows = 0;
-        int currentCols = 0;
-
-        foreach (Table sub in subTables)
-        {
-            // rows
-            for (int x = currentRows; x < allRawData.totalRows; x++)
-            {
-                // columns compile
-                for (int y = currentCols; y < allRawData.totalCols; y++)
-                {
-                    if (allRawData.col.Count < allRawData.totalCols)
-                    {
-                        //allRawData.col.Add(sub.col[y]);
-                        allRawData.col.Add("test");
-                    }
-                    else
-                    {
-                        //allRawData.col[y] = sub.col[y];
-                        allRawData.col[y] = "test";
-                    }
-                }
-
-                // rows compile
-                if (allRawData.row.Count < allRawData.totalRows)
-                {
-                    allRawData.row.Add(allRawData.col);
-                }
-                else
-                {
-                    allRawData.row[x] = allRawData.col;
-                }
-            }
-
-            // Running starting point for a table's appending
-            currentRows += sub.totalRows;
-            currentCols += sub.totalCols;
-
-        }
-
-    }
-
-    //+++ MASS TEXT FORMATTING
-    public void FormatAllDataTable()
-    {
-        /// data sent to the export string
-        foreach (List<string> row in allRawData.row)
-        {
-            foreach (string col in row)
-            {
-                textLog.exportedText += col + textLog.cellSeperatorType;
-            }
-
-            textLog.exportedText += "\n";
-        }
-    }
-
-    //+++ EXPORT
-    public void ExportAllData()
-    {
-        fileEditor.Append(textLog.path, textLog.exportedText);
     }
 }

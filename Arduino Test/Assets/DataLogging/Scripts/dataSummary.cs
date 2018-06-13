@@ -6,9 +6,6 @@ using System.IO;
 
 public class dataSummary : MonoBehaviour {
 
-    public bool createReport = false;
-    bool reportDone = false;
-
     [System.Serializable]
     public class TextLog : System.Object
     {
@@ -41,28 +38,7 @@ public class dataSummary : MonoBehaviour {
         // Clear File before using
         Clear();
         textLog.exportedText = "";
-
-        // Read the file before starting any testing
-        //Read();
-        UpdateEditor();
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (createReport && !reportDone)
-        {
-            CalculateFinalResults();
-            ExportSummaryFile();
-            reportDone = true;
-        }
-	}
-
-    //// WHAT THE SCRIPT NEEDS TO DO ////
-    // get the list of tests
-    // get the data from each script
-    /// compile the test results into a list of test precision ratings
-    /// compile the test results into a list of test time ratings
-    // compile the test results into an overall efficiency rating from the average of all efficencies
 
     /// GENERIC FUNCTIONS ///
     //// MATH OPERATIONS ////

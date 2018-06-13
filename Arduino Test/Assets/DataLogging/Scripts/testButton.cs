@@ -13,33 +13,33 @@ public class testButton : Editor
     {
         DrawDefaultInspector();
 
-        dataRecordingController myScript = (dataRecordingController)target;
+        dataRecordingController dataRecControl = (dataRecordingController)target;
         if (GUILayout.Button("Create Test"))
         {
-            myScript.newTest();
+            dataRecControl.newTest();
         }
         
         if (GUILayout.Button("New Dock Shape"))
         {
-            myScript.newDockShape();
+            dataRecControl.newDockShape();
         }
         if (GUILayout.Button("Zero Dock Shape"))
         {
-            myScript.zeroDockShape();
+            dataRecControl.zeroDockShape();
         }
 
         if (GUILayout.Button("Summarize Results (Final Report)"))
         {
-            myScript.finalReport();
+            dataRecControl.finalReport();
         }
 
         if (GUILayout.Button("Delete All Tests"))
         {
-            myScript.clearTests();
+            dataRecControl.clearTests();
         }
         if (GUILayout.Button("Delete All Reports"))
         {
-            myScript.clearReports();
+            dataRecControl.clearReports();
         }
     }
 }

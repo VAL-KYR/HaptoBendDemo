@@ -74,14 +74,14 @@ public class dataRecorder : MonoBehaviour {
         public List<string> col = new List<string>();
     }
     //+++ Main Table
-    public Table allRawData = new Table();
+    Table allRawData = new Table();
     //+++ Sub Tables
-    public Table topHeader = new Table();
-    public Table accuracyResults = new Table();
-    public Table timeResults = new Table();
-    public Table precisionResults = new Table();
-    public Table efficiencyResults = new Table();
-    public Table botFooter = new Table();
+    Table topHeader = new Table();
+    Table accuracyResults = new Table();
+    Table timeResults = new Table();
+    Table precisionResults = new Table();
+    Table efficiencyResults = new Table();
+    Table botFooter = new Table();
 
     // Start
     void Start() {
@@ -89,7 +89,8 @@ public class dataRecorder : MonoBehaviour {
         textLog.path += textLog.fileName + ".txt";
 
         // Clear File before using
-        Clear();
+        //Clear();
+        fileEditor.Clear(textLog.path);
         textLog.exportedText = "";
 
         //+++ Generic list creating code 
@@ -469,7 +470,7 @@ public class dataRecorder : MonoBehaviour {
         UpdateEditor();
     }
 
-    ////+++ FINAL RESULTS MATH ////
+    //// FINAL RESULTS MATH ////
     public void FinalResults()
     {
         // timetaken math
@@ -485,6 +486,7 @@ public class dataRecorder : MonoBehaviour {
         // efficiency math (reduce the effect of timeTaken's reduction of the efficiency rating for better numbers)
         finalResults.efficiency = finalResults.precision / (finalResults.timeTaken);
     }
+
 
 
 

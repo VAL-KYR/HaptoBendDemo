@@ -29,6 +29,7 @@ public class dataRecordingController : MonoBehaviour {
     // Create a new test object
     public void newTest()
     {
+        // Create test Object
         GameObject test = Instantiate<GameObject>(testObject, Vector3.zero, Quaternion.identity, this.transform);
         // Init file settings
         test.GetComponent<dataRecorder>().textLog.path = filePath;
@@ -38,7 +39,6 @@ public class dataRecordingController : MonoBehaviour {
         test.GetComponent<dataRecorder>().shape = GameObject.FindGameObjectWithTag("virtualDevice");
         // Init overall dock orientation
         test.GetComponent<dataRecorder>().dockShape = GameObject.FindGameObjectWithTag("dockDevice");
-
         // Init shape angles
         test.GetComponent<dataRecorder>().angleObjects[0] = GameObject.FindGameObjectWithTag("rotate");
         test.GetComponent<dataRecorder>().angleObjects[1] = GameObject.FindGameObjectWithTag("childRotate");
@@ -49,7 +49,6 @@ public class dataRecordingController : MonoBehaviour {
         test.GetComponent<dataRecorder>().dockAngleObjects[1] = GameObject.FindGameObjectWithTag("dockChildRotate");
         test.GetComponent<dataRecorder>().dockAngleObjects[2] = GameObject.FindGameObjectWithTag("dockRotateInverse");
         test.GetComponent<dataRecorder>().dockAngleObjects[3] = GameObject.FindGameObjectWithTag("dockChildRotateInverse");
-
         // Name the TestObject
         test.name = "Test_" + tests.Count;
 
@@ -62,7 +61,8 @@ public class dataRecordingController : MonoBehaviour {
     // Create Final Report Summary
     public void finalReport()
     {
-        this.GetComponent<dataSummary>().createReport = true;
+        this.GetComponent<dataSummary>().CalculateFinalResults();
+        this.GetComponent<dataSummary>().ExportSummaryFile();
     }
 
     // Get a new shape to dock to

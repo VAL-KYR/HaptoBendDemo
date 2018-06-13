@@ -1,4 +1,0 @@
-
-
-All Reports Averages	Time Taken (avg)	Precision % (avg)	Efficiency % (avg)	
-	0.725524	91.76803	135.6059	

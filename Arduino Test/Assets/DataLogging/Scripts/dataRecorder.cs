@@ -28,13 +28,13 @@ public class dataRecorder : MonoBehaviour {
         public string fileName = "Report_Raw";
         public string cellSeperatorType = "\t";
         public string exportedText;
-        public float[] correctAngles = new float[numberOfAngles];
     }
     public TextLog textLog = new TextLog();
 
     [System.Serializable]
     public class AngleSummary : System.Object
     {
+        public float[] correctAngles = new float[numberOfAngles];
         public float[] currAngles = new float[numberOfAngles];
         public float[] shapeRot = new float[3];
         public List<string> anglesOverTime;
@@ -161,26 +161,26 @@ public class dataRecorder : MonoBehaviour {
     // Get the dock's current angles
     void GetDockAngles()
     {
-        for (int i = 0; i < textLog.correctAngles.Length; i++)
+        for (int i = 0; i < angleSummary.correctAngles.Length; i++)
         {
             // Make last three correct angles from dock orientation
-            if (i == textLog.correctAngles.Length - 3)
+            if (i == angleSummary.correctAngles.Length - 3)
             {
-                textLog.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.x);
+                angleSummary.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.x);
             }
-            else if (i == textLog.correctAngles.Length - 2)
+            else if (i == angleSummary.correctAngles.Length - 2)
             {
-                textLog.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.y);
+                angleSummary.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.y);
             }
-            else if (i == textLog.correctAngles.Length - 1)
+            else if (i == angleSummary.correctAngles.Length - 1)
             {
-                textLog.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.z);
+                angleSummary.correctAngles[i] = ProtractorAngle(dockShape.transform.localRotation.eulerAngles.z);
             }
 
             // Make first four correct angles from dockShapeAngles 
             else
             {
-                textLog.correctAngles[i] = ProtractorAngle(dockAngleObjects[i].transform.localRotation.eulerAngles.z);
+                angleSummary.correctAngles[i] = ProtractorAngle(dockAngleObjects[i].transform.localRotation.eulerAngles.z);
             }
         }
     }
@@ -193,7 +193,7 @@ public class dataRecorder : MonoBehaviour {
     {
         for (int i = 0; i < efficiency.precision.Length; i++)
         {
-            efficiency.precision[i] = ProtractorAngle(Mathf.Abs(textLog.correctAngles[i] - angleSummary.currAngles[i]));
+            efficiency.precision[i] = ProtractorAngle(Mathf.Abs(angleSummary.correctAngles[i] - angleSummary.currAngles[i]));
         }
     }
 
@@ -272,7 +272,7 @@ public class dataRecorder : MonoBehaviour {
         /// FIRST CORRECT ANGLE LINE
         textLog.exportedText += "\n";
         textLog.exportedText += "\n" + "Correct Angles" + textLog.cellSeperatorType;
-        for (int i = 0; i < textLog.correctAngles.Length; i++)
+        for (int i = 0; i < angleSummary.correctAngles.Length; i++)
         {
 
             if (i < angleObjects.Length)
@@ -281,22 +281,22 @@ public class dataRecorder : MonoBehaviour {
             }
             else
             {
-                if (i == textLog.correctAngles.Length - 3)
+                if (i == angleSummary.correctAngles.Length - 3)
                 {
                     textLog.exportedText += "Docking x";
                 }
-                else if (i == textLog.correctAngles.Length - 2)
+                else if (i == angleSummary.correctAngles.Length - 2)
                 {
                     textLog.exportedText += "Docking y";
                 }
-                else if (i == textLog.correctAngles.Length - 1)
+                else if (i == angleSummary.correctAngles.Length - 1)
                 {
                     textLog.exportedText += "Docking z";
                 }
             }
 
             // tab between each angle data to seperate into columns
-            if (i < textLog.correctAngles.Length - 1)
+            if (i < angleSummary.correctAngles.Length - 1)
             {
                 textLog.exportedText += textLog.cellSeperatorType;
             }
@@ -304,12 +304,12 @@ public class dataRecorder : MonoBehaviour {
 
         /// CORRECT ANGLE LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType;
-        for (int i = 0; i < textLog.correctAngles.Length; i++)
+        for (int i = 0; i < angleSummary.correctAngles.Length; i++)
         {
-            textLog.exportedText += textLog.correctAngles[i];
+            textLog.exportedText += angleSummary.correctAngles[i];
 
             // tab between each angle data to seperate into columns
-            if (i < textLog.correctAngles.Length - 1)
+            if (i < angleSummary.correctAngles.Length - 1)
             {
                 textLog.exportedText += textLog.cellSeperatorType;
             }

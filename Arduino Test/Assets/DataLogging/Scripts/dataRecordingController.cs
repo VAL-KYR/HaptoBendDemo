@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class dataRecordingController : MonoBehaviour {
 
@@ -13,6 +16,10 @@ public class dataRecordingController : MonoBehaviour {
     public GameObject currTest;
     public Vector2 deviceLimits;
 
+
+    public float inputTimer = 1f;
+    float inputTime = 0f;
+
     // Delete all Test Objects and files before starting
     public void Start()
     {
@@ -22,6 +29,56 @@ public class dataRecordingController : MonoBehaviour {
 
     public void Update()
     {
+        // Inputs during test
+        if (inputTime > inputTimer)
+        {
+            if (Input.GetButton("ExecuteTest"))
+            {
+                if (!currTest.GetComponent<dataRecorder>().recordAngles)
+                {
+                    currTest.GetComponent<dataRecorder>().recordAngles = true;
+                }
+                else
+                {
+                    currTest.GetComponent<dataRecorder>().recordAngles = false;
+                }
+                inputTime = 0f;
+            }
+            if (Input.GetButton("CreateTest"))
+            {
+                NewTest();
+                inputTime = 0f;
+            }
+            if (Input.GetButton("RandomizeDock"))
+            {
+                NewDockShape();
+                inputTime = 0f;
+            }
+            if (Input.GetButton("ZeroDock"))
+            {
+                ZeroDockShape();
+                inputTime = 0f;
+            }
+            if (Input.GetButton("SummarizeTests"))
+            {
+                FinalReport();
+                inputTime = 0f;
+            }
+            if (Input.GetButton("DeleteTests"))
+            {
+                ClearTests();
+                inputTime = 0f;
+            }
+            if (Input.GetButton("DeleteReports"))
+            {
+                ClearReports();
+                inputTime = 0f;
+            }
+        }
+        
+        
+
+        inputTime += Time.smoothDeltaTime;
 
     }
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using System.IO;
 
 public class dataRecorder : MonoBehaviour {
@@ -10,7 +9,7 @@ public class dataRecorder : MonoBehaviour {
     public bool compareToDock = true;
     bool stopWriting = false; 
     public bool recordAngles = false;
-    bool recodAnglesDone = false;
+    public bool anglesRecorded = false;
     public bool readyToExportData = false;
 
     // These must match in length
@@ -128,6 +127,8 @@ public class dataRecorder : MonoBehaviour {
             {
                 stopWriting = true;
             }
+
+            anglesRecorded = true;
         }
     }
 

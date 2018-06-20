@@ -451,6 +451,9 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
 
+        // SEND DATA TO THE GUI
+        this.transform.parent.GetComponent<testDataGUI>().testData.Add(textLog.exportedText);
+
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);
 

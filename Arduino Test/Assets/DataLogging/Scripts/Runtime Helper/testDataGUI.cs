@@ -13,9 +13,7 @@ public class testDataGUI : MonoBehaviour {
 
     public List<string> controlsList;
     public List<string> actionList = new List<string>(6);
-
-    public Component[] testList;
-    public string[] testData;
+    public List<string> testData;
     
 
     // Use this for initialization
@@ -25,13 +23,6 @@ public class testDataGUI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-        testList = GetComponentsInChildren<dataRecorder>();
-        // Instead of always reading it might be better to just add exported text when a file is written to the GUI itself
-        for (int d = 0; d < testList.Length; d++)
-        {
-            testData[d] = fileEditor.Fetch(testList[d].GetComponent<dataRecorder>().textLog.path);
-        }
 
     }
 
@@ -90,6 +81,7 @@ public class testDataGUI : MonoBehaviour {
         // Graphical Settings for Test List Box
         GUI.color = Color.red;
         GUI.skin.label.font = font;
+        GUI.skin.label.fontSize = (int)(fontSize * 0.5f);
         Vector2 scrollSize = new Vector2(400, 200);
 
 
@@ -119,6 +111,8 @@ public class testDataGUI : MonoBehaviour {
     public void FetchAction(string action)
     {
         AddElement(actionList, action);
+
+
     }
 
     public void AddElement(List<string> list, string element)

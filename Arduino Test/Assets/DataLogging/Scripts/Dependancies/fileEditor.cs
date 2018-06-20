@@ -53,4 +53,15 @@ public static class fileEditor {
         Debug.Log(reader.ReadToEnd());
         reader.Close();
     }
+
+    // Fetch File Contents
+    public static string Fetch(string filePath)
+    {
+        //Read the text from directly from the test.txt file
+        StreamReader reader = new StreamReader(filePath);
+        string allContents = reader.ReadToEnd();
+        reader.Close();
+
+        return allContents;
+    }
 }

@@ -15,6 +15,7 @@ public class dataRecordingController : MonoBehaviour {
     public List<GameObject> tests = new List<GameObject>();
     public GameObject currTest;
     public Vector2 deviceLimits;
+    public string currAction = "Loaded";
 
 
     public float inputTimer = 1f;
@@ -37,42 +38,57 @@ public class dataRecordingController : MonoBehaviour {
                 if (!currTest.GetComponent<dataRecorder>().recordAngles)
                 {
                     currTest.GetComponent<dataRecorder>().recordAngles = true;
+                    currAction = currTest.name + " Started";
                 }
                 else
                 {
                     currTest.GetComponent<dataRecorder>().recordAngles = false;
+                    currAction = currTest.name + " Ended";
                 }
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
             if (Input.GetButton("CreateTest"))
             {
                 NewTest();
+                currAction = currTest.name + " Created";
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
             if (Input.GetButton("RandomizeDock"))
             {
                 NewDockShape();
+                currAction = "Dock Randomized";
                 inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("ZeroDock"))
             {
                 ZeroDockShape();
+                currAction = "Dock Zeroed";
                 inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("SummarizeTests"))
             {
                 FinalReport();
+                currAction = "Tests Summarized";
                 inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteTests"))
             {
                 ClearTests();
+                currAction = "All Tests Deleted";
                 inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteReports"))
             {
                 ClearReports();
+                currAction = "All Reports Deleted";
                 inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
         }
         

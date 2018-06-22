@@ -81,8 +81,8 @@ public class testDataGUI : MonoBehaviour {
         // Graphical Settings for Test List Box
         GUI.color = Color.red;
         GUI.skin.label.font = font;
-        GUI.skin.label.fontSize = (int)(fontSize * 0.5f);
-        Vector2 scrollSize = new Vector2(400, 200);
+        GUI.skin.label.fontSize = (int)(fontSize * 0.7f);
+        Vector2 scrollSize = new Vector2(900, 400);
 
 
         GUILayout.BeginHorizontal();

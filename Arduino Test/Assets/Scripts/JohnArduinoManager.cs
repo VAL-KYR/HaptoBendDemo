@@ -9,8 +9,8 @@ using System.Globalization;
 
 public class JohnArduinoManager : MonoBehaviour
 {
-
-    public static string serialName = "COM7";
+    /// Val | I've changed this value from COM7 to COM3 for testing on another computer
+    public static string serialName = "COM3";
     public SerialPort mySPort = new SerialPort(serialName, 9600);
 
 

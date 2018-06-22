@@ -147,7 +147,15 @@ public class dataRecordingController : MonoBehaviour {
         // dock angles reorientation
         foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
         {
-            angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, NewAngle(deviceLimits[0], deviceLimits[1])));
+            if (angle.CompareTag("dockRotateInverse") || angle.CompareTag("dockChildRotateInverse"))
+            {
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, NewAngle(-deviceLimits[0], -deviceLimits[1])));
+            }
+            else
+            {
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, NewAngle(deviceLimits[0], deviceLimits[1])));
+            }
+            
         }
     }
 

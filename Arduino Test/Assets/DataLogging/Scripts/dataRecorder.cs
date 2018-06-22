@@ -452,7 +452,7 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
 
         // SEND DATA TO THE GUI
-        this.transform.parent.GetComponent<testDataGUI>().testData.Add(textLog.exportedText);
+        this.transform.parent.GetComponent<testDataGUI>().testData.Add(this.name + "\n" + "\n" + textLog.exportedText + "\n" + "\n" + "\n");
 
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);
@@ -475,8 +475,8 @@ public class dataRecorder : MonoBehaviour {
 
         finalResults.precision = 100f - (((unweightedAverage(angleErrors))/180) * 100f);
 
-        // efficiency math (reduce the effect of timeTaken's reduction of the efficiency rating for better numbers)
-        finalResults.efficiency = finalResults.precision / (finalResults.timeTaken);
+        // efficiency math (reduce the effect of timeTaken'sxx reduction of the efficiency rating for better numbers)
+        finalResults.efficiency = finalResults.precision / ((finalResults.timeTaken) / 10f);
     }
 
 

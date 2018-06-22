@@ -62,18 +62,33 @@ public class dataSummary : MonoBehaviour {
         textLog.exportedText += "Precision % (avg)" + textLog.cellSeperatorType;
         textLog.exportedText += "Efficiency % (avg)" + textLog.cellSeperatorType;
 
+        string guiResults = "All Reports Averages" + textLog.cellSeperatorType + 
+                            "Time Taken (avg)" + textLog.cellSeperatorType + 
+                            "Precision % (avg)" + textLog.cellSeperatorType + 
+                            "Efficiency % (avg)" + textLog.cellSeperatorType;
+
         /// SUMMARY LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType;
         textLog.exportedText += summary.timeTaken + textLog.cellSeperatorType;
         textLog.exportedText += summary.precision + textLog.cellSeperatorType;
         textLog.exportedText += summary.efficiency + textLog.cellSeperatorType;
 
+        guiResults += "\n" + textLog.cellSeperatorType + 
+                            summary.timeTaken + textLog.cellSeperatorType + 
+                            summary.precision + textLog.cellSeperatorType + 
+                            summary.efficiency + textLog.cellSeperatorType;
+
+        // SEND DATA TO THE GUI
+        this.GetComponent<testDataGUI>().testData.Add("Test Results Summary: " + "\n" + guiResults + "\n" + "\n" + "\n");
+
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);
 
         // Update the debug and inspector
         fileEditor.Read(textLog.path);
+#if UNITY_EDITOR
         fileEditor.UpdateEditor(textLog.path, textLog.fileName);
+#endif
     }
 
     public void CalculateFinalResults()

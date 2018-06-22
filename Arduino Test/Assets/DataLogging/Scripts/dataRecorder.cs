@@ -35,6 +35,7 @@ public class dataRecorder : MonoBehaviour {
     {
         public float[] correctAngles = new float[numberOfAngles];
         public float[] currAngles = new float[numberOfAngles];
+        public float[] oversteer = new float[numberOfAngles];
         public float[] shapeRot = new float[3];
         public List<string> anglesOverTime;
     }
@@ -44,6 +45,7 @@ public class dataRecorder : MonoBehaviour {
     [System.Serializable]
     public class Efficiency : System.Object
     {
+        public float biggestOversteer = 0;
         public float secondsTaken;
         public string completionTime;
         public List<float> rawCompletionTime;
@@ -143,21 +145,23 @@ public class dataRecorder : MonoBehaviour {
         angleSummary.shapeRot[0] = ProtractorAngle(shape.transform.localRotation.eulerAngles.x);
         angleSummary.shapeRot[1] = ProtractorAngle(shape.transform.localRotation.eulerAngles.y);
         angleSummary.shapeRot[2] = ProtractorAngle(shape.transform.localRotation.eulerAngles.z);
-        
+
         // Fetch data for currAngles from the virtual objects by their z value in unity
         for (int i = 0; i < numberOfAngles; i++)
         {
+            // Angles from shape
             if (i < numberOfAngles - angleSummary.shapeRot.Length)
             {
                 angleSummary.currAngles[i] = ProtractorAngle(angleObjects[i].transform.localRotation.eulerAngles.z);
             }
+            // Angles from orientation
             else
             {
                 angleSummary.currAngles[i] = angleSummary.shapeRot[i - (angleSummary.currAngles.Length - angleSummary.shapeRot.Length)];
             }
-            
         }
     }
+
 
     // Get the dock's current angles
     void GetDockAngles()
@@ -445,21 +449,35 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += "Precision %" + textLog.cellSeperatorType;
         textLog.exportedText += "Efficiency %" + textLog.cellSeperatorType;
 
+        // For GUI presentation
+        string guiResults = "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
+                                        "Time Taken" + textLog.cellSeperatorType +
+                                        "Precision %" + textLog.cellSeperatorType +
+                                        "Efficiency %" + textLog.cellSeperatorType;
+
         /// SUMMARY LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType;
         textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
 
+        // For GUI presentation
+        guiResults += "\n" + textLog.cellSeperatorType;
+        guiResults += efficiency.completionTime + textLog.cellSeperatorType;
+        guiResults += finalResults.precision + textLog.cellSeperatorType;
+        guiResults += finalResults.efficiency + textLog.cellSeperatorType;
+
         // SEND DATA TO THE GUI
-        this.transform.parent.GetComponent<testDataGUI>().testData.Add(this.name + "\n" + "\n" + textLog.exportedText + "\n" + "\n" + "\n");
+        this.transform.parent.GetComponent<testDataGUI>().testData.Add(this.name + " Results: " + "\n" + guiResults + "\n" + "\n" + "\n");
 
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);
 
         // Update the debug and inspector
         fileEditor.Read(textLog.path);
+#if UNITY_EDITOR
         fileEditor.UpdateEditor(textLog.path, textLog.fileName);
+#endif
     }
 
     //// FINAL RESULTS MATH ////
@@ -473,10 +491,15 @@ public class dataRecorder : MonoBehaviour {
         float[] angleErrors = efficiency.precision;
         for (int i = 0; i < angleErrors.Length; i++){ angleErrors[i] = Mathf.Abs(angleErrors[i]); }
 
-        finalResults.precision = 100f - (((unweightedAverage(angleErrors))/180) * 100f);
+        // Old precision based on innaccuracy averages
+        //finalResults.precision = 100f - (((UnweightedAverage(angleErrors))/180) * 100f);
+        // New precision based on innaccuracy totals
+        finalResults.precision = 100f - (((Sum(angleErrors)) / (180 * numberOfAngles)) * 100f);
 
         // efficiency math (reduce the effect of timeTaken'sxx reduction of the efficiency rating for better numbers)
-        finalResults.efficiency = finalResults.precision / ((finalResults.timeTaken) / 10f);
+        finalResults.efficiency = finalResults.precision - (finalResults.timeTaken);
+        
+
     }
 
 
@@ -516,7 +539,7 @@ public class dataRecorder : MonoBehaviour {
     }
 
     // Get an average with no weight
-    public float unweightedAverage(params float[] numbers)
+    public float UnweightedAverage(params float[] numbers)
     {
         float total = 0;
         foreach (float n in numbers)
@@ -525,5 +548,17 @@ public class dataRecorder : MonoBehaviour {
         }
 
         return total / numbers.Length;
+    }
+
+    // Get the sum of an array
+    public float Sum(params float[] numbers)
+    {
+        float total = 0;
+        foreach (float n in numbers)
+        {
+            total += n;
+        }
+
+        return total;
     }
 }

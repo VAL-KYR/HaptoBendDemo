@@ -15,15 +15,26 @@ public class dataRecordingController : MonoBehaviour {
     public List<GameObject> tests = new List<GameObject>();
     public GameObject currTest;
     public Vector2 deviceLimits;
+    public float dockPartSeperation = 0.8f;
     public string currAction = "Loaded";
 
 
     public float inputTimer = 1f;
     float inputTime = 0f;
 
+
+    Transform rightWing;
+    Transform leftWing;
+
     // Delete all Test Objects and files before starting
     public void Start()
     {
+        rightWing = new GameObject("virtualWingR").transform;
+        leftWing = new GameObject("virtualWingL").transform;
+
+        rightWing.position = new Vector3(10, 0, 0);
+        leftWing.position = new Vector3(-10, 0, 0);
+
         ClearTests();
         ClearReports();
     }
@@ -146,91 +157,8 @@ public class dataRecordingController : MonoBehaviour {
                                                                                 NewAngle(180f, -180f), 
                                                                                 NewAngle(180f, -180f), 
                                                                                 NewAngle(180f, -180f)));
-
-
-        //// Intellegant dock angles reorientation [NEW]
-        float leftWingMax = 150f;
-        float rightWingMax = 150f;
-        float leftWingRemainder = leftWingMax;
-        float rightWingRemainder = rightWingMax;
-
-        float[] angles = new float[4];
-
-        //angles[0] = Random.Range(0, 80f);
-        angles[0] = 0;
-        rightWingRemainder = rightWingMax - angles[0];
-        angles[1] = Random.Range(0, rightWingRemainder);
-        rightWingRemainder = rightWingRemainder - angles[1];
-
-        float useRemainder = Random.Range(0, rightWingRemainder);
-
-        angles[2] = Random.Range(0, 150f) + useRemainder;
-        leftWingRemainder = leftWingMax - angles[2];
-        rightWingRemainder = rightWingRemainder - useRemainder;
-
-        useRemainder = Random.Range(0, rightWingRemainder);
-
-        angles[3] = Random.Range(0, leftWingRemainder) + useRemainder;
-        leftWingRemainder = leftWingRemainder - angles[3];
-        rightWingRemainder = rightWingRemainder - useRemainder;
-        
-
-        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
-        {
-            if (angle.CompareTag("dockRotateInverse"))
-            {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x,
-                                                angle.transform.localRotation.y,
-                                                NewAngle(angles[0], angles[0])));
-            }
-            else if (angle.CompareTag("dockChildRotateInverse"))
-            {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x,
-                                                angle.transform.localRotation.y,
-                                                NewAngle(angles[1], angles[1])));
-            }
-            else if (angle.CompareTag("dockRotate"))
-            {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x,
-                                                angle.transform.localRotation.y,
-                                                -NewAngle(angles[2], angles[2])));
-            }
-            else if (angle.CompareTag("dockChildRotate"))
-            {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x,
-                                                angle.transform.localRotation.y,
-                                                -NewAngle(angles[3], angles[3])));
-            }
-
-            // dock angles invert flip whenever angle inversion is left to this code here instead of those last two else ifs it ruins the angles NO IDEA WHY
-            /*
-            if (angle.tag.Contains("Inverse"))
-            {
-                if (angle.tag.Contains("Child"))
-                {
-                    angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                    angle.transform.localRotation.x,
-                                                    angle.transform.localRotation.y,
-                                                    angle.transform.localRotation.z));
-                }
-            }
-            else
-            {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x,
-                                                angle.transform.localRotation.y,
-                                                -angle.transform.localRotation.z));
-            }
-            */
-        }
-        
-
-        //// Dock angles reorientation [OLD]
-        /*
+    
+        //// NEW
         foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
         {
             if (angle.tag.Contains("Inverse"))
@@ -241,20 +169,96 @@ public class dataRecordingController : MonoBehaviour {
                                                 angle.transform.localRotation.x,
                                                 angle.transform.localRotation.y,
                                                 NewAngle(deviceLimits[0], deviceLimits[1])));
+                    leftWing = angle.transform.GetChild(0);
                 }
                 
             }
+
             else
             {
                 angle.transform.localRotation = Quaternion.Euler(new Vector3(
                                                 angle.transform.localRotation.x, 
                                                 angle.transform.localRotation.y, 
                                                 -NewAngle(deviceLimits[0], deviceLimits[1])));
+                if (angle.tag.Contains("Child"))
+                {
+                    rightWing = angle.transform.GetChild(0);
+                }
             }
             
         }
+
+        // Dock shape collision fixer
+        while (Vector3.Distance(leftWing.position, rightWing.position) < dockPartSeperation)
+        {
+            foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+            {
+                
+                if (angle.tag.Contains("Inverse"))
+                {
+                    if (angle.tag.Contains("Child"))
+                    {
+                        angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                    angle.transform.localRotation.x,
+                                                    angle.transform.localRotation.y,
+                                                    NewAngle(deviceLimits[0], deviceLimits[1])));
+                        leftWing = angle.transform.GetChild(0);
+                    }
+
+                }
+
+                else
+                {
+                    angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                    angle.transform.localRotation.x,
+                                                    angle.transform.localRotation.y,
+                                                    -NewAngle(deviceLimits[0], deviceLimits[1])));
+                    if (angle.tag.Contains("Child"))
+                    {
+                        rightWing = angle.transform.GetChild(0);
+                    }
+                }
+                
+            }
+        }
+
+        //// OLD
+        /*
+        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+        {
+
+            foreach (GameObject otherAngle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+            {
+                while (Vector3.Distance(angle.transform.GetChild(0).position, otherAngle.transform.GetChild(0).position) < 1.0f)
+                {
+                    if (angle.tag.Contains("Inverse"))
+                    {
+                        if (angle.tag.Contains("Child"))
+                        {
+                            angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                        angle.transform.localRotation.x,
+                                                        angle.transform.localRotation.y,
+                                                        NewAngle(deviceLimits[0], deviceLimits[1])));
+                            leftWing = angle.transform.GetChild(0);
+                        }
+
+                    }
+
+                    else
+                    {
+                        angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                        angle.transform.localRotation.x,
+                                                        angle.transform.localRotation.y,
+                                                        -NewAngle(deviceLimits[0], deviceLimits[1])));
+                        if (angle.tag.Contains("Child"))
+                        {
+                            rightWing = angle.transform.GetChild(0);
+                        }
+                    }
+                }
+            }
+        }
         */
-        
     }
 
     // Test Dock Shape

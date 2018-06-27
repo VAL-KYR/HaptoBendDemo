@@ -146,26 +146,134 @@ public class dataRecordingController : MonoBehaviour {
                                                                                 NewAngle(180f, -180f), 
                                                                                 NewAngle(180f, -180f), 
                                                                                 NewAngle(180f, -180f)));
+        // dock angles reorientation [NEW]
+        float leftWingMax = 150f;
+        float rightWingMax = 150f;
+        float leftWingRemainder = leftWingMax;
+        float rightWingRemainder = rightWingMax;
 
-        // dock angles reorientation
+        float[] angles = new float[4];
+
+        
+        //angles[0] = Random.Range(0, 80f);
+        angles[0] = 0;
+        rightWingRemainder = rightWingMax - angles[0];
+        angles[1] = Random.Range(0, rightWingRemainder);
+        rightWingRemainder = rightWingRemainder - angles[1];
+
+        float useRemainder = Random.Range(0, rightWingRemainder);
+
+        angles[2] = Random.Range(0, 80f) + useRemainder;
+        leftWingRemainder = leftWingMax - angles[2];
+        rightWingRemainder = rightWingRemainder - useRemainder;
+
+        useRemainder = Random.Range(0, rightWingRemainder);
+
+        angles[3] = Random.Range(0, leftWingRemainder) + useRemainder;
+        leftWingRemainder = leftWingRemainder - angles[3];
+        rightWingRemainder = rightWingRemainder - useRemainder;
+        
+        /*
+        angles[0] = 0;
+        rightWingRemainder = rightWingMax - angles[0];
+        angles[1] = rightWingRemainder;
+        rightWingRemainder = rightWingRemainder - angles[1];
+
+        float useRemainder = rightWingRemainder;
+
+        angles[2] = 80f + useRemainder;
+        leftWingRemainder = leftWingMax - angles[2];
+        rightWingRemainder = rightWingRemainder - useRemainder;
+
+        useRemainder = rightWingRemainder;
+
+        angles[3] = leftWingRemainder + useRemainder;
+        leftWingRemainder = leftWingRemainder - angles[3];
+        rightWingRemainder = rightWingRemainder - useRemainder;
+        */
+
+        // Set angles
+        
         foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
         {
-            if (angle.CompareTag("dockRotateInverse") || angle.CompareTag("dockChildRotateInverse"))
+            if (angle.CompareTag("dockRotateInverse"))
             {
                 angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x, 
-                                                angle.transform.localRotation.y, 
-                                                NewAngle(-deviceLimits[0], -deviceLimits[1])));
+                                                angle.transform.localRotation.x,
+                                                angle.transform.localRotation.y,
+                                                NewAngle(angles[0], angles[0])));
+            }
+            else if (angle.CompareTag("dockChildRotateInverse"))
+            {
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                angle.transform.localRotation.x,
+                                                angle.transform.localRotation.y,
+                                                NewAngle(angles[1], angles[1])));
+            }
+            else if (angle.CompareTag("dockRotate"))
+            {
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                angle.transform.localRotation.x,
+                                                angle.transform.localRotation.y,
+                                                -NewAngle(angles[2], angles[2])));
+            }
+            else if (angle.CompareTag("dockChildRotate"))
+            {
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                angle.transform.localRotation.x,
+                                                angle.transform.localRotation.y,
+                                                -NewAngle(angles[3], angles[3])));
+            }
+
+            // dock angles invert flip whenever angle inversion is left to this code here instead of those last two else ifs it ruins the angles NO IDEA WHY
+            /*
+            if (angle.tag.Contains("Inverse"))
+            {
+                if (angle.tag.Contains("Child"))
+                {
+                    angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                    angle.transform.localRotation.x,
+                                                    angle.transform.localRotation.y,
+                                                    angle.transform.localRotation.z));
+                }
+            }
+            else
+            {
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                angle.transform.localRotation.x,
+                                                angle.transform.localRotation.y,
+                                                -angle.transform.localRotation.z));
+            }
+            */
+        }
+        
+
+        // dock angles reorientation [OLD]
+        /*
+        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+        {
+            if (angle.tag.Contains("Inverse"))
+            {
+                if (angle.tag.Contains("Child"))
+                {
+                    angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                angle.transform.localRotation.x,
+                                                angle.transform.localRotation.y,
+                                                NewAngle(deviceLimits[0], deviceLimits[1])));
+                }
+                
             }
             else
             {
                 angle.transform.localRotation = Quaternion.Euler(new Vector3(
                                                 angle.transform.localRotation.x, 
                                                 angle.transform.localRotation.y, 
-                                                NewAngle(deviceLimits[0], deviceLimits[1])));
+                                                -NewAngle(deviceLimits[0], deviceLimits[1])));
             }
             
         }
+        */
+        
     }
 
     // Test Dock Shape

@@ -142,18 +142,27 @@ public class dataRecordingController : MonoBehaviour {
     public void NewDockShape()
     {
         // dock reorientation
-        currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(NewAngle(deviceLimits[0], deviceLimits[1]), NewAngle(deviceLimits[0], deviceLimits[1]), NewAngle(deviceLimits[0], deviceLimits[1])));
+        currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                                                NewAngle(180f, -180f), 
+                                                                                NewAngle(180f, -180f), 
+                                                                                NewAngle(180f, -180f)));
 
         // dock angles reorientation
         foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
         {
             if (angle.CompareTag("dockRotateInverse") || angle.CompareTag("dockChildRotateInverse"))
             {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, NewAngle(-deviceLimits[0], -deviceLimits[1])));
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                angle.transform.localRotation.x, 
+                                                angle.transform.localRotation.y, 
+                                                NewAngle(-deviceLimits[0], -deviceLimits[1])));
             }
             else
             {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(angle.transform.localRotation.x, angle.transform.localRotation.y, NewAngle(deviceLimits[0], deviceLimits[1])));
+                angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                angle.transform.localRotation.x, 
+                                                angle.transform.localRotation.y, 
+                                                NewAngle(deviceLimits[0], deviceLimits[1])));
             }
             
         }

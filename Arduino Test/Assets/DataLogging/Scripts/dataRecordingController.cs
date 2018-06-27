@@ -146,7 +146,9 @@ public class dataRecordingController : MonoBehaviour {
                                                                                 NewAngle(180f, -180f), 
                                                                                 NewAngle(180f, -180f), 
                                                                                 NewAngle(180f, -180f)));
-        // dock angles reorientation [NEW]
+
+
+        //// Intellegant dock angles reorientation [NEW]
         float leftWingMax = 150f;
         float rightWingMax = 150f;
         float leftWingRemainder = leftWingMax;
@@ -154,7 +156,6 @@ public class dataRecordingController : MonoBehaviour {
 
         float[] angles = new float[4];
 
-        
         //angles[0] = Random.Range(0, 80f);
         angles[0] = 0;
         rightWingRemainder = rightWingMax - angles[0];
@@ -163,7 +164,7 @@ public class dataRecordingController : MonoBehaviour {
 
         float useRemainder = Random.Range(0, rightWingRemainder);
 
-        angles[2] = Random.Range(0, 80f) + useRemainder;
+        angles[2] = Random.Range(0, 150f) + useRemainder;
         leftWingRemainder = leftWingMax - angles[2];
         rightWingRemainder = rightWingRemainder - useRemainder;
 
@@ -173,27 +174,7 @@ public class dataRecordingController : MonoBehaviour {
         leftWingRemainder = leftWingRemainder - angles[3];
         rightWingRemainder = rightWingRemainder - useRemainder;
         
-        /*
-        angles[0] = 0;
-        rightWingRemainder = rightWingMax - angles[0];
-        angles[1] = rightWingRemainder;
-        rightWingRemainder = rightWingRemainder - angles[1];
 
-        float useRemainder = rightWingRemainder;
-
-        angles[2] = 80f + useRemainder;
-        leftWingRemainder = leftWingMax - angles[2];
-        rightWingRemainder = rightWingRemainder - useRemainder;
-
-        useRemainder = rightWingRemainder;
-
-        angles[3] = leftWingRemainder + useRemainder;
-        leftWingRemainder = leftWingRemainder - angles[3];
-        rightWingRemainder = rightWingRemainder - useRemainder;
-        */
-
-        // Set angles
-        
         foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
         {
             if (angle.CompareTag("dockRotateInverse"))
@@ -248,7 +229,7 @@ public class dataRecordingController : MonoBehaviour {
         }
         
 
-        // dock angles reorientation [OLD]
+        //// Dock angles reorientation [OLD]
         /*
         foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
         {

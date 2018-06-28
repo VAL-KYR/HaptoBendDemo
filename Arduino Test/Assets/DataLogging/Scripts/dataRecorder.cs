@@ -34,6 +34,7 @@ public class dataRecorder : MonoBehaviour {
     public class AngleSummary : System.Object
     {
         public float[] correctAngles = new float[numberOfAngles];
+        public float correctAngleSum;
         public float[] currAngles = new float[numberOfAngles];
         public float[] oversteer = new float[numberOfAngles];
         public float[] shapeRot = new float[3];
@@ -58,14 +59,22 @@ public class dataRecorder : MonoBehaviour {
     public class FinalSummary : System.Object
     {
         public float timeTaken;
+        public float shapePrecision;
+        public float orientationPrecision;
         public float precision;
+        public float angleDifficulty;
+        // Three angles with 150 total possible bending in each joint + the total possible 180 difference with correctangle orientations
+        public float maxAngleDifficulty = (3f * 150f) + (3f * 180f);
+        public float totalDifficulty;
+        public float timePenalty = 1.0f;
         public float efficiency;
     }
     public FinalSummary finalResults = new FinalSummary();
 
     //+++ Mass Table Compiler Method
     //+++ Main Table
-    //public Table allData = new Table();
+    public DataTable allData = new DataTable();
+    public Table allDataFormatted = new Table();
     //+++ Sub Tables
     //public Table topHeader = new Table();
     //public Table accuracyResults = new Table();
@@ -131,6 +140,23 @@ public class dataRecorder : MonoBehaviour {
             }
 
             anglesRecorded = true;
+
+            //+++ GENERIC ALL DATA FORMATTING
+            /*
+            foreach (List<float> row in allData.row)
+            {
+                Debug.Log("Row ");
+
+                foreach (float col in row)
+                {
+                    Debug.Log("Col ");
+                    Debug.Log(col);
+                }
+            }
+            */
+
+            allDataFormatted = textTableCompiler.TableDataToTextTable(allData);
+            string angleDataTestString = textTableCompiler.FormatTable(allDataFormatted, textLog.cellSeperatorType, "\n");
         }
     }
 
@@ -212,6 +238,17 @@ public class dataRecorder : MonoBehaviour {
 
         for (int i = 0; i < angleSummary.currAngles.Length; i++)
         {
+            //+++ set column data for the current row in table
+            if (allData.col.Count < angleSummary.currAngles.Length)
+            {
+                allData.col.Add(angleSummary.currAngles[i]);
+            }
+            else
+            {
+                allData.col[i] = angleSummary.currAngles[i];
+            }
+
+            // current line of data for text file
             totalAnglesLine += angleSummary.currAngles[i];
 
             // tab between each angle data to seperate into columns
@@ -219,8 +256,14 @@ public class dataRecorder : MonoBehaviour {
             {
                 totalAnglesLine += textLog.cellSeperatorType;
             }
+
+            
         }
 
+        //+++ Add to official Data Table for Angles
+        allData.row.Add(allData.col);
+
+        // Send total row of data to File summary 
         angleSummary.anglesOverTime.Add(totalAnglesLine);
     }
 
@@ -443,27 +486,34 @@ public class dataRecorder : MonoBehaviour {
         FinalResults();
 
         /// FIRST SUMMARY LINE
-        textLog.exportedText += "\n";
-        textLog.exportedText += "\n" + "Final Results" + textLog.cellSeperatorType;
-        textLog.exportedText += "Time Taken" + textLog.cellSeperatorType;
-        textLog.exportedText += "Precision %" + textLog.cellSeperatorType;
-        textLog.exportedText += "Efficiency %" + textLog.cellSeperatorType;
+        textLog.exportedText += "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
+                                            "Time Taken" + textLog.cellSeperatorType +
+                                            "Shape Precision %" + textLog.cellSeperatorType +
+                                            "Orientation Precision %" + textLog.cellSeperatorType +
+                                            "Overall Precision %" + textLog.cellSeperatorType + 
+                                            "Efficiency %" + textLog.cellSeperatorType;
 
         // For GUI presentation
         string guiResults = "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
                                         "Time Taken" + textLog.cellSeperatorType +
-                                        "Precision %" + textLog.cellSeperatorType +
+                                        "Shape Precision %" + textLog.cellSeperatorType +
+                                        "Orientation Precision %" + textLog.cellSeperatorType +
+                                        "Overall Precision %" + textLog.cellSeperatorType +
                                         "Efficiency %" + textLog.cellSeperatorType;
 
         /// SUMMARY LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType;
         textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.shapePrecision + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.orientationPrecision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
 
         // For GUI presentation
         guiResults += "\n" + textLog.cellSeperatorType;
         guiResults += efficiency.completionTime + textLog.cellSeperatorType;
+        guiResults += finalResults.shapePrecision + textLog.cellSeperatorType;
+        guiResults += finalResults.orientationPrecision + textLog.cellSeperatorType;
         guiResults += finalResults.precision + textLog.cellSeperatorType;
         guiResults += finalResults.efficiency + textLog.cellSeperatorType;
 
@@ -491,14 +541,30 @@ public class dataRecorder : MonoBehaviour {
         float[] angleErrors = efficiency.precision;
         for (int i = 0; i < angleErrors.Length; i++){ angleErrors[i] = Mathf.Abs(angleErrors[i]); }
 
-        // Old precision based on innaccuracy averages
-        //finalResults.precision = 100f - (((UnweightedAverage(angleErrors))/180) * 100f);
         // New precision based on innaccuracy totals
-        finalResults.precision = 100f - (((Sum(angleErrors)) / (180 * numberOfAngles)) * 100f);
+        finalResults.shapePrecision = 100f - (((Sum(0, angleErrors.Length - 3, angleErrors)) / (180 * 4)) * 100f);
+        finalResults.orientationPrecision = 100f - (((Sum(angleErrors.Length - 2, angleErrors.Length, angleErrors)) / (180 * 3)) * 100f);
+        finalResults.precision = 100f - (((Sum(0, angleErrors.Length, angleErrors)) / (180 * numberOfAngles)) * 100f);
 
-        // efficiency math (reduce the effect of timeTaken'sxx reduction of the efficiency rating for better numbers)
-        finalResults.efficiency = finalResults.precision - (finalResults.timeTaken);
         
+        // corrangle totals must be positive numbers to judge total positive deflection (deltas)
+        float[] corrAngles = angleSummary.correctAngles;
+        for (int a = 0; a < corrAngles.Length; a++)
+        {
+            corrAngles[a] = Mathf.Abs(corrAngles[a]);
+        }
+
+        // difficulty calculations based on how much rotation is needed from 0-1
+        angleSummary.correctAngleSum = Sum(0, corrAngles.Length, corrAngles);
+        finalResults.angleDifficulty = angleSummary.correctAngleSum;
+        finalResults.totalDifficulty = finalResults.angleDifficulty / finalResults.maxAngleDifficulty;
+
+        // efficiency math (reduce the effect of timeTaken's reduction of the efficiency rating for better numbers)
+        // finalResults.efficiency = finalResults.precision - (finalResults.timeTaken * (finalResults.timePenalty * finalResults.totalDifficulty));
+        // new efficiency based on time penalty relative to angle distance needed to travel [scale time penalty for eff tweaking]
+        finalResults.efficiency = 100f -
+                                (finalResults.timeTaken * (finalResults.timePenalty * finalResults.totalDifficulty));
+
 
     }
 
@@ -551,12 +617,13 @@ public class dataRecorder : MonoBehaviour {
     }
 
     // Get the sum of an array
-    public float Sum(params float[] numbers)
+    public float Sum(int start, int finish, params float[] numbers)
     {
         float total = 0;
-        foreach (float n in numbers)
+
+        for (int n = start; n < finish; n++)
         {
-            total += n;
+            total += numbers[n];
         }
 
         return total;

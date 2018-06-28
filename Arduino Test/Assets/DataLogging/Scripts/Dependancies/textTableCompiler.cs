@@ -92,5 +92,29 @@ public static class textTableCompiler {
         }
 
         return formattedLine;
-    }    
+    }
+
+    //+++ MASS DATA TO TEXT COVERSION
+    public static Table TableDataToTextTable(DataTable data)
+    {
+        Table formatted = new Table();
+        formatted.row.Capacity = data.row.Count;
+        formatted.col.Capacity = data.col.Count;
+
+        for (int rows = 0; rows < formatted.row.Count; rows++)
+        {
+            for (int cols = 0; cols < formatted.col.Count; cols++)
+            {
+                formatted.col[cols] = data.col[cols].ToString();
+            }
+
+            // Add horizontal cols
+            formatted.row.Add(formatted.col);
+
+            // Delete running col
+            formatted.col = null;
+        }
+
+        return formatted;
+    }
 }

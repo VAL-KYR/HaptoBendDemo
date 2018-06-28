@@ -20,10 +20,14 @@ public class dataSummary : MonoBehaviour {
     {
         public List<GameObject> tests;
         public List<float> allTimeTaken;
+        public List<float> allShapePrecision;
+        public List<float> allOrientationPrecision;
         public List<float> allPrecision;
         public List<float> allEfficiency;
 
         public float timeTaken;
+        public float shapePrecision;
+        public float orientationPrecision;
         public float precision;
         public float efficiency;
     }
@@ -57,24 +61,32 @@ public class dataSummary : MonoBehaviour {
     public void ExportSummaryFile()
     {
         /// FIRST SUMMARY LINE
-        textLog.exportedText += "All Reports Averages" + textLog.cellSeperatorType;
-        textLog.exportedText += "Time Taken (avg)" + textLog.cellSeperatorType;
-        textLog.exportedText += "Precision % (avg)" + textLog.cellSeperatorType;
-        textLog.exportedText += "Efficiency % (avg)" + textLog.cellSeperatorType;
+        textLog.exportedText += "All Reports Averages" + textLog.cellSeperatorType + 
+                                "Time Taken (avg)" + textLog.cellSeperatorType +
+                                "Shape Precision % (avg)" + textLog.cellSeperatorType +
+                                "Orientation Precision % (avg)" + textLog.cellSeperatorType +
+                                "Overall Precision % (avg)" + textLog.cellSeperatorType + 
+                                "Efficiency % (avg)" + textLog.cellSeperatorType;
 
         string guiResults = "All Reports Averages" + textLog.cellSeperatorType + 
                             "Time Taken (avg)" + textLog.cellSeperatorType + 
-                            "Precision % (avg)" + textLog.cellSeperatorType + 
+                            "Shape Precision % (avg)" + textLog.cellSeperatorType +
+                            "Orientation Precision % (avg)" + textLog.cellSeperatorType +
+                            "Overall Precision % (avg)" + textLog.cellSeperatorType +
                             "Efficiency % (avg)" + textLog.cellSeperatorType;
 
         /// SUMMARY LINES
-        textLog.exportedText += "\n" + textLog.cellSeperatorType;
-        textLog.exportedText += summary.timeTaken + textLog.cellSeperatorType;
-        textLog.exportedText += summary.precision + textLog.cellSeperatorType;
-        textLog.exportedText += summary.efficiency + textLog.cellSeperatorType;
+        textLog.exportedText += "\n" + textLog.cellSeperatorType + 
+                                summary.timeTaken + textLog.cellSeperatorType +
+                                summary.shapePrecision + textLog.cellSeperatorType +
+                                summary.orientationPrecision + textLog.cellSeperatorType +
+                                summary.precision + textLog.cellSeperatorType + 
+                                summary.efficiency + textLog.cellSeperatorType;
 
         guiResults += "\n" + textLog.cellSeperatorType + 
-                            summary.timeTaken + textLog.cellSeperatorType + 
+                            summary.timeTaken + textLog.cellSeperatorType +
+                            summary.shapePrecision + textLog.cellSeperatorType +
+                            summary.orientationPrecision + textLog.cellSeperatorType +
                             summary.precision + textLog.cellSeperatorType + 
                             summary.efficiency + textLog.cellSeperatorType;
 
@@ -98,12 +110,16 @@ public class dataSummary : MonoBehaviour {
         foreach (GameObject t in summary.tests)
         {
            summary.allTimeTaken.Add(t.GetComponent<dataRecorder>().finalResults.timeTaken);
+           summary.allShapePrecision.Add(t.GetComponent<dataRecorder>().finalResults.shapePrecision);
+           summary.allOrientationPrecision.Add(t.GetComponent<dataRecorder>().finalResults.orientationPrecision);
            summary.allPrecision.Add(t.GetComponent<dataRecorder>().finalResults.precision);
            summary.allEfficiency.Add(t.GetComponent<dataRecorder>().finalResults.efficiency);
         }
 
         // Get averages of all data
         summary.timeTaken = unweightedAverage(summary.allTimeTaken);
+        summary.shapePrecision = unweightedAverage(summary.allShapePrecision);
+        summary.orientationPrecision = unweightedAverage(summary.allOrientationPrecision);
         summary.precision = unweightedAverage(summary.allPrecision);
         summary.efficiency = unweightedAverage(summary.allEfficiency);
     }

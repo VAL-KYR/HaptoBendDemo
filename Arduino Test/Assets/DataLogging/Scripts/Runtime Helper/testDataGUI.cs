@@ -82,7 +82,7 @@ public class testDataGUI : MonoBehaviour {
         GUI.color = Color.red;
         GUI.skin.label.font = font;
         GUI.skin.label.fontSize = (int)(fontSize * 0.7f);
-        Vector2 scrollSize = new Vector2(800, 300);
+        Vector2 scrollSize = new Vector2(1200, 300);
 
 
         GUILayout.BeginHorizontal();

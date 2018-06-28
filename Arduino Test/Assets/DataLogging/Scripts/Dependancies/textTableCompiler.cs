@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-public static class textTableCompiler {
+public static class TextTableCompiler {
 
     //// TABLE OPERATIONS ////
     //+++ CREATE MASS DATA TABLE
@@ -98,21 +101,20 @@ public static class textTableCompiler {
     public static Table TableDataToTextTable(DataTable data)
     {
         Table formatted = new Table();
-        formatted.row.Capacity = data.row.Count;
-        formatted.col.Capacity = data.col.Count;
+        formatted.row = new List<List<string>>(data.row.Count);
+        formatted.col = new List<string>(data.col.Count);
 
         for (int rows = 0; rows < formatted.row.Count; rows++)
         {
             for (int cols = 0; cols < formatted.col.Count; cols++)
             {
                 formatted.col[cols] = data.col[cols].ToString();
+                Debug.Log("Formatted string " + formatted.col[cols]);
+                Debug.Log("Original Data " + data.col[cols]);
             }
 
             // Add horizontal cols
             formatted.row.Add(formatted.col);
-
-            // Delete running col
-            formatted.col = null;
         }
 
         return formatted;

@@ -154,9 +154,6 @@ public class dataRecorder : MonoBehaviour {
                 }
             }
             */
-
-            allDataFormatted = textTableCompiler.TableDataToTextTable(allData);
-            string angleDataTestString = textTableCompiler.FormatTable(allDataFormatted, textLog.cellSeperatorType, "\n");
         }
     }
 
@@ -310,12 +307,23 @@ public class dataRecorder : MonoBehaviour {
             }
         }
 
+        ////+++ ADD RECORDED ANGLE LINES [NEW]
+        allDataFormatted = TextTableCompiler.TableDataToTextTable(allData);
+        Debug.Log("random row data " + allDataFormatted.row.Count);
+        string angleDataTestString = TextTableCompiler.FormatTable(allDataFormatted, textLog.cellSeperatorType, "\n");
+        Debug.Log("formatted string " + angleDataTestString);
+        textLog.exportedText += angleDataTestString;
+
+        /// Old angle line by line output
+        /*
 
         /// RECORDED ANGLE LINES
         for (int i = 0; i < angleSummary.anglesOverTime.Count; i++)
         {
             textLog.exportedText += "\n" + i + textLog.cellSeperatorType + angleSummary.anglesOverTime[i];
         }
+
+        */
 
         /// FIRST CORRECT ANGLE LINE
         textLog.exportedText += "\n";

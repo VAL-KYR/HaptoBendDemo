@@ -169,6 +169,8 @@ public class dataRecorder : MonoBehaviour {
                 angleSummary.currAngles[i] = angleSummary.shapeRot[i - (angleSummary.currAngles.Length - angleSummary.shapeRot.Length)];
             }
         }
+
+
     }
 
 
@@ -243,8 +245,20 @@ public class dataRecorder : MonoBehaviour {
             
         }
 
+
+        //+++ this col list being sent clearly has the correct data... what's going on?
+        List<float> temp = allData.col;
+        foreach (float cell in allData.col)
+        {
+            Debug.Log("First access " + cell);
+        }
+
         //+++ Add to official Data Table for Angles
-        allData.row.Add(allData.col);
+        //??? This is collapsing all my rows into being the same kind of data even before the textTableCompiler
+        // this is spooky coding I'm calling it here
+        // maybe this is the wrong function and it isn't grabbing angles every frame somehow?
+        // or that allData.col is going static somehow?
+        allData.row.Add(temp);
 
         // Send total row of data to File summary 
         angleSummary.anglesOverTime.Add(totalAnglesLine);
@@ -293,8 +307,27 @@ public class dataRecorder : MonoBehaviour {
             }
         }
 
+        /*
+        //+++ am I just accessing the data wrong via the rows?
+        foreach (List<float> row in allData.row)
+            foreach (float col in row)
+                Debug.Log("Second access " + col);
+
+        //+++ hmmmm yeah I am somehow, maybe the data is collapsed in the row adding?
+        for (int x = 0; x < allData.row.Count; x++)
+        {
+            for (int y = 0; y < allData.col.Count; y++)
+            {
+                Debug.Log("Third access " + allData.row[x][y]);
+            }
+        }
+        */
+
         ////+++ ADD RECORDED ANGLE LINES [NEW]
+        //+++ this is probably fine
         allDataFormatted = textTableCompiler.TableDataToTextTable(allData);
+        
+        //+++ this is fine
         string angleDataTestString = textTableCompiler.FormatTable(allDataFormatted, textLog.cellSeperatorType, "\n");
         textLog.exportedText += angleDataTestString;
 

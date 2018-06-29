@@ -103,32 +103,29 @@ public static class textTableCompiler {
     {
         Table formatted = new Table();
 
+        formatted.row = new List<List<string>>(data.row.Count);
+        formatted.col = new List<string>(data.col.Count);
+
+        foreach (List<float> rows in data.row)
+        {
+            formatted.col.Clear();
+
+            foreach (float cols in rows)
+            {
+                formatted.col.Add("0");
+            }
+
+            formatted.row.Add(formatted.col);
+        }
+        
         for (int rows = 0; rows < data.row.Count; rows++)
         {
             for (int cols = 0; cols < data.col.Count; cols++)
             {
-                // Add vertical row data
-                if (formatted.col.Count < data.col.Count)
-                {
-                    formatted.col.Add(Convert.ToString(data.col[cols]));
-                }
-                else
-                {
-                    formatted.col[cols] = Convert.ToString(data.col[cols]);
-                }
-                
-            }
-
-            // Add a row of horizontal col data
-            if (formatted.row.Count < data.row.Count)
-            {
-                formatted.row.Add(formatted.col);
-            }
-            else
-            {
-                formatted.row[rows] = formatted.col;
+                formatted.row[rows][cols] = data.row[rows][cols].ToString();
             }
         }
+        
 
         return formatted;
     }

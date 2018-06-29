@@ -281,6 +281,7 @@ public class dataRecordingController : MonoBehaviour {
         foreach (Transform child in this.transform)
         {
             Destroy(child.gameObject);
+            // Corrupt them all!
         }
 
         // Reset Test List

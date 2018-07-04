@@ -14,9 +14,15 @@ public class dataRecordingController : MonoBehaviour {
     public GameObject testObject;
     public List<GameObject> tests = new List<GameObject>();
     public GameObject currTest;
+
+    public bool randomDock = false;
+    public List<GameObject> dockPresets = new List<GameObject>();
+    
     public Vector2 deviceLimits;
     public float dockPartSeperation = 0.8f;
     public string currAction = "Loaded";
+
+    
 
 
     public float inputTimer = 1f;
@@ -37,6 +43,12 @@ public class dataRecordingController : MonoBehaviour {
 
         ClearTests();
         ClearReports();
+
+        // Creates a new test before starting
+        NewTest();
+        SetCurrTest();
+        // set dock shape mode before first new dock shape
+        NewDockShape();
     }
 
     public void Update()
@@ -62,7 +74,7 @@ public class dataRecordingController : MonoBehaviour {
             if (Input.GetButton("CreateTest"))
             {
                 NewTest();
-                currAction = currTest.name + " Created";
+                currAction = "Test_" + (tests.Count - 1) + " Created";
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
@@ -77,6 +89,14 @@ public class dataRecordingController : MonoBehaviour {
             {
                 ZeroDockShape();
                 currAction = "Dock Zeroed";
+                inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
+            }
+            if (Input.GetButton("DockStyle"))
+            {
+                // Flip the randomDock
+                randomDock = !randomDock;
+                currAction = "Random Docks = " + randomDock;
                 inputTime = 0f;
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
@@ -102,11 +122,25 @@ public class dataRecordingController : MonoBehaviour {
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
         }
-        
-        
+
+        SetCurrTest();
 
         inputTime += Time.smoothDeltaTime;
 
+    }
+
+    public void SetCurrTest()
+    {
+        // Set current test to the oldest test not completed
+        foreach (GameObject test in tests)
+        {
+            if (!test.GetComponent<dataRecorder>().anglesRecorded)
+            {
+                currTest = test;
+                // we break to make sure it's the first one in the list historically top to bottom
+                break;
+            }
+        }
     }
 
     //// GENERIC TEST FUNCTIONS ////
@@ -137,7 +171,8 @@ public class dataRecordingController : MonoBehaviour {
         test.name = "Test_" + tests.Count;
 
         // Set current test to whichever was last made
-        currTest = test;
+        //currTest = test;
+
         // Add to test list
         tests.Add(test);
     }
@@ -152,48 +187,76 @@ public class dataRecordingController : MonoBehaviour {
     // Get a new shape to dock to
     public void NewDockShape()
     {
-        // dock reorientation
-        currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                                                NewAngle(180f, -180f), 
-                                                                                NewAngle(180f, -180f), 
-                                                                                NewAngle(180f, -180f)));
-    
-        //// NEW
-        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+
+        //////////// CREATE HUGE IF STATEMENT FOR PRESET DOCK SHAPES AND RANDOM ONES
+        //// PRESET DOCK SHAPES
+        if (!randomDock)
         {
-            if (angle.tag.Contains("Inverse"))
+            // Random Preset to copy from preset shape to dock
+            GameObject selectedShape = dockPresets[(int)Random.Range(0, dockPresets.Count-1)];
+
+            // This could be cut out to remove randomness
+            // random dock reorientation
+            currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                                                    NewAngle(180f, -180f),
+                                                                                    NewAngle(180f, -180f),
+                                                                                    NewAngle(180f, -180f)));
+
+            //// NEW
+            for (int i = 0; i < currTest.GetComponent<dataRecorder>().dockAngleObjects.Length; i++)
             {
-                if (angle.tag.Contains("Child"))
-                {
-                    angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x,
-                                                angle.transform.localRotation.y,
-                                                NewAngle(deviceLimits[0], deviceLimits[1])));
-                    leftWing = angle.transform.GetChild(0);
-                }
-                
+                currTest.GetComponent<dataRecorder>().dockAngleObjects[i].transform.localRotation = 
+                    selectedShape.GetComponent<dockPreset>().shapes[i].transform.localRotation;
             }
 
-            else
+            /*
+            foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
             {
-                angle.transform.localRotation = Quaternion.Euler(new Vector3(
-                                                angle.transform.localRotation.x, 
-                                                angle.transform.localRotation.y, 
-                                                -NewAngle(deviceLimits[0], deviceLimits[1])));
-                if (angle.tag.Contains("Child"))
+                // ChildRotateInverse
+                if (angle.tag.Contains("Inverse"))
                 {
-                    rightWing = angle.transform.GetChild(0);
+                    if (angle.tag.Contains("Child"))
+                    {
+                        angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                    angle.transform.localRotation.x,
+                                                    angle.transform.localRotation.y, selectedShape.GetComponent<dockPreset>().shapes[0].transform.rotation.z));
+                    }
+
+                }
+
+                // Rotate
+                else
+                {
+                    angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                    angle.transform.localRotation.x,
+                                                    angle.transform.localRotation.y,
+                                                    -NewAngle(deviceLimits[0], deviceLimits[1])));
+                    // Rotate Child
+                    if (angle.tag.Contains("Child"))
+                    {
+                        angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                    angle.transform.localRotation.x,
+                                                    angle.transform.localRotation.y,
+                                                    -NewAngle(deviceLimits[0], deviceLimits[1])));
+                    }
                 }
             }
+            */
             
         }
 
-        // Dock shape collision fixer
-        while (Vector3.Distance(leftWing.position, rightWing.position) < dockPartSeperation)
+        //// RANDOM DOCK SHAPES
+        else
         {
+            // random dock reorientation
+            currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                                                    NewAngle(180f, -180f),
+                                                                                    NewAngle(180f, -180f),
+                                                                                    NewAngle(180f, -180f)));
+
+            //// NEW
             foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
             {
-                
                 if (angle.tag.Contains("Inverse"))
                 {
                     if (angle.tag.Contains("Child"))
@@ -218,19 +281,15 @@ public class dataRecordingController : MonoBehaviour {
                         rightWing = angle.transform.GetChild(0);
                     }
                 }
-                
+
             }
-        }
 
-        //// OLD
-        /*
-        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
-        {
-
-            foreach (GameObject otherAngle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+            // Dock shape collision fixer
+            while (Vector3.Distance(leftWing.position, rightWing.position) < dockPartSeperation)
             {
-                while (Vector3.Distance(angle.transform.GetChild(0).position, otherAngle.transform.GetChild(0).position) < 1.0f)
+                foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
                 {
+
                     if (angle.tag.Contains("Inverse"))
                     {
                         if (angle.tag.Contains("Child"))
@@ -255,10 +314,12 @@ public class dataRecordingController : MonoBehaviour {
                             rightWing = angle.transform.GetChild(0);
                         }
                     }
+
                 }
             }
         }
-        */
+        
+
     }
 
     // Test Dock Shape

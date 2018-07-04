@@ -14,8 +14,6 @@ public class ModelMap : MonoBehaviour {
     public GameObject GameObject;
 
     public GameObject[] Device = new GameObject[4];
-
-    public GameObject[] Models = new GameObject[6];
     private int[] random = new int[6] { 0, 1, 2, 3, 4, 5};
 
     private float[] difference = new float[4];
@@ -43,22 +41,6 @@ public class ModelMap : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        //for (int i = 6; i < 6; i++)
-        //{
-        //    //int number = Random.Range(0, 5);
-
-        //    random[i] = i;
-        //}
-
-        //System.Random r = new System.Random();
-
-        //random = random.OrderBy(x => r.Next()).ToArray();
-
-        for (int i = 0; i < 6; i++)
-        {
-            Models[i].SetActive(false);
-        }
-
         Mapped = false;
     }
 	
@@ -72,12 +54,12 @@ public class ModelMap : MonoBehaviour {
 
 
         if (Input.GetKeyDown("v"))
-            {
-                posToggle++;
-                posToggle = posToggle % 2;
+        {
+            posToggle++;
+            posToggle = posToggle % 2;
 
-                if (posToggle == 0)
-                {
+            if (posToggle == 0)
+            {
 
                 if(counter == 1)
                 {
@@ -91,9 +73,6 @@ public class ModelMap : MonoBehaviour {
                 print("counter " + counter);
                 print("Model Number " + random[counter]);
 
-                Models[random[counter]].SetActive(true);
-                Models[random[counter]].transform.position = new Vector3(0, 2, 0);
-
                 for (int i = 0; i < 4; i++)
                 {
                     Color color = Device[i].GetComponent<Renderer>().material.color;
@@ -106,9 +85,9 @@ public class ModelMap : MonoBehaviour {
 
                 //Models[random[counter]].GetComponent<Renderer>().material.SetColor("_Color", color2);
             }
-                if(posToggle == 1)
-                {
-                   Models[random[counter]].SetActive(false);
+
+            if(posToggle == 1)
+            {
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -118,7 +97,7 @@ public class ModelMap : MonoBehaviour {
                     Device[i].GetComponent<Renderer>().material.SetColor("_Color", color);
                 }
             }
-            }
+        }
         
 
       
@@ -175,10 +154,6 @@ public class ModelMap : MonoBehaviour {
             //RotateObject(bendValue / 2);
 
 
-            //Models[random[counter]].transform.rotation = newimu;
-            Models[random[counter]].transform.rotation = Quaternion.identity;
-
-
         }
     }
 
@@ -189,7 +164,6 @@ public class ModelMap : MonoBehaviour {
 
         float zAngleChange = zAngle - zAnglePrev;
 
-        Models[random[counter]].transform.Rotate(zAngleChange, 0, 0, Space.Self);
         zAnglePrev = zAngle;
     }
 }

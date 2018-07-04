@@ -124,6 +124,10 @@ public class dataRecorder : MonoBehaviour {
                 stopWriting = true;
             }
 
+            // Create a new test when a test finishes & creates a new dock shape for that new test
+            this.GetComponentInParent<dataRecordingController>().NewTest();
+            this.GetComponentInParent<dataRecordingController>().NewDockShape();
+
             anglesRecorded = true;
         }
     }
@@ -222,7 +226,6 @@ public class dataRecorder : MonoBehaviour {
 
 
         ////+++ ADD RECORDED ANGLE LINES [NEW]  
-        
         /// FIRST ANGLES LINE
         allData.columnNames.Add("Frames");
         foreach (GameObject angle in angleObjects)
@@ -232,7 +235,8 @@ public class dataRecorder : MonoBehaviour {
         allData.columnNames.Add("Docking z");
 
         /// ADD ANGLE DATA
-        textLog.exportedText += textTableCompiler.FormatTable(allData, true, allData.columnNames, textLog.cellSeperatorType, "\n");
+        textLog.exportedText += textTableCompiler.FormatTable(allData, true, 
+                                                            allData.columnNames, textLog.cellSeperatorType, "\n");
 
         /// FIRST CORRECT ANGLE LINE
         textLog.exportedText += "\n";

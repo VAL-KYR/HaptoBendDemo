@@ -15,7 +15,7 @@ public class dataRecordingController : MonoBehaviour {
     public List<GameObject> tests = new List<GameObject>();
     public GameObject currTest;
 
-    public bool randomDock = false;
+    bool randomDock = false;
     public List<GameObject> dockPresets = new List<GameObject>();
     
     public Vector2 deviceLimits;

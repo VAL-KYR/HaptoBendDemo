@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System.IO;
 
@@ -38,7 +39,6 @@ public class dataRecorder : MonoBehaviour {
         public float[] currAngles = new float[numberOfAngles];
         public float[] oversteer = new float[numberOfAngles];
         public float[] shapeRot = new float[3];
-        public List<string> anglesOverTime;
     }
     public AngleSummary angleSummary = new AngleSummary();
 
@@ -74,14 +74,6 @@ public class dataRecorder : MonoBehaviour {
     //+++ Mass Table Compiler Method
     //+++ Main Table
     public DataTable allData = new DataTable();
-    public Table allDataFormatted = new Table();
-    //+++ Sub Tables
-    //public Table topHeader = new Table();
-    //public Table accuracyResults = new Table();
-    //public Table timeResults = new Table();
-    //public Table precisionResults = new Table();
-    //public Table efficiencyResults = new Table();
-    //public Table botFooter = new Table();
 
     // Start
     void Start() {
@@ -91,16 +83,6 @@ public class dataRecorder : MonoBehaviour {
         // Clear File before using
         fileEditor.Clear(textLog.path);
         textLog.exportedText = "";
-
-        //+++ Generic list creating code 
-        //+++ Impliment with data write/read to consolidate code below in ExportData()
-        //+++ Create variables that set the sizes of 5 and 5
-        //allData = textTableCompiler.CombineTables(topHeader, accuracyResults, timeResults, precisionResults, efficiencyResults, botFooter);
-        //textTableCompiler.FormatTable();
-        //fileEditor.Append(textLog.path, textTableCompiler.FormatTable(allData, textLog.cellSeperatorType, "\n"));
-
-        // Read the file before starting any testing
-        //fileEditor.UpdateEditor(textLog.path, textLog.fileName);
     }
 
     // Update
@@ -128,6 +110,9 @@ public class dataRecorder : MonoBehaviour {
             // Calculate final efficiency results from data tables
             efficiency.completionTime = NiceTimeFromSeconds(efficiency.secondsTaken);
             efficiency.rawCompletionTime = RawTimeFromSeconds(efficiency.secondsTaken);
+
+            // Analyse Data
+            AnalyseData();
 
             // Export Report
             ExportData();
@@ -219,49 +204,9 @@ public class dataRecorder : MonoBehaviour {
     // Take total angles recorded every second and compile into single line array of angles in time increments
     void AngleRecord()
     {
-        string totalAnglesLine = "";
-
-        for (int i = 0; i < angleSummary.currAngles.Length; i++)
-        {
-            //+++ set column data for the current row in table
-            if (allData.col.Count < angleSummary.currAngles.Length)
-            {
-                allData.col.Add(angleSummary.currAngles[i]);
-            }
-            else
-            {
-                allData.col[i] = angleSummary.currAngles[i];
-            }
-
-            // current line of data for text file
-            totalAnglesLine += angleSummary.currAngles[i];
-
-            // tab between each angle data to seperate into columns
-            if (i < angleSummary.currAngles.Length - 1)
-            {
-                totalAnglesLine += textLog.cellSeperatorType;
-            }
-
-            
-        }
-
-
-        //+++ this col list being sent clearly has the correct data... what's going on?
-        List<float> temp = allData.col;
-        foreach (float cell in allData.col)
-        {
-            Debug.Log("First access " + cell);
-        }
-
+        ////+++ ADD RECORDED ANGLE LINES [NEW]      
         //+++ Add to official Data Table for Angles
-        //??? This is collapsing all my rows into being the same kind of data even before the textTableCompiler
-        // this is spooky coding I'm calling it here
-        // maybe this is the wrong function and it isn't grabbing angles every frame somehow?
-        // or that allData.col is going static somehow?
-        allData.row.Add(temp);
-
-        // Send total row of data to File summary 
-        angleSummary.anglesOverTime.Add(totalAnglesLine);
+        allData.row.Add(angleSummary.currAngles.ToList());       
     }
 
 
@@ -275,68 +220,19 @@ public class dataRecorder : MonoBehaviour {
         fileEditor.Clear(textLog.path);
         textLog.exportedText = "";
 
-        /// FIRST ANGLES LINE
-        textLog.exportedText += "Frames" + textLog.cellSeperatorType;
-        for (int i = 0; i < angleSummary.currAngles.Length; i++)
-        {
-            if (i < angleSummary.currAngles.Length - angleSummary.shapeRot.Length)
-            {
-                textLog.exportedText += angleObjects[i].name;
-            }
-            else
-            {
-                if (i == angleSummary.currAngles.Length - 3)
-                {
-                    textLog.exportedText += "Docking x";
-                }
-                else if (i == angleSummary.currAngles.Length - 2)
-                {
-                    textLog.exportedText += "Docking y";
-                }
-                else if (i == angleSummary.currAngles.Length - 1)
-                {
-                    textLog.exportedText += "Docking z";
-                }
-            }
 
-
-            // tab between each angle data to seperate into columns
-            if (i < angleSummary.currAngles.Length - 1)
-            {
-                textLog.exportedText += textLog.cellSeperatorType;
-            }
-        }
-
-        /*
-        //+++ am I just accessing the data wrong via the rows?
-        foreach (List<float> row in allData.row)
-            foreach (float col in row)
-                Debug.Log("Second access " + col);
-
-        //+++ hmmmm yeah I am somehow, maybe the data is collapsed in the row adding?
-        for (int x = 0; x < allData.row.Count; x++)
-        {
-            for (int y = 0; y < allData.col.Count; y++)
-            {
-                Debug.Log("Third access " + allData.row[x][y]);
-            }
-        }
-        */
-
-        ////+++ ADD RECORDED ANGLE LINES [NEW]
-        //+++ this is probably fine
-        allDataFormatted = textTableCompiler.TableDataToTextTable(allData);
+        ////+++ ADD RECORDED ANGLE LINES [NEW]  
         
-        //+++ this is fine
-        string angleDataTestString = textTableCompiler.FormatTable(allDataFormatted, textLog.cellSeperatorType, "\n");
-        textLog.exportedText += angleDataTestString;
+        /// FIRST ANGLES LINE
+        allData.columnNames.Add("Frames");
+        foreach (GameObject angle in angleObjects)
+            allData.columnNames.Add(angle.name);
+        allData.columnNames.Add("Docking x");
+        allData.columnNames.Add("Docking y");
+        allData.columnNames.Add("Docking z");
 
-        /// Angle line by line output [OLD]
-        /// RECORDED ANGLE LINES
-        for (int i = 0; i < angleSummary.anglesOverTime.Count; i++)
-        {
-            textLog.exportedText += "\n" + i + textLog.cellSeperatorType + angleSummary.anglesOverTime[i];
-        }
+        /// ADD ANGLE DATA
+        textLog.exportedText += textTableCompiler.FormatTable(allData, true, allData.columnNames, textLog.cellSeperatorType, "\n");
 
         /// FIRST CORRECT ANGLE LINE
         textLog.exportedText += "\n";
@@ -549,6 +445,12 @@ public class dataRecorder : MonoBehaviour {
 #if UNITY_EDITOR
         fileEditor.UpdateEditor(textLog.path, textLog.fileName);
 #endif
+    }
+
+    //// Analyse Data ////
+    public void AnalyseData()
+    {
+
     }
 
     //// FINAL RESULTS MATH ////

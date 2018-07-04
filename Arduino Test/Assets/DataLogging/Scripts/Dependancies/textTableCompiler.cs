@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -10,6 +11,7 @@ public static class textTableCompiler {
 
     //// TABLE OPERATIONS ////
     //+++ CREATE MASS DATA TABLE
+    /*
     public static Table CombineTables(params Table[] subTables)
     {
         /// data compiled into a generic table
@@ -77,56 +79,77 @@ public static class textTableCompiler {
 
     }
 
-
-    //+++ MASS TEXT FORMATTING
-    public static string FormatTable(Table table, string cellSeparator, string lineSeparator)
-    {
-        // return string
-        string formattedLine = "";
-
-        /// data sent to the export string
-        foreach (List<string> row in table.row)
-        {
-            foreach (string col in row)
-            {
-                formattedLine += col + cellSeparator;
-            }
-
-            formattedLine += lineSeparator;
-        }
-
-        return formattedLine;
-    }
-
     //+++ MASS DATA TO TEXT COVERSION
+    // this is borken and can't initialize a table properly?
     public static Table TableDataToTextTable(DataTable data)
     {
         Table formatted = new Table();
 
         formatted.row = new List<List<string>>(data.row.Count);
-        formatted.col = new List<string>(data.col.Count);
 
-        foreach (List<float> rows in data.row)
+        foreach (List<float> row in data.row)
         {
-            formatted.col.Clear();
-
-            foreach (float cols in rows)
-            {
-                formatted.col.Add("0");
-            }
-
-            formatted.row.Add(formatted.col);
+            formatted.row.Add(new List<string>(data.row[0].Count));
         }
-        
+
         for (int rows = 0; rows < data.row.Count; rows++)
         {
-            for (int cols = 0; cols < data.col.Count; cols++)
+            formatted.row.Add(new List<string>(data.row[rows].Count));
+
+            for (int cell = 0; cell < data.row[rows].Count; cell++)
             {
-                formatted.row[rows][cols] = data.row[rows][cols].ToString();
+                formatted.row[rows][cell] = data.row[rows][cell].ToString();
             }
         }
-        
 
         return formatted;
+    }
+    
+    */
+
+
+
+    //+++ MASS TEXT FORMATTING
+    public static string FormatTable(DataTable table, bool rowCountHeader, List<string> colNames, string cellSeparator, string lineSeparator)
+    {
+        // return string
+        string formattedLine = "";
+        int rowCount = 0;
+
+        // Start new data on a new line always
+        formattedLine += lineSeparator;
+
+        // if we're using column names add them
+        if (colNames != null)
+        {
+            // Column Names in header
+            foreach (string header in colNames)
+            {
+                formattedLine += header + cellSeparator;
+            }
+
+            // New Line before data
+            formattedLine += lineSeparator;
+        }
+
+        /// data sent to the export string
+        foreach (List<float> row in table.row)
+        {
+            if (rowCountHeader)
+            {
+                formattedLine += rowCount + cellSeparator;
+            }
+
+            foreach (float cell in row)
+            {
+                formattedLine += cell + cellSeparator;
+            }
+
+            formattedLine += lineSeparator;
+
+            rowCount++;
+        }
+
+        return formattedLine;
     }
 }

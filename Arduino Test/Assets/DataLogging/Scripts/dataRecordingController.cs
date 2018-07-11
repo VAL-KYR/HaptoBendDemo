@@ -12,12 +12,12 @@ public class dataRecordingController : MonoBehaviour {
     public string filePrefix = "Report_Raw_";
     public string filePath = "Assets/DataLogging/Reports/";
     public GameObject testObject;
-    public List<GameObject> tests = new List<GameObject>();
+    public List<GameObject> tests;
     public GameObject currTest;
 
     bool randomDock = false;
     public List<GameObject> dockPresets = new List<GameObject>();
-    public GameObject selectedDockPreset = new GameObject();
+    public GameObject selectedDockPreset;
     public GameObject lastDockPreset;
     
     public Vector2 deviceLimits;

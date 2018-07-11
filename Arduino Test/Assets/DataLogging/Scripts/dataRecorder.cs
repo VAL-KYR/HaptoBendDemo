@@ -74,6 +74,8 @@ public class dataRecorder : MonoBehaviour {
     //+++ Mass Table Compiler Method
     //+++ Main Table
     public DataTable allData = new DataTable();
+    public DataTable allDataMV = new DataTable();
+    public DataTable allDataTRE = new DataTable();
 
     // Start
     void Start() {
@@ -110,9 +112,6 @@ public class dataRecorder : MonoBehaviour {
             // Calculate final efficiency results from data tables
             efficiency.completionTime = NiceTimeFromSeconds(efficiency.secondsTaken);
             efficiency.rawCompletionTime = RawTimeFromSeconds(efficiency.secondsTaken);
-
-            // Analyse Data
-            AnalyseData();
 
             // Export Report
             ExportData();
@@ -237,6 +236,24 @@ public class dataRecorder : MonoBehaviour {
         /// ADD ANGLE DATA
         textLog.exportedText += textTableCompiler.FormatTable(allData, true, 
                                                             allData.columnNames, textLog.cellSeperatorType, "\n");
+
+        
+        // Analyse Data
+        AnalyseData();
+
+        /// FIRST MV ANGLES LINE
+        allDataMV.columnNames.Add("Angle MV instances");
+
+        /// ADD MV ANGLE DATA
+        textLog.exportedText += textTableCompiler.FormatTable(allDataMV, true, 
+                                                            allDataMV.columnNames, textLog.cellSeperatorType, "\n");
+
+        /// FIRST TRE ANGLES LINE
+        allDataTRE.columnNames.Add("Angle TRE instances");
+
+        /// ADD TRE ANGLE DATA
+        textLog.exportedText += textTableCompiler.FormatTable(allDataTRE, true, 
+                                                            allDataTRE.columnNames, textLog.cellSeperatorType, "\n");
 
         /// FIRST CORRECT ANGLE LINE
         textLog.exportedText += "\n";
@@ -455,6 +472,89 @@ public class dataRecorder : MonoBehaviour {
     public void AnalyseData()
     {
 
+        for(int col = 0; col < allData.row[0].Count; col++)
+        {
+            allDataMV.row.Add(AnalyseMV(allData, col));
+            allDataTRE.row.Add(AnalyseTRE(allData, col, 10));
+        }
+
+    }
+
+    // Target Re-Entry Calculator
+    public List<float> AnalyseTRE(DataTable data, int columnNumber, float zoneSize)
+    {
+        // is the angle close to what it's supposed to be within the zoneSize
+        // first time it enters it triggers the distance away from the zoneSize it left when leaving the +/- zoneSize
+        List<float> TRE = new List<float>();
+        List<bool> inZones = new List<bool>();
+        bool firstEntry = false;
+        bool inZone = false;
+
+        // for every row of frame search for the indicated column and analyse that data
+        for(int x = 0; x < data.row.Count; x++)
+        {
+            if(data.row[x][columnNumber] >= angleSummary.correctAngles[columnNumber] - zoneSize 
+            && data.row[x][columnNumber] <= angleSummary.correctAngles[columnNumber] + zoneSize)
+            {
+                inZone = true;
+            }
+            else
+            {
+                inZone = false;
+            }
+
+            inZones.Add(inZone);
+        }
+
+
+        bool currState = false;
+        bool lastState = false;
+
+        for(int x = 0; x < inZones.Count; x++)
+        {
+            currState = inZones[x];
+
+            if(currState != lastState)
+            {
+                // enter target
+                if(firstEntry)
+                {
+                    TRE.Add(x);
+                }
+
+                if(!firstEntry)
+                    firstEntry = true;
+            }
+
+            lastState = currState;
+        }
+
+
+        return new List<float>(7);
+    }
+
+    // Movement Variability (Turnback) Calculator
+    public List<float> AnalyseMV(DataTable data, int columnNumber)
+    {
+        List<float> MV = new List<float>();
+        float currData = 0;
+        float lastData = 0;
+
+        // for every row of frame search for the indicated column and analyse that data
+        for(int x = 0; x < data.row.Count; x++)
+        {
+            currData = data.row[x][columnNumber];
+
+            // if angle turnback (movement variability) has occurrred then record it
+            if(Mathf.Abs(currData) < Mathf.Abs(lastData))
+            {
+                MV.Add(Mathf.Abs(currData - lastData));
+            }
+
+            lastData = currData;
+        }
+
+        return MV;
     }
 
     //// FINAL RESULTS MATH ////

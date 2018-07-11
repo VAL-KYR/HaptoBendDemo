@@ -15,7 +15,8 @@ public class dataRecordingController : MonoBehaviour {
     public List<GameObject> tests;
     public GameObject currTest;
 
-    bool randomDock = false;
+    public bool randomDock = false;
+    public bool startWithNewDock = true;
     public List<GameObject> dockPresets = new List<GameObject>();
     public GameObject selectedDockPreset;
     public GameObject lastDockPreset;
@@ -51,7 +52,9 @@ public class dataRecordingController : MonoBehaviour {
         SetCurrTest();
         // set dock shape mode before first new dock shape
         lastDockPreset = selectedDockPreset;
-        NewDockShape();
+
+        if(startWithNewDock)
+            NewDockShape();
     }
 
     public void Update()

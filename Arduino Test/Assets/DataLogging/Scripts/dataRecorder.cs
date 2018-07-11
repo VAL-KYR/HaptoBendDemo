@@ -234,7 +234,7 @@ public class dataRecorder : MonoBehaviour {
         allData.columnNames.Add("Docking z");
 
         /// ADD ANGLE DATA
-        textLog.exportedText += textTableCompiler.FormatTable(allData, true, 
+        textLog.exportedText += textTableCompiler.FormatTable(allData, true, true, 
                                                             allData.columnNames, textLog.cellSeperatorType, "\n");
 
         
@@ -245,14 +245,14 @@ public class dataRecorder : MonoBehaviour {
         allDataMV.columnNames.Add("Angle MV instances");
 
         /// ADD MV ANGLE DATA
-        textLog.exportedText += textTableCompiler.FormatTable(allDataMV, true, 
+        textLog.exportedText += textTableCompiler.FormatTable(allDataMV, true, false, 
                                                             allDataMV.columnNames, textLog.cellSeperatorType, "\n");
 
         /// FIRST TRE ANGLES LINE
         allDataTRE.columnNames.Add("Angle TRE instances");
 
         /// ADD TRE ANGLE DATA
-        textLog.exportedText += textTableCompiler.FormatTable(allDataTRE, true, 
+        textLog.exportedText += textTableCompiler.FormatTable(allDataTRE, true, false, 
                                                             allDataTRE.columnNames, textLog.cellSeperatorType, "\n");
 
         /// FIRST CORRECT ANGLE LINE
@@ -474,8 +474,8 @@ public class dataRecorder : MonoBehaviour {
 
         for(int col = 0; col < allData.row[0].Count; col++)
         {
-            allDataMV.row.Add(AnalyseMV(allData, col));
-            allDataTRE.row.Add(AnalyseTRE(allData, col, 10));
+            allDataMV.row.Add(AnalyseMV(allData, col, 5));
+            allDataTRE.row.Add(AnalyseTRE(allData, col, 5));
         }
 
     }
@@ -489,6 +489,7 @@ public class dataRecorder : MonoBehaviour {
         List<bool> inZones = new List<bool>();
         bool firstEntry = false;
         bool inZone = false;
+        bool lastState = false;
 
         // for every row of frame search for the indicated column and analyse that data
         for(int x = 0; x < data.row.Count; x++)
@@ -496,45 +497,32 @@ public class dataRecorder : MonoBehaviour {
             if(data.row[x][columnNumber] >= angleSummary.correctAngles[columnNumber] - zoneSize 
             && data.row[x][columnNumber] <= angleSummary.correctAngles[columnNumber] + zoneSize)
             {
-                inZone = true;
+                if(firstEntry)
+                    inZone = true;
+
+                if(!firstEntry)
+                    firstEntry = true;
             }
             else
             {
                 inZone = false;
             }
 
+            if(lastState != inZone && firstEntry)
+            {
+                TRE.Add(x);
+            }
+
+            lastState = inZone;
+
             inZones.Add(inZone);
         }
 
-
-        bool currState = false;
-        bool lastState = false;
-
-        for(int x = 0; x < inZones.Count; x++)
-        {
-            currState = inZones[x];
-
-            if(currState != lastState)
-            {
-                // enter target
-                if(firstEntry)
-                {
-                    TRE.Add(x);
-                }
-
-                if(!firstEntry)
-                    firstEntry = true;
-            }
-
-            lastState = currState;
-        }
-
-
-        return new List<float>(7);
+        return TRE;
     }
 
     // Movement Variability (Turnback) Calculator
-    public List<float> AnalyseMV(DataTable data, int columnNumber)
+    public List<float> AnalyseMV(DataTable data, int columnNumber, float turnBackAngle)
     {
         List<float> MV = new List<float>();
         float currData = 0;
@@ -546,7 +534,7 @@ public class dataRecorder : MonoBehaviour {
             currData = data.row[x][columnNumber];
 
             // if angle turnback (movement variability) has occurrred then record it
-            if(Mathf.Abs(currData) < Mathf.Abs(lastData))
+            if(Mathf.Abs(Mathf.Abs(currData) - Mathf.Abs(lastData)) > turnBackAngle)
             {
                 MV.Add(Mathf.Abs(currData - lastData));
             }

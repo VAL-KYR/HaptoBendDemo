@@ -10,7 +10,7 @@ using UnityEditor;
 public static class textTableCompiler {
 
     //+++ MASS TEXT FORMATTING
-    public static string FormatTable(DataTable table, bool rowCountHeader, bool rowColPrint, List<string> colNames, string cellSeparator, string lineSeparator)
+    public static string FormatTable(DataTable table, bool rowCountHeader, bool rowAsHeaders, List<string> colNames, string cellSeparator, string lineSeparator)
     {
         // return string
         string formattedLine = "";
@@ -20,7 +20,7 @@ public static class textTableCompiler {
         formattedLine += lineSeparator;
 
         // if we're using column names add them
-        if (colNames != null)
+        if (colNames != null && !rowAsHeaders)
         {
             // Column Names in header
             foreach (string header in colNames)
@@ -39,6 +39,10 @@ public static class textTableCompiler {
             if (rowCountHeader)
             {
                 formattedLine += rowCount + cellSeparator;
+            }
+            if (rowAsHeaders)
+            {
+                formattedLine += colNames[rowCount] + cellSeparator;
             }
 
             foreach (float cell in row)

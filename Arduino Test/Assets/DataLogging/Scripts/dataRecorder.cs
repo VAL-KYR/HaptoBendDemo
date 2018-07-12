@@ -28,6 +28,10 @@ public class dataRecorder : MonoBehaviour {
         public string fileName = "Report_Raw";
         public string cellSeperatorType = "\t";
         public string exportedText;
+
+        public string testerName;
+        public string testTimestamp;
+        public string dockShapeStyle;
     }
     public TextLog textLog = new TextLog();
 
@@ -68,6 +72,8 @@ public class dataRecorder : MonoBehaviour {
         public float totalDifficulty;
         public float timePenalty = 1.0f;
         public float efficiency;
+        public float MV;
+        public int TRE;
     }
     public FinalSummary finalResults = new FinalSummary();
 
@@ -131,6 +137,11 @@ public class dataRecorder : MonoBehaviour {
         }
     }
 
+    ///// GET FILE METADATA ////
+    public void MetaData()
+    {
+        ///////////////////////////////////////////////////// Take from Controller as Editable Fields
+    }
     
 
 
@@ -215,6 +226,8 @@ public class dataRecorder : MonoBehaviour {
 
 
 
+
+
     //// WRITING DATA TO FILE ////
     // Create Single Mass String
     //+++ SPLIT THIS WHOLE THING INTO BASIC FLOATS AND STRINGS TO SEND TO THE SUB TABLES AND LATER COMPILE AS A EXPORT STRING
@@ -223,9 +236,12 @@ public class dataRecorder : MonoBehaviour {
         fileEditor.Clear(textLog.path);
         textLog.exportedText = "";
 
+        // Get and fill the test metadata
+        MetaData();
 
         ////+++ ADD RECORDED ANGLE LINES [NEW]  
         /// FIRST ANGLES LINE
+        textLog.exportedText += "\n" + "Angles Over Time";
         allData.columnNames.Add("Frames");
         foreach (GameObject angle in angleObjects)
             allData.columnNames.Add(angle.name);
@@ -234,7 +250,7 @@ public class dataRecorder : MonoBehaviour {
         allData.columnNames.Add("Docking z");
 
         /// ADD ANGLE DATA
-        textLog.exportedText += textTableCompiler.FormatTable(allData, true, true, 
+        textLog.exportedText += textTableCompiler.FormatTable(allData, true, false, 
                                                             allData.columnNames, textLog.cellSeperatorType, "\n");
 
         
@@ -242,18 +258,35 @@ public class dataRecorder : MonoBehaviour {
         AnalyseData();
 
         /// FIRST MV ANGLES LINE
-        allDataMV.columnNames.Add("Angle MV instances");
+        //allDataMV.columnNames.Add("Angle MV instances");
+        textLog.exportedText += "\n" + "\n" + "Angle MV instances";
+        foreach (GameObject angle in angleObjects)
+            allDataMV.columnNames.Add(angle.name);
+        allDataMV.columnNames.Add("Docking x");
+        allDataMV.columnNames.Add("Docking y");
+        allDataMV.columnNames.Add("Docking z");
 
         /// ADD MV ANGLE DATA
-        textLog.exportedText += textTableCompiler.FormatTable(allDataMV, true, false, 
+        textLog.exportedText += textTableCompiler.FormatTable(allDataMV, false, true, 
                                                             allDataMV.columnNames, textLog.cellSeperatorType, "\n");
 
+        textLog.exportedText += "Total MV Amount" + textLog.cellSeperatorType + finalResults.MV + "\n";
+
         /// FIRST TRE ANGLES LINE
-        allDataTRE.columnNames.Add("Angle TRE instances");
+        //allDataTRE.columnNames.Add("Angle TRE instances");
+        textLog.exportedText += "\n" + "\n" + "Angle TRE instances";
+        foreach (GameObject angle in angleObjects)
+            allDataTRE.columnNames.Add(angle.name);
+        allDataTRE.columnNames.Add("Docking x");
+        allDataTRE.columnNames.Add("Docking y");
+        allDataTRE.columnNames.Add("Docking z");
+        allDataMV.columnNames.Add("Total TRE Count");
 
         /// ADD TRE ANGLE DATA
-        textLog.exportedText += textTableCompiler.FormatTable(allDataTRE, true, false, 
+        textLog.exportedText += textTableCompiler.FormatTable(allDataTRE, false, true, 
                                                             allDataTRE.columnNames, textLog.cellSeperatorType, "\n");
+
+        textLog.exportedText += "Total TRE Count" + textLog.cellSeperatorType + finalResults.TRE + "\n";
 
         /// FIRST CORRECT ANGLE LINE
         textLog.exportedText += "\n";
@@ -429,7 +462,9 @@ public class dataRecorder : MonoBehaviour {
                                             "Shape Precision %" + textLog.cellSeperatorType +
                                             "Orientation Precision %" + textLog.cellSeperatorType +
                                             "Overall Precision %" + textLog.cellSeperatorType + 
-                                            "Efficiency %" + textLog.cellSeperatorType;
+                                            "Efficiency %" + textLog.cellSeperatorType + 
+                                            "Total MV" + textLog.cellSeperatorType + 
+                                            "Total TRE" + textLog.cellSeperatorType;
 
         // For GUI presentation
         string guiResults = "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
@@ -437,7 +472,9 @@ public class dataRecorder : MonoBehaviour {
                                         "Shape Precision %" + textLog.cellSeperatorType +
                                         "Orientation Precision %" + textLog.cellSeperatorType +
                                         "Overall Precision %" + textLog.cellSeperatorType +
-                                        "Efficiency %" + textLog.cellSeperatorType;
+                                        "Efficiency %" + textLog.cellSeperatorType + 
+                                        "Total MV" + textLog.cellSeperatorType + 
+                                        "Total TRE" + textLog.cellSeperatorType;
 
         /// SUMMARY LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType;
@@ -446,6 +483,8 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += finalResults.orientationPrecision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.MV + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.TRE + textLog.cellSeperatorType;
 
         // For GUI presentation
         guiResults += "\n" + textLog.cellSeperatorType;
@@ -454,6 +493,8 @@ public class dataRecorder : MonoBehaviour {
         guiResults += finalResults.orientationPrecision + textLog.cellSeperatorType;
         guiResults += finalResults.precision + textLog.cellSeperatorType;
         guiResults += finalResults.efficiency + textLog.cellSeperatorType;
+        guiResults += finalResults.MV + textLog.cellSeperatorType;
+        guiResults += finalResults.TRE + textLog.cellSeperatorType;
 
         // SEND DATA TO THE GUI
         this.transform.parent.GetComponent<testDataGUI>().testData.Add(this.name + " Results: " + "\n" + guiResults + "\n" + "\n" + "\n");
@@ -474,10 +515,14 @@ public class dataRecorder : MonoBehaviour {
 
         for(int col = 0; col < allData.row[0].Count; col++)
         {
-            allDataMV.row.Add(AnalyseMV(allData, col, 5));
+            //** scale the MV error by the device's initial twitch later 
+            allDataMV.row.Add(AnalyseMV(allData, col, 2));
+            //** scale the TRE zone by the device's initial twitch later
             allDataTRE.row.Add(AnalyseTRE(allData, col, 5));
         }
 
+        finalResults.MV = CountMV(allDataMV);
+        finalResults.TRE = CountTRE(allDataTRE);
     }
 
     // Target Re-Entry Calculator
@@ -521,6 +566,20 @@ public class dataRecorder : MonoBehaviour {
         return TRE;
     }
 
+    // Total number of TREs
+    public int CountTRE(DataTable data)
+    {
+        int numTRE = 0;
+
+        // count only non-buggy TREs and actual numbers
+        foreach (List<float> row in data.row)
+            foreach (float cell in row)
+                if (cell != null && cell != 1)
+                    numTRE++;
+
+        return numTRE;
+    }
+
     // Movement Variability (Turnback) Calculator
     public List<float> AnalyseMV(DataTable data, int columnNumber, float turnBackAngle)
     {
@@ -543,6 +602,19 @@ public class dataRecorder : MonoBehaviour {
         }
 
         return MV;
+    }
+
+    // Total amount of MV
+    public float CountMV(DataTable data)
+    {
+        float amountMV = 0;
+
+        foreach (List<float> row in data.row)
+            foreach (float cell in row)
+                if (cell != null)
+                    amountMV += cell;
+
+        return amountMV;
     }
 
     //// FINAL RESULTS MATH ////

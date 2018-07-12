@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System.IO;
+using System;
 
 public class dataRecorder : MonoBehaviour {
 
@@ -74,6 +75,10 @@ public class dataRecorder : MonoBehaviour {
         public float efficiency;
         public float MV;
         public int TRE;
+
+        public string testerName;
+        public string testTimestamp;
+        public string dockShapeStyle;
     }
     public FinalSummary finalResults = new FinalSummary();
 
@@ -95,6 +100,22 @@ public class dataRecorder : MonoBehaviour {
 
     // Update
     void Update() {
+        // Get the dockstyle so we know what it is before we write to finalResults
+        if (this.GetComponentInParent<dataRecordingController>().randomDock)
+        {
+            textLog.dockShapeStyle = "Random";
+        }
+        else
+        {
+            textLog.dockShapeStyle = "Presets";
+        }
+
+        // Get the testername from the dataController
+        textLog.testerName = this.GetComponentInParent<testDataGUI>().name;
+
+        // Get the real world time and assign to this textlog
+        DateTime now = DateTime.Now;
+        textLog.testTimestamp = now.ToString("yyyy-MM-dd_HH:mm:ss");
 
         // Always reading virtual objects position every frame
         GetAngles();
@@ -458,6 +479,9 @@ public class dataRecorder : MonoBehaviour {
 
         /// FIRST SUMMARY LINE
         textLog.exportedText += "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
+                                            "Tester Name" + textLog.cellSeperatorType +
+                                            "Time of Test" + textLog.cellSeperatorType +
+                                            "Dock Shape Style" + textLog.cellSeperatorType +
                                             "Time Taken" + textLog.cellSeperatorType +
                                             "Shape Precision %" + textLog.cellSeperatorType +
                                             "Orientation Precision %" + textLog.cellSeperatorType +
@@ -468,6 +492,9 @@ public class dataRecorder : MonoBehaviour {
 
         // For GUI presentation
         string guiResults = "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
+                                        "Tester Name" + textLog.cellSeperatorType +
+                                        "Time of Test" + textLog.cellSeperatorType +
+                                        "Dock Shape Style" + textLog.cellSeperatorType +
                                         "Time Taken" + textLog.cellSeperatorType +
                                         "Shape Precision %" + textLog.cellSeperatorType +
                                         "Orientation Precision %" + textLog.cellSeperatorType +
@@ -478,6 +505,10 @@ public class dataRecorder : MonoBehaviour {
 
         /// SUMMARY LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.testerName + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.testTimestamp + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.dockShapeStyle + textLog.cellSeperatorType;
+
         textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.shapePrecision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.orientationPrecision + textLog.cellSeperatorType;
@@ -488,6 +519,10 @@ public class dataRecorder : MonoBehaviour {
 
         // For GUI presentation
         guiResults += "\n" + textLog.cellSeperatorType;
+        guiResults += finalResults.testerName + textLog.cellSeperatorType;
+        guiResults += finalResults.testTimestamp + textLog.cellSeperatorType;
+        guiResults += finalResults.dockShapeStyle + textLog.cellSeperatorType;
+
         guiResults += efficiency.completionTime + textLog.cellSeperatorType;
         guiResults += finalResults.shapePrecision + textLog.cellSeperatorType;
         guiResults += finalResults.orientationPrecision + textLog.cellSeperatorType;
@@ -620,6 +655,11 @@ public class dataRecorder : MonoBehaviour {
     //// FINAL RESULTS MATH ////
     public void FinalResults()
     {
+        // Basic metadata
+        finalResults.testerName = textLog.testerName;
+        finalResults.testTimestamp = textLog.testTimestamp;
+        finalResults.dockShapeStyle = textLog.dockShapeStyle;
+
         // timetaken math
         finalResults.timeTaken = efficiency.secondsTaken;
 

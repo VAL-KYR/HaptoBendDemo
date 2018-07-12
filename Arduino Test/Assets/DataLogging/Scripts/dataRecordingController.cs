@@ -28,6 +28,8 @@ public class dataRecordingController : MonoBehaviour {
     public float inputTimer = 1f;
     float inputTime = 0f;
 
+    public string testerName; //** change this with a text field
+
 
     Transform rightWing;
     Transform leftWing;

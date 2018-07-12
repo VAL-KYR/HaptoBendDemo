@@ -19,6 +19,11 @@ public class dataSummary : MonoBehaviour {
     public class Summary : System.Object
     {
         public List<GameObject> tests;
+
+        public List<string> allTesterName;
+        public List<string> allTestTimestamp;
+        public List<string> allDockShapeStyle;
+
         public List<float> allTimeTaken;
         public List<float> allShapePrecision;
         public List<float> allOrientationPrecision;
@@ -27,6 +32,8 @@ public class dataSummary : MonoBehaviour {
         public List<float> allTotalDifficulty;
         public List<float> allMV;
         public List<float> allTRE;
+
+        public string testerName;
 
         public float timeTaken;
         public float shapePrecision;
@@ -68,6 +75,9 @@ public class dataSummary : MonoBehaviour {
     {
         /// FIRST SUMMARIES LINE
         textLog.exportedText += "All Report Averages" + textLog.cellSeperatorType + 
+                                "Tester Name" + textLog.cellSeperatorType + 
+                                "Test Timestamp" + textLog.cellSeperatorType + 
+                                "Dock Shape Style" + textLog.cellSeperatorType + 
                                 "Time Taken (avg)" + textLog.cellSeperatorType +
                                 "Shape Precision % (avg)" + textLog.cellSeperatorType +
                                 "Orientation Precision % (avg)" + textLog.cellSeperatorType +
@@ -84,6 +94,10 @@ public class dataSummary : MonoBehaviour {
 
             textLog.exportedText += textLog.cellSeperatorType;
 
+            textLog.exportedText += summary.allTesterName[i] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTestTimestamp[i] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allDockShapeStyle[i] + textLog.cellSeperatorType;
+
             textLog.exportedText += summary.allTimeTaken[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allShapePrecision[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allOrientationPrecision[i] + textLog.cellSeperatorType;
@@ -99,6 +113,7 @@ public class dataSummary : MonoBehaviour {
 
         /// FIRST SUMMARY SUM LINE
         textLog.exportedText += "Session Averages" + textLog.cellSeperatorType + 
+                                "Tester Name" + textLog.cellSeperatorType + 
                                 "Time Taken (avg)" + textLog.cellSeperatorType +
                                 "Shape Precision % (avg)" + textLog.cellSeperatorType +
                                 "Orientation Precision % (avg)" + textLog.cellSeperatorType +
@@ -109,6 +124,7 @@ public class dataSummary : MonoBehaviour {
                                 "TRE (avg)" + textLog.cellSeperatorType;
 
         string guiResults = "Session Averages" + textLog.cellSeperatorType + 
+                            "Tester Name" + textLog.cellSeperatorType + 
                             "Time Taken (avg)" + textLog.cellSeperatorType + 
                             "Shape Precision % (avg)" + textLog.cellSeperatorType +
                             "Orientation Precision % (avg)" + textLog.cellSeperatorType +
@@ -120,6 +136,7 @@ public class dataSummary : MonoBehaviour {
 
         /// SUMMARY SUM LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType + 
+                                summary.testerName + textLog.cellSeperatorType +
                                 summary.timeTaken + textLog.cellSeperatorType +
                                 summary.shapePrecision + textLog.cellSeperatorType +
                                 summary.orientationPrecision + textLog.cellSeperatorType +
@@ -130,6 +147,7 @@ public class dataSummary : MonoBehaviour {
                                 summary.TRE + textLog.cellSeperatorType;
 
         guiResults += "\n" + textLog.cellSeperatorType + 
+                            summary.testerName + textLog.cellSeperatorType +
                             summary.timeTaken + textLog.cellSeperatorType +
                             summary.shapePrecision + textLog.cellSeperatorType +
                             summary.orientationPrecision + textLog.cellSeperatorType +
@@ -160,6 +178,10 @@ public class dataSummary : MonoBehaviour {
         // skip the first test to prevent counting the blank next test
         for(int i = 0; i < summary.tests.Count - 1; i++)
         {
+            summary.allTesterName.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.testerName);
+            summary.allTestTimestamp.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.testTimestamp);
+            summary.allDockShapeStyle.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.dockShapeStyle);
+
             summary.allTimeTaken.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.timeTaken);
             summary.allShapePrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.shapePrecision);
             summary.allOrientationPrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.orientationPrecision);
@@ -171,6 +193,8 @@ public class dataSummary : MonoBehaviour {
         }
 
         // Get averages of all data
+        summary.testerName = summary.allTesterName[0];
+
         summary.timeTaken = unweightedAverage(summary.allTimeTaken);
         summary.shapePrecision = unweightedAverage(summary.allShapePrecision);
         summary.orientationPrecision = unweightedAverage(summary.allOrientationPrecision);

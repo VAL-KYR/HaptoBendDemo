@@ -7,6 +7,7 @@ public class testDataGUI : MonoBehaviour {
 
     public Font font;
     public int fontSize = 12;
+    public string name = "";
     Vector2 totalLineSpace = new Vector2(0, 0);
 
     public Vector2 scrollPosition;
@@ -101,6 +102,10 @@ public class testDataGUI : MonoBehaviour {
         GUILayout.Label(allTests);
 
         GUILayout.EndScrollView();
+
+        GUI.skin.label.fontSize = (int)(fontSize * 1.5f);
+        name = GUILayout.TextField(name, GUILayout.Width(200f));
+
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();

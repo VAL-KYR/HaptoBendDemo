@@ -24,6 +24,7 @@ public class dataSummary : MonoBehaviour {
         public List<float> allOrientationPrecision;
         public List<float> allPrecision;
         public List<float> allEfficiency;
+        public List<float> allTotalDifficulty;
         public List<float> allMV;
         public List<float> allTRE;
 
@@ -32,6 +33,7 @@ public class dataSummary : MonoBehaviour {
         public float orientationPrecision;
         public float precision;
         public float efficiency;
+        public float totalDifficulty;
         public float MV;
         public int TRE;
     }
@@ -70,7 +72,10 @@ public class dataSummary : MonoBehaviour {
                                 "Shape Precision % (avg)" + textLog.cellSeperatorType +
                                 "Orientation Precision % (avg)" + textLog.cellSeperatorType +
                                 "Overall Precision % (avg)" + textLog.cellSeperatorType + 
-                                "Efficiency % (avg)" + textLog.cellSeperatorType;
+                                "Efficiency % (avg)" + textLog.cellSeperatorType + 
+                                "Total Difficulty (avg)" + textLog.cellSeperatorType + 
+                                "MV (avg)" + textLog.cellSeperatorType + 
+                                "TRE (avg)" + textLog.cellSeperatorType;
 
         // skip the first test to prevent counting the blank next test
         for (int i = 0; i < summary.allTimeTaken.Count; i++)
@@ -84,6 +89,7 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += summary.allOrientationPrecision[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allPrecision[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allEfficiency[i] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTotalDifficulty[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allMV[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allTRE[i] + textLog.cellSeperatorType;
         }
@@ -98,6 +104,7 @@ public class dataSummary : MonoBehaviour {
                                 "Orientation Precision % (avg)" + textLog.cellSeperatorType +
                                 "Overall Precision % (avg)" + textLog.cellSeperatorType + 
                                 "Efficiency % (avg)" + textLog.cellSeperatorType + 
+                                "Total Difficulty (avg)" + textLog.cellSeperatorType + 
                                 "MV (avg)" + textLog.cellSeperatorType + 
                                 "TRE (avg)" + textLog.cellSeperatorType;
 
@@ -107,6 +114,7 @@ public class dataSummary : MonoBehaviour {
                             "Orientation Precision % (avg)" + textLog.cellSeperatorType +
                             "Overall Precision % (avg)" + textLog.cellSeperatorType +
                             "Efficiency % (avg)" + textLog.cellSeperatorType + 
+                            "Total Difficulty (avg)" + textLog.cellSeperatorType + 
                             "MV (avg)" + textLog.cellSeperatorType + 
                             "TRE (avg)" + textLog.cellSeperatorType;
 
@@ -117,6 +125,7 @@ public class dataSummary : MonoBehaviour {
                                 summary.orientationPrecision + textLog.cellSeperatorType +
                                 summary.precision + textLog.cellSeperatorType + 
                                 summary.efficiency + textLog.cellSeperatorType + 
+                                summary.totalDifficulty + textLog.cellSeperatorType + 
                                 summary.MV + textLog.cellSeperatorType + 
                                 summary.TRE + textLog.cellSeperatorType;
 
@@ -126,6 +135,7 @@ public class dataSummary : MonoBehaviour {
                             summary.orientationPrecision + textLog.cellSeperatorType +
                             summary.precision + textLog.cellSeperatorType + 
                             summary.efficiency + textLog.cellSeperatorType + 
+                            summary.totalDifficulty + textLog.cellSeperatorType + 
                             summary.MV + textLog.cellSeperatorType + 
                             summary.TRE + textLog.cellSeperatorType;
 
@@ -155,6 +165,7 @@ public class dataSummary : MonoBehaviour {
             summary.allOrientationPrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.orientationPrecision);
             summary.allPrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.precision);
             summary.allEfficiency.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.efficiency);
+            summary.allTotalDifficulty.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.totalDifficulty);
             summary.allMV.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.MV);
             summary.allTRE.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.TRE);
         }
@@ -165,6 +176,7 @@ public class dataSummary : MonoBehaviour {
         summary.orientationPrecision = unweightedAverage(summary.allOrientationPrecision);
         summary.precision = unweightedAverage(summary.allPrecision);
         summary.efficiency = unweightedAverage(summary.allEfficiency);
+        summary.totalDifficulty = unweightedAverage(summary.allTotalDifficulty);
         summary.MV = unweightedAverage(summary.allMV);
         summary.TRE = (int)unweightedAverage(summary.allTRE);
     }

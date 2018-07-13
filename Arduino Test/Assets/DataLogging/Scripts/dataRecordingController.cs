@@ -25,6 +25,8 @@ public class dataRecordingController : MonoBehaviour {
     public float dockPartSeperation = 0.8f;
     public string currAction = "Loaded";
 
+    public bool errorGathered = false;
+
     public float inputTimer = 1f;
     float inputTime = 0f;
 

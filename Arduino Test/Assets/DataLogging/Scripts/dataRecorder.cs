@@ -57,7 +57,7 @@ public class dataRecorder : MonoBehaviour {
         public List<float> rawCompletionTime;
         public float[] precision = new float[numberOfAngles];
 
-        public int deviceTwitchSampleSize = 30;
+        public int deviceTwitchSampleSize = 10;
         public int deviceTwitchCounter = 0;
         public DataTable deviceTwitch = new DataTable();
     }
@@ -128,19 +128,26 @@ public class dataRecorder : MonoBehaviour {
         // Always reading virtual objects position every frame
         GetAngles();
 
-        /*
         // Accumulate data from GetAngles to gather twitch data
-        if (efficiency.deviceTwitchCounter <= efficiency.deviceTwitchSampleSize)
+        if (efficiency.deviceTwitchCounter < efficiency.deviceTwitchSampleSize 
+        && !this.GetComponentInParent<dataRecordingController>().errorGathered)
         {
             efficiency.deviceTwitch.row.Add(angleSummary.currAngles.ToList());
 
             efficiency.deviceTwitchCounter++;
+
+            if (efficiency.deviceTwitchCounter == efficiency.deviceTwitchSampleSize)
+            {
+                finalResults.deviceError = Mathf.Abs(DeviceTwichCalibration(efficiency.deviceTwitch));
+
+                // This line assures the error is only gathered once per session
+                this.GetComponentInParent<dataRecordingController>().errorGathered = true;
+#if UNITY_EDITOR
+                Debug.Log("device error = " + finalResults.deviceError);
+#endif
+            }
         }
-        else if (efficiency.deviceTwitchCounter == efficiency.deviceTwitchSampleSize)
-        {
-            finalResults.deviceError = DeviceTwichCalibration(efficiency.deviceTwitch);
-        }
-        */
+        
 
         // you can call AngleRecord seperately (for testing the script only)
         if (recordAngles && !stopWriting)
@@ -189,7 +196,38 @@ public class dataRecorder : MonoBehaviour {
     //// Device Twitch Calibration ////
     float DeviceTwichCalibration(DataTable deviceData)
     {
-        return 5f;
+        List<float> angleSums = new List<float>(numberOfAngles);
+        List<float> angleAvgs = new List<float>(numberOfAngles);
+
+        for (int i = 0; i < numberOfAngles; i++)
+        {
+            angleSums.Add(0);
+            angleAvgs.Add(0);
+        }
+
+        float angleAvg = 0;
+
+        for (int x = 0; x < deviceData.row.Count; x++)
+        {
+            for (int y = 0; y < deviceData.row[x].Count; y++)
+            {
+                angleSums[y] += (deviceData.row[x][y]);
+            }
+        }
+
+        for (int i = 0; i < angleSums.Count; i++)
+        {
+            angleAvgs.Add(angleSums[i] / deviceData.row.Count);
+        }
+
+        for (int i = 0; i < angleAvgs.Count; i++)
+        {
+            angleAvg += angleAvgs[i];
+        }
+
+        angleAvg = angleAvg / angleAvgs.Count;
+
+        return angleAvg;
     }
 
     //// READ ANGLE DATA ////
@@ -576,10 +614,10 @@ public class dataRecorder : MonoBehaviour {
 
         for(int col = 0; col < allData.row[0].Count; col++)
         {
-            //** scale the MV error by the device's initial twitch later 
-            allDataMV.row.Add(AnalyseMV(allData, col, 2));
-            //** scale the TRE zone by the device's initial twitch later
-            allDataTRE.row.Add(AnalyseTRE(allData, col, 5));
+            // scale the MV error by the device's initial error (twitch)
+            allDataMV.row.Add(AnalyseMV(allData, col, 2 + finalResults.deviceError));
+            // scale the TRE zone by the device's initial error (twitch)
+            allDataTRE.row.Add(AnalyseTRE(allData, col, 5 + finalResults.deviceError));
         }
 
         finalResults.MV = CountMV(allDataMV);

@@ -56,6 +56,10 @@ public class dataRecorder : MonoBehaviour {
         public string completionTime;
         public List<float> rawCompletionTime;
         public float[] precision = new float[numberOfAngles];
+
+        public int deviceTwitchSampleSize = 30;
+        public int deviceTwitchCounter = 0;
+        public DataTable deviceTwitch = new DataTable();
     }
     public Efficiency efficiency = new Efficiency();
 
@@ -71,8 +75,12 @@ public class dataRecorder : MonoBehaviour {
         // Three angles with 150 total possible bending in each joint + the total possible 180 difference with correctangle orientations
         public float maxAngleDifficulty = (3f * 150f) + (3f * 180f);
         public float totalDifficulty;
+        public float MVPenalty;
+        public float TREPenalty;
         public float timePenalty = 1.0f;
         public float efficiency;
+
+        public float deviceError;
         public float MV;
         public int TRE;
 
@@ -120,6 +128,20 @@ public class dataRecorder : MonoBehaviour {
         // Always reading virtual objects position every frame
         GetAngles();
 
+        /*
+        // Accumulate data from GetAngles to gather twitch data
+        if (efficiency.deviceTwitchCounter <= efficiency.deviceTwitchSampleSize)
+        {
+            efficiency.deviceTwitch.row.Add(angleSummary.currAngles.ToList());
+
+            efficiency.deviceTwitchCounter++;
+        }
+        else if (efficiency.deviceTwitchCounter == efficiency.deviceTwitchSampleSize)
+        {
+            finalResults.deviceError = DeviceTwichCalibration(efficiency.deviceTwitch);
+        }
+        */
+
         // you can call AngleRecord seperately (for testing the script only)
         if (recordAngles && !stopWriting)
         {
@@ -164,7 +186,11 @@ public class dataRecorder : MonoBehaviour {
         ///////////////////////////////////////////////////// Take from Controller as Editable Fields
     }
     
-
+    //// Device Twitch Calibration ////
+    float DeviceTwichCalibration(DataTable deviceData)
+    {
+        return 5f;
+    }
 
     //// READ ANGLE DATA ////
     void GetAngles()
@@ -685,14 +711,17 @@ public class dataRecorder : MonoBehaviour {
         angleSummary.correctAngleSum = Sum(0, corrAngles.Length, corrAngles);
         finalResults.angleDifficulty = angleSummary.correctAngleSum;
         finalResults.totalDifficulty = finalResults.angleDifficulty / finalResults.maxAngleDifficulty;
+        //10-20 -> 5-10 %
+        finalResults.TREPenalty = finalResults.TRE / 2;
+        //200-2000 -> 2-20 %
+        finalResults.MVPenalty = finalResults.MV / 100;
 
         // efficiency math (reduce the effect of timeTaken's reduction of the efficiency rating for better numbers)
         // finalResults.efficiency = finalResults.precision - (finalResults.timeTaken * (finalResults.timePenalty * finalResults.totalDifficulty));
         // new efficiency based on time penalty relative to angle distance needed to travel [scale time penalty for eff tweaking]
         finalResults.efficiency = 100f -
                                 (finalResults.timeTaken * (finalResults.timePenalty * finalResults.totalDifficulty));
-
-
+        finalResults.efficiency -= ((finalResults.TREPenalty + finalResults.MVPenalty) * finalResults.totalDifficulty);
     }
 
 

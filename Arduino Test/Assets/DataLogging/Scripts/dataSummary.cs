@@ -78,14 +78,14 @@ public class dataSummary : MonoBehaviour {
                                 "Tester Name" + textLog.cellSeperatorType + 
                                 "Test Timestamp" + textLog.cellSeperatorType + 
                                 "Dock Shape Style" + textLog.cellSeperatorType + 
-                                "Time Taken (avg)" + textLog.cellSeperatorType +
-                                "Shape Precision % (avg)" + textLog.cellSeperatorType +
-                                "Orientation Precision % (avg)" + textLog.cellSeperatorType +
-                                "Overall Precision % (avg)" + textLog.cellSeperatorType + 
-                                "Efficiency % (avg)" + textLog.cellSeperatorType + 
-                                "Total Difficulty (avg)" + textLog.cellSeperatorType + 
-                                "MV (avg)" + textLog.cellSeperatorType + 
-                                "TRE (avg)" + textLog.cellSeperatorType;
+                                "Time Taken" + textLog.cellSeperatorType +
+                                "Shape Precision %" + textLog.cellSeperatorType +
+                                "Orientation Precision %" + textLog.cellSeperatorType +
+                                "Overall Precision %" + textLog.cellSeperatorType + 
+                                "Efficiency %" + textLog.cellSeperatorType + 
+                                "Total Difficulty" + textLog.cellSeperatorType + 
+                                "MV" + textLog.cellSeperatorType + 
+                                "TRE" + textLog.cellSeperatorType;
 
         // skip the first test to prevent counting the blank next test
         for (int i = 0; i < summary.allTimeTaken.Count; i++)

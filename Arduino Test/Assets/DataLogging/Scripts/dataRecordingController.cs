@@ -16,8 +16,6 @@ public class dataRecordingController : MonoBehaviour {
     public List<GameObject> tests;
     public GameObject currTest;
 
-    public bool randomDock = false;
-    public bool pureAngles = true;
     public List<string> dockStyles = new List<string>(3);
     public string activeDockStyle = "";
 
@@ -112,13 +110,11 @@ public class dataRecordingController : MonoBehaviour {
             }
             if (Input.GetButton("DockStyle"))
             {
-                // Flip the randomDock
-                randomDock = !randomDock;
-                currAction = "Random Docks = " + randomDock;
+                // Instead of flipping dock style try cycling dock style 
+                activeDockStyle = NextDockStyle();
+                currAction = "Docks are " + activeDockStyle;
                 inputTime = 0f;
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
-
-                //** Instead of flipping dock style try cycling dock style 
             }
             if (Input.GetButton("SummarizeTests"))
             {
@@ -138,6 +134,13 @@ public class dataRecordingController : MonoBehaviour {
             {
                 ClearReports();
                 currAction = "All Reports Deleted";
+                inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
+            }
+            if (Input.GetButton("DeviceVisible"))
+            {
+                virtualDeviceVisible = !virtualDeviceVisible;
+                currAction = "Device Visible " + virtualDeviceVisible;
                 inputTime = 0f;
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
@@ -219,8 +222,8 @@ public class dataRecordingController : MonoBehaviour {
     {
 
         //////////// CREATE HUGE IF STATEMENT FOR PRESET DOCK SHAPES AND RANDOM ONES
-        //// PRESET DOCK SHAPES
-        if (!randomDock && !pureAngles)
+        //// PURE PRESETS
+        if (activeDockStyle == dockStyles[1])
         {
 
             // This could be cut out to remove randomness
@@ -247,8 +250,8 @@ public class dataRecordingController : MonoBehaviour {
             
         }
 
-        //// PURE ANGLE DOCK SHAPES [Rob Style]
-        else if (pureAngles && !randomDock)
+        //// LIMITED ANGLE GENERATIVE [Rob Style]
+        else if (activeDockStyle == dockStyles[2])
         {
             // random dock reorientation
             currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(
@@ -321,8 +324,8 @@ public class dataRecordingController : MonoBehaviour {
             }
         }
 
-        //// RANDOM DOCK SHAPES
-        else if (randomDock && !pureAngles)
+        //// RANDOM GENERATIVE DOCK SHAPES
+        else if (activeDockStyle == dockStyles[0])
         {
             // random dock reorientation
             currTest.GetComponent<dataRecorder>().dockShape.transform.localRotation = Quaternion.Euler(new Vector3(
@@ -463,6 +466,32 @@ public class dataRecordingController : MonoBehaviour {
         }
 
         return angle;
+    }
+
+    string NextDockStyle()
+    {
+        int index = 0;
+
+        // Get currents index
+        for (int i = 0; i < dockStyles.Count; i++) 
+        {
+            if (dockStyles[i] == activeDockStyle) 
+            {
+                index = i;
+            }
+        }
+
+        // if at end of list set index to first
+        if (index == dockStyles.Count - 1) 
+        {
+            index = 0;
+        }
+        else 
+        {
+            index++;
+        }
+        
+        return dockStyles[index];
     }
     
 }

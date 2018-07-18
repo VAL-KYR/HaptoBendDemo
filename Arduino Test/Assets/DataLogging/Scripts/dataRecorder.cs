@@ -33,6 +33,8 @@ public class dataRecorder : MonoBehaviour {
         public string testerName;
         public string testTimestamp;
         public string dockShapeStyle;
+
+        public bool deviceVisibility;
     }
     public TextLog textLog = new TextLog();
 
@@ -87,6 +89,8 @@ public class dataRecorder : MonoBehaviour {
         public string testerName;
         public string testTimestamp;
         public string dockShapeStyle;
+
+        public string deviceVisibility;
     }
     public FinalSummary finalResults = new FinalSummary();
 
@@ -109,14 +113,10 @@ public class dataRecorder : MonoBehaviour {
     // Update
     void Update() {
         // Get the dockstyle so we know what it is before we write to finalResults
-        if (this.GetComponentInParent<dataRecordingController>().randomDock)
-        {
-            textLog.dockShapeStyle = "Random";
-        }
-        else
-        {
-            textLog.dockShapeStyle = "Presets";
-        }
+        textLog.dockShapeStyle = this.GetComponentInParent<dataRecordingController>().activeDockStyle;
+
+        // Get the dock visibility 
+        textLog.deviceVisibility = this.GetComponentInParent<dataRecordingController>().virtualDeviceVisible;
 
         // Get the testername from the dataController
         textLog.testerName = this.GetComponentInParent<testDataGUI>().name;
@@ -546,6 +546,7 @@ public class dataRecorder : MonoBehaviour {
                                             "Tester Name" + textLog.cellSeperatorType +
                                             "Time of Test" + textLog.cellSeperatorType +
                                             "Dock Shape Style" + textLog.cellSeperatorType +
+                                            "Virtual Device Visible" + textLog.cellSeperatorType +
                                             "Time Taken" + textLog.cellSeperatorType +
                                             "Shape Precision %" + textLog.cellSeperatorType +
                                             "Orientation Precision %" + textLog.cellSeperatorType +
@@ -559,6 +560,7 @@ public class dataRecorder : MonoBehaviour {
                                         "Tester Name" + textLog.cellSeperatorType +
                                         "Time of Test" + textLog.cellSeperatorType +
                                         "Dock Shape Style" + textLog.cellSeperatorType +
+                                        "Virtual Device Visible" + textLog.cellSeperatorType +
                                         "Time Taken" + textLog.cellSeperatorType +
                                         "Shape Precision %" + textLog.cellSeperatorType +
                                         "Orientation Precision %" + textLog.cellSeperatorType +
@@ -572,6 +574,7 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += finalResults.testerName + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.testTimestamp + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.dockShapeStyle + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.deviceVisibility + textLog.cellSeperatorType;
 
         textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.shapePrecision + textLog.cellSeperatorType;
@@ -586,6 +589,7 @@ public class dataRecorder : MonoBehaviour {
         guiResults += finalResults.testerName + textLog.cellSeperatorType;
         guiResults += finalResults.testTimestamp + textLog.cellSeperatorType;
         guiResults += finalResults.dockShapeStyle + textLog.cellSeperatorType;
+        guiResults += finalResults.deviceVisibility + textLog.cellSeperatorType;
 
         guiResults += efficiency.completionTime + textLog.cellSeperatorType;
         guiResults += finalResults.shapePrecision + textLog.cellSeperatorType;
@@ -723,6 +727,7 @@ public class dataRecorder : MonoBehaviour {
         finalResults.testerName = textLog.testerName;
         finalResults.testTimestamp = textLog.testTimestamp;
         finalResults.dockShapeStyle = textLog.dockShapeStyle;
+        finalResults.deviceVisibility = textLog.deviceVisibility.ToString();
 
         // timetaken math
         finalResults.timeTaken = efficiency.secondsTaken;

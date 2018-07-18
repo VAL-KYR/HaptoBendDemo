@@ -44,10 +44,10 @@ public class testDataGUI : MonoBehaviour {
         GUI.TextArea(new Rect(0, 
                             0, 
                             20 * fontSize / 1.7f, 
-                            controlsList.Count * fontSize / 2.3f), 
+                            controlsList.Count * fontSize / 2.2f), 
                             allControls);
 
-        totalLineSpace.y += controlsList.Count * fontSize / 2.3f;
+        totalLineSpace.y += controlsList.Count * fontSize / 2.2f;
 
         // FetchAction();
         // Called from dataRecordingController every time a button is pressed
@@ -67,10 +67,10 @@ public class testDataGUI : MonoBehaviour {
         GUI.TextArea(new Rect(0, 
                             (totalLineSpace.y), 
                             15 * fontSize / 1.7f,
-                            actionList.Count * fontSize / 1.7f), 
+                            actionList.Count * fontSize / 1.5f), 
                             allActions);
 
-        totalLineSpace.y += (actionList.Count * fontSize / 1.7f) + 10f;
+        totalLineSpace.y += (actionList.Count * fontSize / 1.5f) + 10f;
 
         // Test List
         string allTests = "";
@@ -116,8 +116,6 @@ public class testDataGUI : MonoBehaviour {
     public void FetchAction(string action)
     {
         AddElement(actionList, action);
-
-
     }
 
     public void AddElement(List<string> list, string element)

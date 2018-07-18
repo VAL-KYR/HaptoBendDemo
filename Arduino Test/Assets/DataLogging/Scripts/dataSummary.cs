@@ -23,6 +23,7 @@ public class dataSummary : MonoBehaviour {
         public List<string> allTesterName;
         public List<string> allTestTimestamp;
         public List<string> allDockShapeStyle;
+        public List<string> allDeviceVisibility;
 
         public List<float> allTimeTaken;
         public List<float> allShapePrecision;
@@ -77,7 +78,8 @@ public class dataSummary : MonoBehaviour {
         textLog.exportedText += "All Report Averages" + textLog.cellSeperatorType + 
                                 "Tester Name" + textLog.cellSeperatorType + 
                                 "Test Timestamp" + textLog.cellSeperatorType + 
-                                "Dock Shape Style" + textLog.cellSeperatorType + 
+                                "Dock Shape Style" + textLog.cellSeperatorType +
+                                "Virtual Device Visible" + textLog.cellSeperatorType + 
                                 "Time Taken" + textLog.cellSeperatorType +
                                 "Shape Precision %" + textLog.cellSeperatorType +
                                 "Orientation Precision %" + textLog.cellSeperatorType +
@@ -97,6 +99,7 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += summary.allTesterName[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allTestTimestamp[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allDockShapeStyle[i] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allDeviceVisibility[i] + textLog.cellSeperatorType;
 
             textLog.exportedText += summary.allTimeTaken[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allShapePrecision[i] + textLog.cellSeperatorType;
@@ -181,6 +184,7 @@ public class dataSummary : MonoBehaviour {
             summary.allTesterName.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.testerName);
             summary.allTestTimestamp.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.testTimestamp);
             summary.allDockShapeStyle.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.dockShapeStyle);
+            summary.allDeviceVisibility.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.deviceVisibility);
 
             summary.allTimeTaken.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.timeTaken);
             summary.allShapePrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.shapePrecision);

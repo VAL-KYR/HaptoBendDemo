@@ -50,21 +50,17 @@ public class IMU : MonoBehaviour {
         qZ = Arduino.currentVals[6];
 
 
-    //qW = Arduino.currentVals[3];
-    //qY = Arduino.currentVals[4];
-    //qX = Arduino.currentVals[5];
-    //qZ = Arduino.currentVals[6];
+        //qW = Arduino.currentVals[3];
+        //qY = Arduino.currentVals[4];
+        //qX = Arduino.currentVals[5];
+        //qZ = Arduino.currentVals[6];
 
-    // Quaternion imu = new Quaternion(qW, qY, qZ, qX);
-    Quaternion imu = new Quaternion(qX, qZ, qY, qW);
+        // Quaternion imu = new Quaternion(qW, qY, qZ, qX);
+        Quaternion imu = new Quaternion(qX, qZ, qY, qW);
 
         if (Input.GetKeyDown("x"))
         {
-            callibrate++;
-            callibrate = callibrate % 2;
-            //imucap = new Quaternion(qW, qY, qZ, qX); ;
-            imucap = new Quaternion(qX, qZ, qY, qW);
-
+            Callibrate();
         }
 
         
@@ -87,11 +83,7 @@ public class IMU : MonoBehaviour {
 
         if (Input.GetKeyDown("z"))
         {
-            zCap = bendValue;
-
-            //Quaternion zero = Quaternion.Euler(0, 180, 0);
-
-            //transform.rotation = zero;
+            BendReset();
         }
 
 
@@ -129,6 +121,23 @@ public class IMU : MonoBehaviour {
         }
 
 
+    }
+
+    public void BendReset()
+    {
+        zCap = bendValue;
+
+        //Quaternion zero = Quaternion.Euler(0, 180, 0);
+
+        //transform.rotation = zero;
+    }
+
+    public void Callibrate()
+    {
+        callibrate++;
+        callibrate = callibrate % 2;
+        //imucap = new Quaternion(qW, qY, qZ, qX); ;
+        imucap = new Quaternion(qX, qZ, qY, qW);
     }
 
     //void RotateObject(float Value)

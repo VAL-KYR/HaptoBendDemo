@@ -100,7 +100,6 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += summary.allTestTimestamp[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allDockShapeStyle[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allDeviceVisibility[i] + textLog.cellSeperatorType;
-
             textLog.exportedText += summary.allTimeTaken[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allShapePrecision[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allOrientationPrecision[i] + textLog.cellSeperatorType;
@@ -126,17 +125,6 @@ public class dataSummary : MonoBehaviour {
                                 "MV (avg)" + textLog.cellSeperatorType + 
                                 "TRE (avg)" + textLog.cellSeperatorType;
 
-        string guiResults = "Session Averages" + textLog.cellSeperatorType + 
-                            "Tester Name" + textLog.cellSeperatorType + 
-                            "Time Taken (avg)" + textLog.cellSeperatorType + 
-                            "Shape Precision % (avg)" + textLog.cellSeperatorType +
-                            "Orientation Precision % (avg)" + textLog.cellSeperatorType +
-                            "Overall Precision % (avg)" + textLog.cellSeperatorType +
-                            "Efficiency % (avg)" + textLog.cellSeperatorType + 
-                            "Total Difficulty (avg)" + textLog.cellSeperatorType + 
-                            "MV (avg)" + textLog.cellSeperatorType + 
-                            "TRE (avg)" + textLog.cellSeperatorType;
-
         /// SUMMARY SUM LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType + 
                                 summary.testerName + textLog.cellSeperatorType +
@@ -148,6 +136,19 @@ public class dataSummary : MonoBehaviour {
                                 summary.totalDifficulty + textLog.cellSeperatorType + 
                                 summary.MV + textLog.cellSeperatorType + 
                                 summary.TRE + textLog.cellSeperatorType;
+
+        string guiResults = "Session Averages" + textLog.cellSeperatorType + 
+                            "Tester Name" + textLog.cellSeperatorType + 
+                            "Time Taken (avg)" + textLog.cellSeperatorType + 
+                            "Shape Precision % (avg)" + textLog.cellSeperatorType +
+
+                            "Orientation Precision % (avg)" + textLog.cellSeperatorType +
+                            "Overall Precision % (avg)" + textLog.cellSeperatorType +
+                            "Efficiency % (avg)" + textLog.cellSeperatorType + 
+
+                            "Total Difficulty (avg)" + textLog.cellSeperatorType + 
+                            "MV (avg)" + textLog.cellSeperatorType + 
+                            "TRE (avg)" + textLog.cellSeperatorType;
 
         guiResults += "\n" + textLog.cellSeperatorType + 
                             summary.testerName + textLog.cellSeperatorType +

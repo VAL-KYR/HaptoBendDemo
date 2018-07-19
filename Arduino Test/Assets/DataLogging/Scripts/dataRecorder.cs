@@ -552,8 +552,24 @@ public class dataRecorder : MonoBehaviour {
                                             "Orientation Precision %" + textLog.cellSeperatorType +
                                             "Overall Precision %" + textLog.cellSeperatorType + 
                                             "Efficiency %" + textLog.cellSeperatorType + 
+                                            "Difficulty" + textLog.cellSeperatorType + 
                                             "Total MV" + textLog.cellSeperatorType + 
                                             "Total TRE" + textLog.cellSeperatorType;
+
+         /// SUMMARY LINES
+        textLog.exportedText += "\n" + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.testerName + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.testTimestamp + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.dockShapeStyle + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.deviceVisibility + textLog.cellSeperatorType;
+        textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.shapePrecision + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.orientationPrecision + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.totalDifficulty + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.MV + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.TRE + textLog.cellSeperatorType;
 
         // For GUI presentation
         string guiResults = "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
@@ -562,27 +578,15 @@ public class dataRecorder : MonoBehaviour {
                                         "Dock Shape Style" + textLog.cellSeperatorType +
                                         "Virtual Device Visible" + textLog.cellSeperatorType +
                                         "Time Taken" + textLog.cellSeperatorType +
+
                                         "Shape Precision %" + textLog.cellSeperatorType +
                                         "Orientation Precision %" + textLog.cellSeperatorType +
                                         "Overall Precision %" + textLog.cellSeperatorType +
                                         "Efficiency %" + textLog.cellSeperatorType + 
+
+                                        "Difficulty" + textLog.cellSeperatorType + 
                                         "Total MV" + textLog.cellSeperatorType + 
                                         "Total TRE" + textLog.cellSeperatorType;
-
-        /// SUMMARY LINES
-        textLog.exportedText += "\n" + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.testerName + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.testTimestamp + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.dockShapeStyle + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.deviceVisibility + textLog.cellSeperatorType;
-
-        textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.shapePrecision + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.orientationPrecision + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.MV + textLog.cellSeperatorType;
-        textLog.exportedText += finalResults.TRE + textLog.cellSeperatorType;
 
         // For GUI presentation
         guiResults += "\n" + textLog.cellSeperatorType;
@@ -590,12 +594,14 @@ public class dataRecorder : MonoBehaviour {
         guiResults += finalResults.testTimestamp + textLog.cellSeperatorType;
         guiResults += finalResults.dockShapeStyle + textLog.cellSeperatorType;
         guiResults += finalResults.deviceVisibility + textLog.cellSeperatorType;
-
         guiResults += efficiency.completionTime + textLog.cellSeperatorType;
+
         guiResults += finalResults.shapePrecision + textLog.cellSeperatorType;
         guiResults += finalResults.orientationPrecision + textLog.cellSeperatorType;
         guiResults += finalResults.precision + textLog.cellSeperatorType;
         guiResults += finalResults.efficiency + textLog.cellSeperatorType;
+
+        guiResults += finalResults.totalDifficulty + textLog.cellSeperatorType;
         guiResults += finalResults.MV + textLog.cellSeperatorType;
         guiResults += finalResults.TRE + textLog.cellSeperatorType;
 

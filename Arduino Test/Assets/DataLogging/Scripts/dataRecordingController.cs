@@ -43,6 +43,10 @@ public class dataRecordingController : MonoBehaviour {
     Transform rightWing;
     Transform leftWing;
 
+    // Get Layer names
+    public string indexVDName = "VD";
+    public string indexDefaultName = "Default";
+
     // Delete all Test Objects and files before starting
     public void Start()
     {
@@ -160,13 +164,34 @@ public class dataRecordingController : MonoBehaviour {
         // Set rather or not the objects have the layer that makes them invisible to the HMD
         foreach (Transform deviceObj in deviceLayerObjects)
         {
-            if (deviceObj.gameObject.layer == 0)
+            if (deviceObj.gameObject.layer == LayerMask.NameToLayer(indexDefaultName))
             {
-                deviceObj.gameObject.layer = 8;
+                deviceObj.gameObject.layer = LayerMask.NameToLayer(indexVDName);
             }
-            else if (deviceObj.gameObject.layer == 8)
+            else if (deviceObj.gameObject.layer == LayerMask.NameToLayer(indexVDName))
             {
-                deviceObj.gameObject.layer = 0;
+                deviceObj.gameObject.layer = LayerMask.NameToLayer(indexDefaultName);
+            }
+        }
+
+        List<MeshRenderer> meshes = currTest.GetComponent<dataRecorder>().shape.GetComponentsInChildren<MeshRenderer>().ToList();
+
+        // Give the meshes a transparent look for the test runner to understand visually that the object is not visible to the person in the HMD
+        foreach (MeshRenderer mesh in meshes)
+        {
+            if (mesh.gameObject.layer == LayerMask.NameToLayer(indexDefaultName))
+            {
+                mesh.materials[0].color = new Color(mesh.materials[0].color.r, 
+                                                    mesh.materials[0].color.g, 
+                                                    mesh.materials[0].color.b, 
+                                                    1f);
+            }
+            else if (mesh.gameObject.layer == LayerMask.NameToLayer(indexVDName))
+            {
+                mesh.materials[0].color = new Color(mesh.materials[0].color.r, 
+                                                    mesh.materials[0].color.g, 
+                                                    mesh.materials[0].color.b, 
+                                                    0.5f);
             }
         }
     }

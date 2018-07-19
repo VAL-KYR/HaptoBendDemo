@@ -189,7 +189,7 @@ public class dataSummary : MonoBehaviour {
             summary.allTestTimestamp.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.testTimestamp);
             summary.allDockShapeStyle.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.dockShapeStyle);
             summary.allDeviceVisibility.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.deviceVisibility);
-
+            
             summary.allTimeTaken.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.timeTaken);
             summary.allShapePrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.shapePrecision);
             summary.allOrientationPrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.orientationPrecision);

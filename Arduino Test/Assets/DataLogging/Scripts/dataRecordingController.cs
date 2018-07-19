@@ -140,6 +140,7 @@ public class dataRecordingController : MonoBehaviour {
             if (Input.GetButton("DeviceVisible"))
             {
                 virtualDeviceVisible = !virtualDeviceVisible;
+                FlipDeviceVisibilityInHMD();
                 currAction = "Device Visible " + virtualDeviceVisible;
                 inputTime = 0f;
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
@@ -149,17 +150,25 @@ public class dataRecordingController : MonoBehaviour {
         SetCurrTest();
 
         inputTime += Time.smoothDeltaTime;
+    }
 
-
-        //// Find virtual device meshes
-        List<MeshRenderer> meshes = currTest.GetComponent<dataRecorder>().shape.GetComponentsInChildren<MeshRenderer>().ToList();
-
-        // Set rather or not the virtual object is visible
-        foreach (MeshRenderer mesh in meshes)
-        {
-            mesh.enabled = virtualDeviceVisible;
-        }
+    //// Find virtual device meshes [NEW]
+    public void FlipDeviceVisibilityInHMD()
+    {
+        List<Transform> deviceLayerObjects = currTest.GetComponent<dataRecorder>().shape.GetComponentsInChildren<Transform>().ToList();
         
+        // Set rather or not the objects have the layer that makes them invisible to the HMD
+        foreach (Transform deviceObj in deviceLayerObjects)
+        {
+            if (deviceObj.gameObject.layer == 0)
+            {
+                deviceObj.gameObject.layer = 8;
+            }
+            else if (deviceObj.gameObject.layer == 8)
+            {
+                deviceObj.gameObject.layer = 0;
+            }
+        }
     }
 
     public void SetCurrTest()

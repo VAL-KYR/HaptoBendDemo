@@ -137,32 +137,35 @@ public class dataSummary : MonoBehaviour {
                                 summary.MV + textLog.cellSeperatorType + 
                                 summary.TRE + textLog.cellSeperatorType;
 
-        string guiResults = "Session Averages" + textLog.cellSeperatorType + 
-                            "Tester Name" + textLog.cellSeperatorType + 
-                            "Time Taken (avg)" + textLog.cellSeperatorType + 
-                            "Shape Precision % (avg)" + textLog.cellSeperatorType +
+        string guiResults = "Tester Name" + textLog.cellSeperatorType + 
+                            "Time Taken" + textLog.cellSeperatorType + 
 
-                            "Orientation Precision % (avg)" + textLog.cellSeperatorType +
-                            "Overall Precision % (avg)" + textLog.cellSeperatorType +
-                            "Efficiency % (avg)" + textLog.cellSeperatorType + 
-
-                            "Total Difficulty (avg)" + textLog.cellSeperatorType + 
-                            "MV (avg)" + textLog.cellSeperatorType + 
-                            "TRE (avg)" + textLog.cellSeperatorType;
-
-        guiResults += "\n" + textLog.cellSeperatorType + 
+                            "\n" + textLog.cellSeperatorType +
                             summary.testerName + textLog.cellSeperatorType +
                             summary.timeTaken + textLog.cellSeperatorType +
+
+                            "\n" + "\n" + textLog.cellSeperatorType + "Shape Precision %" + textLog.cellSeperatorType +
+                            "Orientation Precision %" + textLog.cellSeperatorType +
+                            "Overall Precision %" + textLog.cellSeperatorType +
+
+                            "\n" + textLog.cellSeperatorType +
                             summary.shapePrecision + textLog.cellSeperatorType +
                             summary.orientationPrecision + textLog.cellSeperatorType +
                             summary.precision + textLog.cellSeperatorType + 
+
+                            "\n" + "\n" + textLog.cellSeperatorType + "Efficiency %" + textLog.cellSeperatorType + 
+                            "Difficulty" + textLog.cellSeperatorType + 
+                            "Total MV" + textLog.cellSeperatorType + 
+                            "Total TRE" + textLog.cellSeperatorType +
+
+                            "\n" + textLog.cellSeperatorType +
                             summary.efficiency + textLog.cellSeperatorType + 
                             summary.totalDifficulty + textLog.cellSeperatorType + 
                             summary.MV + textLog.cellSeperatorType + 
                             summary.TRE + textLog.cellSeperatorType;
 
         // SEND DATA TO THE GUI
-        this.GetComponent<testDataGUI>().testData.Add("Test Results Summary: " + "\n" + guiResults + "\n" + "\n" + "\n");
+        this.GetComponent<testDataGUI>().testData.Add("Final Summary:" + textLog.cellSeperatorType + guiResults + "\n" + "\n" + "\n");
 
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);

@@ -572,41 +572,42 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += finalResults.TRE + textLog.cellSeperatorType;
 
         // For GUI presentation
-        string guiResults = "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
+        string guiResults = "\n" + "\n" + this.name + " Results:" + textLog.cellSeperatorType +
                                         "Tester Name" + textLog.cellSeperatorType +
                                         "Time of Test" + textLog.cellSeperatorType +
                                         "Dock Shape Style" + textLog.cellSeperatorType +
                                         "Virtual Device Visible" + textLog.cellSeperatorType +
                                         "Time Taken" + textLog.cellSeperatorType +
 
-                                        "Shape Precision %" + textLog.cellSeperatorType +
+                                        "\n" + textLog.cellSeperatorType +
+                                        finalResults.testerName + textLog.cellSeperatorType +
+                                        finalResults.testTimestamp + textLog.cellSeperatorType +
+                                        finalResults.dockShapeStyle + textLog.cellSeperatorType +
+                                        finalResults.deviceVisibility + textLog.cellSeperatorType +
+                                        efficiency.completionTime + textLog.cellSeperatorType +
+
+                                        "\n" + "\n" + textLog.cellSeperatorType + "Shape Precision %" + textLog.cellSeperatorType +
                                         "Orientation Precision %" + textLog.cellSeperatorType +
                                         "Overall Precision %" + textLog.cellSeperatorType +
-                                        "Efficiency %" + textLog.cellSeperatorType + 
+                                        
 
+                                        "\n" + textLog.cellSeperatorType + finalResults.shapePrecision + textLog.cellSeperatorType +
+                                        finalResults.orientationPrecision + textLog.cellSeperatorType +
+                                        finalResults.precision + textLog.cellSeperatorType +
+                                        
+
+                                        "\n" + "\n" + textLog.cellSeperatorType + "Efficiency %" + textLog.cellSeperatorType + 
                                         "Difficulty" + textLog.cellSeperatorType + 
                                         "Total MV" + textLog.cellSeperatorType + 
-                                        "Total TRE" + textLog.cellSeperatorType;
+                                        "Total TRE" + textLog.cellSeperatorType +
 
-        // For GUI presentation
-        guiResults += "\n" + textLog.cellSeperatorType;
-        guiResults += finalResults.testerName + textLog.cellSeperatorType;
-        guiResults += finalResults.testTimestamp + textLog.cellSeperatorType;
-        guiResults += finalResults.dockShapeStyle + textLog.cellSeperatorType;
-        guiResults += finalResults.deviceVisibility + textLog.cellSeperatorType;
-        guiResults += efficiency.completionTime + textLog.cellSeperatorType;
-
-        guiResults += finalResults.shapePrecision + textLog.cellSeperatorType;
-        guiResults += finalResults.orientationPrecision + textLog.cellSeperatorType;
-        guiResults += finalResults.precision + textLog.cellSeperatorType;
-        guiResults += finalResults.efficiency + textLog.cellSeperatorType;
-
-        guiResults += finalResults.totalDifficulty + textLog.cellSeperatorType;
-        guiResults += finalResults.MV + textLog.cellSeperatorType;
-        guiResults += finalResults.TRE + textLog.cellSeperatorType;
+                                        "\n" + textLog.cellSeperatorType + finalResults.efficiency + textLog.cellSeperatorType +
+                                        finalResults.totalDifficulty + textLog.cellSeperatorType +
+                                        finalResults.MV + textLog.cellSeperatorType +
+                                        finalResults.TRE + textLog.cellSeperatorType;
 
         // SEND DATA TO THE GUI
-        this.transform.parent.GetComponent<testDataGUI>().testData.Add(this.name + " Results: " + "\n" + guiResults + "\n" + "\n" + "\n");
+        this.transform.parent.GetComponent<testDataGUI>().testData.Add("\n" + guiResults + "\n" + "\n" + "\n");
 
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);

@@ -15,6 +15,7 @@ public class dataRecordingController : MonoBehaviour {
     public GameObject testObject;
     public List<GameObject> tests;
     public GameObject currTest;
+    public GameObject device;
 
     public List<string> dockStyles = new List<string>(3);
     public string activeDockStyle = "";
@@ -47,9 +48,12 @@ public class dataRecordingController : MonoBehaviour {
     public string indexVDName = "VD";
     public string indexDefaultName = "Default";
 
+    public bool deviceInit = false;
+
     // Delete all Test Objects and files before starting
     public void Start()
     {
+        device = GameObject.FindGameObjectWithTag("virtualDevice");
         rightWing = new GameObject("virtualWingR").transform;
         leftWing = new GameObject("virtualWingL").transform;
 
@@ -73,6 +77,16 @@ public class dataRecordingController : MonoBehaviour {
 
     public void Update()
     {
+
+        //+++ Initial Device Calibration
+        if (errorGathered && !deviceInit)
+        {
+            //+++ Calibrate the Device before first test
+            currTest.GetComponent<dataRecorder>().CalibrateDevice();
+
+            deviceInit = true;
+        }
+
         // Inputs during test
         if (inputTime > inputTimer)
         {
@@ -152,6 +166,7 @@ public class dataRecordingController : MonoBehaviour {
             if (Input.GetButton("ReCalDevice"))
             {
                 currTest.GetComponent<dataRecorder>().RecalibrateDevice();
+
                 currAction = "Device Recalibrated";
                 inputTime = 0f;
                 this.GetComponent<testDataGUI>().FetchAction(currAction);

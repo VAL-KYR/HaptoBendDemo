@@ -193,16 +193,22 @@ public class dataRecorder : MonoBehaviour {
         ///////////////////////////////////////////////////// Take from Controller as Editable Fields
     }
 
+    //// Calibrate Device ////
+    public void CalibrateDevice()
+    {   
+        shape.GetComponent<IMU>().BendReset();
+        shape.GetComponent<IMU>().Calibrate();
+    }
+
     //// Re-Calibrate Device ////
     public void RecalibrateDevice()
     {   
-        shape.GetComponent<IMU>().Callibrate();
-        shape.GetComponent<IMU>().Callibrate();
-        shape.GetComponent<IMU>().Callibrate();
-
+        shape.GetComponent<IMU>().Calibrate();
         shape.GetComponent<IMU>().BendReset();
-        shape.GetComponent<IMU>().Callibrate();
+        shape.GetComponent<IMU>().Calibrate();
     }
+
+
     
     //// Device Twitch Calibration ////
     float DeviceTwichCalibration(DataTable deviceData)

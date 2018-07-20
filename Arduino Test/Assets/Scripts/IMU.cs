@@ -21,27 +21,20 @@ public class IMU : MonoBehaviour {
 
     Quaternion imuinter;
 
-    private int callibrate = 1;
+    public bool calibrate = true;
 
     float zCap = 0;
     float lowPassFactor = 0.2f; //Value should be between 0.01f and 0.99f. Smaller value is more damping.
     bool init = true;
-    
 
-    private bool align = false;
-    //private int zeroToggle = 0;
     public void Awake()
     {
         Arduino = GameObject.GetComponent<JohnArduinoManager>();
-
     }
-    // Use this for initialization
-    void Start () {
-		
-	}
 	
 	// Update is called once per frame
-	public void Update () {
+	public void Update () 
+    {
         bendValue = Arduino.currentVals[2];
 
         qW = Arduino.currentVals[3];
@@ -49,37 +42,15 @@ public class IMU : MonoBehaviour {
         qX = Arduino.currentVals[5];
         qZ = Arduino.currentVals[6];
 
-
-        //qW = Arduino.currentVals[3];
-        //qY = Arduino.currentVals[4];
-        //qX = Arduino.currentVals[5];
-        //qZ = Arduino.currentVals[6];
-
-        // Quaternion imu = new Quaternion(qW, qY, qZ, qX);
         Quaternion imu = new Quaternion(qX, qZ, qY, qW);
+        Quaternion centre = Quaternion.identity;
+
+
 
         if (Input.GetKeyDown("x"))
         {
-            Callibrate();
+            Calibrate();
         }
-
-        
-
-        if (callibrate == 0)
-        {
-            align = true;
-            cylinder.SetActive(false);
-        }
-
-        if (callibrate == 1)
-        {
-            align = false;
-            cylinder.SetActive(true);
-        }
-
-        
-        //Quaternion imu = new Quaternion(qX, qY, qZ, qW);
-        Quaternion centre = Quaternion.identity;
 
         if (Input.GetKeyDown("z"))
         {
@@ -88,39 +59,32 @@ public class IMU : MonoBehaviour {
 
 
 
-        if (align == false)
+        if (calibrate)
         {
+            cylinder.SetActive(true);
+
             Rotate.transform.rotation = Quaternion.identity;
             InvRotate.transform.rotation = Quaternion.identity;
         }
-
-
-         if(align == true)
+        else
         {
+            cylinder.SetActive(false);
+
             Quaternion newimu = imu * Quaternion.Inverse(imucap);
 
             transform.rotation = Quaternion.Inverse(lowPassFilterQuaternion(imuinter, newimu, lowPassFactor, init));
+            
             init = false;
-                //RotateObject(bendValue);
-                //transform.Rotate(0, 180, 0, Space.World);
 
-                zAngle = (bendValue - zCap) * 0.352f * 0.666f;
+            zAngle = (bendValue - zCap) * 0.352f * 0.666f;
 
             float zAngleChange = zAngle - zAnglePrev;
-            //transform.Rotate(0, 0, zAngleChange/2, Space.Self);
             Quaternion offSet = Quaternion.Euler(0, 0, -zAngle/2);
-            //transform.rotation = Quaternion.Inverse(offSet);
             Quaternion finalimu = newimu* Quaternion.Inverse(offSet);
-            //transform.rotation = Quaternion.Inverse(finalimu);
-            
-            //transform.rotation = Quaternion.Inverse(newimu);
-            
-            //transform.rotation = Quaternion.Inverse(imu);
+
             zAnglePrev = zAngle;
 
         }
-
-
     }
 
     public void BendReset()
@@ -128,33 +92,16 @@ public class IMU : MonoBehaviour {
         zCap = bendValue;
 
         Debug.Log("bend reset");
-
-        //Quaternion zero = Quaternion.Euler(0, 180, 0);
-
-        //transform.rotation = zero;
     }
 
-    public void Callibrate()
+    public void Calibrate()
     {
-        callibrate++;
-        callibrate = callibrate % 2;
-        //imucap = new Quaternion(qW, qY, qZ, qX); ;
+        calibrate = !calibrate;
         imucap = new Quaternion(qX, qZ, qY, qW);
 
-         Debug.Log("calibrate");
+        Debug.Log("calibrate");
     }
 
-    //void RotateObject(float Value)
-    //{
-
-    //    zAngle = (Value - 511.5f) * 0.352f;
-
-    //    float zAngleChange = zAngle - zAnglePrev;
-
-    //    transform.Rotate(zAngleChange, 0, 0, Space.Self);
-    //    transform.Rotate(-zAngleChange, 0, 0, Space.Self);
-    //    zAnglePrev = zAngle;
-    //}
     Quaternion lowPassFilterQuaternion(Quaternion intermediateValue, Quaternion targetValue, float factor, bool init)
     {
 
@@ -163,8 +110,8 @@ public class IMU : MonoBehaviour {
         {
             intermediateValue = targetValue;
         }
-
         intermediateValue = Quaternion.Lerp(intermediateValue, targetValue, factor);
+
         return intermediateValue;
     }
 }

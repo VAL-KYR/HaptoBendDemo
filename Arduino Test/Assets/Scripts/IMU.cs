@@ -30,7 +30,7 @@ public class IMU : MonoBehaviour {
 
     private bool align = false;
     //private int zeroToggle = 0;
-    void Awake()
+    public void Awake()
     {
         Arduino = GameObject.GetComponent<JohnArduinoManager>();
 
@@ -41,7 +41,7 @@ public class IMU : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public void Update () {
         bendValue = Arduino.currentVals[2];
 
         qW = Arduino.currentVals[3];
@@ -127,6 +127,8 @@ public class IMU : MonoBehaviour {
     {
         zCap = bendValue;
 
+        Debug.Log("bend reset");
+
         //Quaternion zero = Quaternion.Euler(0, 180, 0);
 
         //transform.rotation = zero;
@@ -138,6 +140,8 @@ public class IMU : MonoBehaviour {
         callibrate = callibrate % 2;
         //imucap = new Quaternion(qW, qY, qZ, qX); ;
         imucap = new Quaternion(qX, qZ, qY, qW);
+
+         Debug.Log("calibrate");
     }
 
     //void RotateObject(float Value)

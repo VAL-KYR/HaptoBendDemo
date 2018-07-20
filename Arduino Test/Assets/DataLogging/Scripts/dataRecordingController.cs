@@ -149,6 +149,13 @@ public class dataRecordingController : MonoBehaviour {
                 inputTime = 0f;
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
             }
+            if (Input.GetButton("ReCalDevice"))
+            {
+                currTest.GetComponent<dataRecorder>().RecalibrateDevice();
+                currAction = "Device Recalibrated";
+                inputTime = 0f;
+                this.GetComponent<testDataGUI>().FetchAction(currAction);
+            }
         }
 
         SetCurrTest();

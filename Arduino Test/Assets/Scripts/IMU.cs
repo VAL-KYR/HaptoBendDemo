@@ -96,16 +96,12 @@ public class IMU : MonoBehaviour {
         ChildInvRotate.transform.rotation = Quaternion.Euler(0, 0, 0);
         ChildRotate.transform.rotation = Quaternion.Euler(0, 0, 0);
         Rotate.transform.rotation = Quaternion.Euler(0, 0, 0);
-
-        Debug.Log("bend reset");
     }
 
     public void Calibrate()
     {
         calibrate = !calibrate;
         imucap = new Quaternion(qX, qZ, qY, qW);
-
-        Debug.Log("calibrate");
     }
 
     Quaternion lowPassFilterQuaternion(Quaternion intermediateValue, Quaternion targetValue, float factor, bool init)

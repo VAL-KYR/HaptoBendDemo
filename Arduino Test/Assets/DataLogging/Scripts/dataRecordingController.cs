@@ -104,14 +104,14 @@ public class dataRecordingController : MonoBehaviour {
                     currTest.GetComponent<dataRecorder>().recordAngles = false;
                     currAction = currTest.name + " Ended";
                 }
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
             if (Input.GetButton("CreateTest"))
             {
                 NewTest();
                 currAction = "Test_" + (tests.Count - 1) + " Created";
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
             if (Input.GetButton("RandomizeDock"))
@@ -119,14 +119,14 @@ public class dataRecordingController : MonoBehaviour {
                 NewDockShape();
                 currAction = "Dock Randomized";
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("ZeroDock"))
             {
                 ZeroDockShape();
                 currAction = "Dock Zeroed";
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DockStyle"))
             {
@@ -134,28 +134,28 @@ public class dataRecordingController : MonoBehaviour {
                 activeDockStyle = NextDockStyle();
                 currAction = "Docks are " + activeDockStyle;
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("SummarizeTests"))
             {
                 FinalReport();
                 currAction = "Tests Summarized";
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteTests"))
             {
                 ClearTests();
                 currAction = "All Tests Deleted";
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteReports"))
             {
                 ClearReports();
                 currAction = "All Reports Deleted";
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeviceVisible"))
             {
@@ -163,7 +163,7 @@ public class dataRecordingController : MonoBehaviour {
                 FlipDeviceVisibilityInHMD();
                 currAction = "Device Visible " + virtualDeviceVisible;
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("ReCalDevice"))
             {
@@ -173,7 +173,7 @@ public class dataRecordingController : MonoBehaviour {
 
                 currAction = "Device Recalibrated";
                 inputTime = 0f;
-                this.GetComponent<testDataGUI>().FetchAction(currAction);
+                GetComponent<testDataGUI>().FetchAction(currAction);
             }        
         }
 
@@ -201,26 +201,22 @@ public class dataRecordingController : MonoBehaviour {
     //// Find virtual device meshes [NEW]
     public void FlipDeviceVisibilityInHMD()
     {
-        List<Transform> deviceLayerObjects = currTest.GetComponent<dataRecorder>().shape.GetComponentsInChildren<Transform>().ToList();
+        List<MeshRenderer> meshes = device.GetComponentsInChildren<MeshRenderer>().ToList();
         
         // Set rather or not the objects have the layer that makes them invisible to the HMD
-        foreach (Transform deviceObj in deviceLayerObjects)
-        {
-            if (deviceObj.gameObject.layer == LayerMask.NameToLayer(indexDefaultName))
-            {
-                deviceObj.gameObject.layer = LayerMask.NameToLayer(indexVDName);
-            }
-            else if (deviceObj.gameObject.layer == LayerMask.NameToLayer(indexVDName))
-            {
-                deviceObj.gameObject.layer = LayerMask.NameToLayer(indexDefaultName);
-            }
-        }
-
-        List<MeshRenderer> meshes = currTest.GetComponent<dataRecorder>().shape.GetComponentsInChildren<MeshRenderer>().ToList();
-
         // Give the meshes a transparent look for the test runner to understand visually that the object is not visible to the person in the HMD
         foreach (MeshRenderer mesh in meshes)
         {
+            if (mesh.gameObject.layer == LayerMask.NameToLayer(indexDefaultName))
+            {
+                mesh.gameObject.layer = LayerMask.NameToLayer(indexVDName);
+            }
+            else if (mesh.gameObject.layer == LayerMask.NameToLayer(indexVDName))
+            {
+                mesh.gameObject.layer = LayerMask.NameToLayer(indexDefaultName);
+            }
+
+            //+++
             if (mesh.gameObject.layer == LayerMask.NameToLayer(indexDefaultName))
             {
                 mesh.materials[0].color = new Color(mesh.materials[0].color.r, 
@@ -289,8 +285,8 @@ public class dataRecordingController : MonoBehaviour {
     // Create Final Report Summary
     public void FinalReport()
     {
-        this.GetComponent<dataSummary>().CalculateFinalResults();
-        this.GetComponent<dataSummary>().ExportSummaryFile();
+        GetComponent<dataSummary>().CalculateFinalResults();
+        GetComponent<dataSummary>().ExportSummaryFile();
     }
 
     // Get a new shape to dock to

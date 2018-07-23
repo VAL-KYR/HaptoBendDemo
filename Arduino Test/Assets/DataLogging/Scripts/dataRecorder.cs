@@ -179,9 +179,8 @@ public class dataRecorder : MonoBehaviour {
                 stopWriting = true;
             }
 
-            // Create a new test when a test finishes & creates a new dock shape for that new test
+            // Create a new test when a test finishes
             this.GetComponentInParent<dataRecordingController>().NewTest();
-            this.GetComponentInParent<dataRecordingController>().NewDockShape();
 
             anglesRecorded = true;
         }

@@ -8,12 +8,23 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class dataRecordingController : MonoBehaviour {
+//**
+/* 
+public class Test 
+{
+    GameObject testObject;
+    string dockStyleType;
+    string visibility;
+}
+*/
 
+public class dataRecordingController : MonoBehaviour {
     public string filePrefix = "Report_Raw_";
     public string filePath = "Assets/DataLogging/Reports/";
+
     public GameObject testObject;
     public List<GameObject> tests;
+
     public GameObject currTest;
     public GameObject device;
     public IMU imu;
@@ -23,6 +34,7 @@ public class dataRecordingController : MonoBehaviour {
 
     public bool startWithNewDock = true;
     public bool virtualDeviceVisible = true;
+
     public List<GameObject> dockPresets = new List<GameObject>();
     public GameObject selectedDockPreset;
     public GameObject lastDockPreset;
@@ -32,7 +44,8 @@ public class dataRecordingController : MonoBehaviour {
     
     public Vector2 deviceLimits;
     public float dockPartSeperation = 0.8f;
-    public string currAction = "Loaded";
+
+    string currAction = "Loaded";
 
     public bool errorGathered = false;
 
@@ -51,6 +64,25 @@ public class dataRecordingController : MonoBehaviour {
 
     public bool deviceInit = false;
 
+    //++
+    [System.Serializable]
+    public class TestCategorization : System.Object
+    {
+        public bool automateTypes = true;
+        
+        public int VisLtdLimit = 10;
+        public int InvisLtdLimit = 10;
+        public int VisPresetLimit = 10;
+        public int InvisPresetLimit = 10;
+
+
+        public List<GameObject> VisLtdRandom;
+        public List<GameObject> InvisLtdRandom;
+        public List<GameObject> VisPresets;
+        public List<GameObject> InvisPresets;
+    }
+    public TestCategorization testCateg = new TestCategorization();
+
     // Delete all Test Objects and files before starting
     public void Start()
     {
@@ -68,6 +100,7 @@ public class dataRecordingController : MonoBehaviour {
         // Creates a new test before starting
         NewTest();
         SetCurrTest();
+
         // set dock shape preset before first new dock shape
         lastDockPreset = selectedDockPreset;
         // set dock shape mode before first new dock shape
@@ -79,11 +112,17 @@ public class dataRecordingController : MonoBehaviour {
 
     public void Update()
     {
+        //++
+        //// Find Completed test types and add to list ////
+        testCateg.VisLtdRandom = TestsOfType("True", "Ltd Random", tests);
+        testCateg.InvisLtdRandom = TestsOfType("False", "Ltd Random", tests);
+        testCateg.VisPresets = TestsOfType("True", "Presets", tests);
+        testCateg.InvisPresets = TestsOfType("False", "Presets", tests);
 
-        //+++ Initial Device Calibration
+        // Initial Device Calibration
         if (errorGathered && !deviceInit)
         {
-            //+++ Calibrate the Device before first test
+            // Calibrate the Device before first test
             CalIMU();
 
             deviceInit = true;
@@ -160,7 +199,7 @@ public class dataRecordingController : MonoBehaviour {
             if (Input.GetButton("DeviceVisible"))
             {
                 virtualDeviceVisible = !virtualDeviceVisible;
-                FlipDeviceVisibilityInHMD();
+                FlipDeviceVisibilityInHMD(virtualDeviceVisible);
                 currAction = "Device Visible " + virtualDeviceVisible;
                 inputTime = 0f;
                 GetComponent<testDataGUI>().FetchAction(currAction);
@@ -199,7 +238,7 @@ public class dataRecordingController : MonoBehaviour {
     }
 
     //// Find virtual device meshes [NEW]
-    public void FlipDeviceVisibilityInHMD()
+    public void FlipDeviceVisibilityInHMD(bool deviceVisible)
     {
         List<MeshRenderer> meshes = device.GetComponentsInChildren<MeshRenderer>().ToList();
         
@@ -207,33 +246,26 @@ public class dataRecordingController : MonoBehaviour {
         // Give the meshes a transparent look for the test runner to understand visually that the object is not visible to the person in the HMD
         foreach (MeshRenderer mesh in meshes)
         {
-            if (mesh.gameObject.layer == LayerMask.NameToLayer(indexDefaultName))
+            if (!deviceVisible)
             {
                 mesh.gameObject.layer = LayerMask.NameToLayer(indexVDName);
-            }
-            else if (mesh.gameObject.layer == LayerMask.NameToLayer(indexVDName))
-            {
-                mesh.gameObject.layer = LayerMask.NameToLayer(indexDefaultName);
-            }
-
-            //+++
-            if (mesh.gameObject.layer == LayerMask.NameToLayer(indexDefaultName))
-            {
-                mesh.materials[0].color = new Color(mesh.materials[0].color.r, 
-                                                    mesh.materials[0].color.g, 
-                                                    mesh.materials[0].color.b, 
-                                                    1f);
-            }
-            else if (mesh.gameObject.layer == LayerMask.NameToLayer(indexVDName))
-            {
                 mesh.materials[0].color = new Color(mesh.materials[0].color.r, 
                                                     mesh.materials[0].color.g, 
                                                     mesh.materials[0].color.b, 
                                                     0.5f);
             }
+            else
+            {
+                mesh.gameObject.layer = LayerMask.NameToLayer(indexDefaultName);
+                mesh.materials[0].color = new Color(mesh.materials[0].color.r, 
+                                                    mesh.materials[0].color.g, 
+                                                    mesh.materials[0].color.b, 
+                                                    1f);
+            }
         }
     }
 
+    //// Keeps track of what is the test that will have data sent
     public void SetCurrTest()
     {
         // Set current test to the oldest test not completed
@@ -254,32 +286,75 @@ public class dataRecordingController : MonoBehaviour {
     {
         // Create test Object
         GameObject test = Instantiate<GameObject>(testObject, Vector3.zero, Quaternion.identity, this.transform);
+        dataRecorder testParams = test.GetComponent<dataRecorder>();
         // Init file settings
-        test.GetComponent<dataRecorder>().textLog.path = filePath;
-        test.GetComponent<dataRecorder>().textLog.fileName = filePrefix + tests.Count;
+        testParams.textLog.path = filePath;
+        testParams.textLog.fileName = filePrefix + tests.Count;
 
         // Init overall shape orientation
-        test.GetComponent<dataRecorder>().shape = GameObject.FindGameObjectWithTag("virtualDevice");
+        testParams.shape = GameObject.FindGameObjectWithTag("virtualDevice");
         // Init overall dock orientation
-        test.GetComponent<dataRecorder>().dockShape = GameObject.FindGameObjectWithTag("dockDevice");
+        testParams.dockShape = GameObject.FindGameObjectWithTag("dockDevice");
         // Init shape angles
-        test.GetComponent<dataRecorder>().angleObjects[0] = GameObject.FindGameObjectWithTag("rotate");
-        test.GetComponent<dataRecorder>().angleObjects[1] = GameObject.FindGameObjectWithTag("childRotate");
-        test.GetComponent<dataRecorder>().angleObjects[2] = GameObject.FindGameObjectWithTag("rotateInverse");
-        test.GetComponent<dataRecorder>().angleObjects[3] = GameObject.FindGameObjectWithTag("childRotateInverse");
+        testParams.angleObjects[0] = GameObject.FindGameObjectWithTag("rotate");
+        testParams.angleObjects[1] = GameObject.FindGameObjectWithTag("childRotate");
+        testParams.angleObjects[2] = GameObject.FindGameObjectWithTag("rotateInverse");
+        testParams.angleObjects[3] = GameObject.FindGameObjectWithTag("childRotateInverse");
         // Init dock angles
-        test.GetComponent<dataRecorder>().dockAngleObjects[0] = GameObject.FindGameObjectWithTag("dockRotate");
-        test.GetComponent<dataRecorder>().dockAngleObjects[1] = GameObject.FindGameObjectWithTag("dockChildRotate");
-        test.GetComponent<dataRecorder>().dockAngleObjects[2] = GameObject.FindGameObjectWithTag("dockRotateInverse");
-        test.GetComponent<dataRecorder>().dockAngleObjects[3] = GameObject.FindGameObjectWithTag("dockChildRotateInverse");
+        testParams.dockAngleObjects[0] = GameObject.FindGameObjectWithTag("dockRotate");
+        testParams.dockAngleObjects[1] = GameObject.FindGameObjectWithTag("dockChildRotate");
+        testParams.dockAngleObjects[2] = GameObject.FindGameObjectWithTag("dockRotateInverse");
+        testParams.dockAngleObjects[3] = GameObject.FindGameObjectWithTag("dockChildRotateInverse");
+
+        //// If using an experiment procedure do this ////
+        if (testCateg.automateTypes)
+        {
+            while (true)
+            {
+                // Generate a random style choice and exit with a break when done
+                float index = Random.Range(0f, 1.0f);
+
+                if (index < 0.25f && testCateg.VisLtdRandom.Count < testCateg.VisLtdLimit)
+                {
+                    activeDockStyle = dockStyles[2];
+                    virtualDeviceVisible = true;
+                    break;
+                }
+                else if ((index >= 0.25f && index < 0.5f) && testCateg.InvisLtdRandom.Count < testCateg.InvisLtdLimit)
+                {
+                    activeDockStyle = dockStyles[2];
+                    virtualDeviceVisible = false;
+                    break;
+                }
+                else if ((index >= 0.5f && index < 0.75f) && testCateg.VisPresets.Count < testCateg.VisPresetLimit)
+                {
+                    activeDockStyle = dockStyles[1];
+                    virtualDeviceVisible = true;
+                    break;
+                }
+                else if ((index >= 0.75f && index <= 1.0f) && testCateg.InvisPresets.Count < testCateg.InvisPresetLimit)
+                {
+                    activeDockStyle = dockStyles[1];
+                    virtualDeviceVisible = false;
+                    break;
+                }
+            }
+
+            FlipDeviceVisibilityInHMD(virtualDeviceVisible);
+        }
+
         // Name the TestObject
         test.name = "Test_" + tests.Count;
 
-        // Set current test to whichever was last made
-        //currTest = test;
-
         // Add to test list
         tests.Add(test);
+
+        // Set the current test if it has not yet beens set
+        if (!currTest)
+            SetCurrTest();
+
+        // Once test is created give it a new dock shape
+        NewDockShape();
     }
 
     // Create Final Report Summary
@@ -565,5 +640,20 @@ public class dataRecordingController : MonoBehaviour {
         
         return dockStyles[index];
     }
+
+    //++
+    public List<GameObject> TestsOfType(string DesiredVisibility, string DesiredDockStyle, List<GameObject> listToSearch)
+    {
+        List<GameObject> testList = new List<GameObject>(); 
+
+        foreach (GameObject test in listToSearch)
+        {
+            if ((test.GetComponent<dataRecorder>().finalResults.dockShapeStyle == DesiredDockStyle &&
+            test.GetComponent<dataRecorder>().finalResults.deviceVisibility == DesiredVisibility))
+                testList.Add(test);
+        }
+
+        return testList;
+    } 
     
 }

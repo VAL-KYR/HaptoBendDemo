@@ -16,6 +16,7 @@ public class dataRecordingController : MonoBehaviour {
     public List<GameObject> tests;
     public GameObject currTest;
     public GameObject device;
+    public IMU imu;
 
     public List<string> dockStyles = new List<string>(3);
     public string activeDockStyle = "";
@@ -54,6 +55,7 @@ public class dataRecordingController : MonoBehaviour {
     public void Start()
     {
         device = GameObject.FindGameObjectWithTag("virtualDevice");
+        imu = device.GetComponent<IMU>();
         rightWing = new GameObject("virtualWingR").transform;
         leftWing = new GameObject("virtualWingL").transform;
 
@@ -82,7 +84,7 @@ public class dataRecordingController : MonoBehaviour {
         if (errorGathered && !deviceInit)
         {
             //+++ Calibrate the Device before first test
-            currTest.GetComponent<dataRecorder>().CalibrateDevice();
+            CalIMU();
 
             deviceInit = true;
         }
@@ -165,17 +167,35 @@ public class dataRecordingController : MonoBehaviour {
             }
             if (Input.GetButton("ReCalDevice"))
             {
-                currTest.GetComponent<dataRecorder>().RecalibrateDevice();
+                StartCoroutine(ReCalIMU());
+                new WaitForSeconds(0.1f);
+                StartCoroutine(ReCalIMU());
 
                 currAction = "Device Recalibrated";
                 inputTime = 0f;
                 this.GetComponent<testDataGUI>().FetchAction(currAction);
-            }
+            }        
         }
 
         SetCurrTest();
 
         inputTime += Time.smoothDeltaTime;
+    }
+
+    //// Recalibrate With Wait
+    public IEnumerator ReCalIMU()
+    {
+        imu.Calibrate();
+        yield return new WaitForSeconds(0.1f);
+        imu.BendReset();
+        imu.Calibrate();
+    }
+
+    //// Calibrate With Wait
+    public void CalIMU()
+    {
+        imu.BendReset();
+        imu.Calibrate();
     }
 
     //// Find virtual device meshes [NEW]

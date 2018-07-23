@@ -9,9 +9,11 @@ public class IMU : MonoBehaviour {
 
     private float zAngle = 0f;
     private float zAnglePrev = 0f;
-    private float bendValue = 0f;
+    public float bendValue = 0f;
     public GameObject Rotate;
     public GameObject InvRotate;
+    public GameObject ChildRotate;
+    public GameObject ChildInvRotate;
     public GameObject cylinder;
 
     private float qW = 0;
@@ -23,7 +25,7 @@ public class IMU : MonoBehaviour {
 
     public bool calibrate = true;
 
-    float zCap = 0;
+    public float zCap = 0;
     float lowPassFactor = 0.2f; //Value should be between 0.01f and 0.99f. Smaller value is more damping.
     bool init = true;
 
@@ -46,7 +48,7 @@ public class IMU : MonoBehaviour {
         Quaternion centre = Quaternion.identity;
 
 
-
+        
         if (Input.GetKeyDown("x"))
         {
             Calibrate();
@@ -90,6 +92,10 @@ public class IMU : MonoBehaviour {
     public void BendReset()
     {
         zCap = bendValue;
+
+        ChildInvRotate.transform.rotation = Quaternion.Euler(0, 0, 0);
+        ChildRotate.transform.rotation = Quaternion.Euler(0, 0, 0);
+        Rotate.transform.rotation = Quaternion.Euler(0, 0, 0);
 
         Debug.Log("bend reset");
     }

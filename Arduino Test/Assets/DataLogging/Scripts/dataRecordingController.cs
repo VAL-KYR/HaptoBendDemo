@@ -358,8 +358,18 @@ public class dataRecordingController : MonoBehaviour {
     // Create Final Report Summary
     public void FinalReport()
     {
-        GetComponent<dataSummary>().CalculateFinalResults();
-        GetComponent<dataSummary>().ExportSummaryFile();
+        GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisLtdRandom);
+        GetComponent<dataSummary>().ExportSummaryFile("VisLtdRandom");
+        GetComponent<dataSummary>().EraseResultsLists();
+        GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisLtdRandom);
+        GetComponent<dataSummary>().ExportSummaryFile("InvisLtdRandom");
+        GetComponent<dataSummary>().EraseResultsLists();
+        GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisPresets);
+        GetComponent<dataSummary>().ExportSummaryFile("VisPresets");
+        GetComponent<dataSummary>().EraseResultsLists();
+        GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisPresets);
+        GetComponent<dataSummary>().ExportSummaryFile("InvisPresets");
+        GetComponent<dataSummary>().EraseResultsLists();
     }
 
     // Get a new shape to dock to

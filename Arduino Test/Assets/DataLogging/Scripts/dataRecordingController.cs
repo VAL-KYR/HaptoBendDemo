@@ -9,14 +9,13 @@ using UnityEditor;
 #endif
 
 //**
-/* 
 public class Test 
 {
     GameObject testObject;
     string dockStyleType;
     string visibility;
 }
-*/
+
 
 public class dataRecordingController : MonoBehaviour {
     public string filePrefix = "Report_Raw_";
@@ -64,7 +63,7 @@ public class dataRecordingController : MonoBehaviour {
 
     public bool deviceInit = false;
 
-    //++
+    //
     [System.Serializable]
     public class TestCategorization : System.Object
     {
@@ -112,7 +111,6 @@ public class dataRecordingController : MonoBehaviour {
 
     public void Update()
     {
-        //++
         //// Find Completed test types and add to list ////
         testCateg.VisLtdRandom = TestsOfType("True", "Ltd Random", tests);
         testCateg.InvisLtdRandom = TestsOfType("False", "Ltd Random", tests);

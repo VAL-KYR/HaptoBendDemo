@@ -47,20 +47,6 @@ public class IMU : MonoBehaviour {
         Quaternion imu = new Quaternion(qX, qZ, qY, qW);
         Quaternion centre = Quaternion.identity;
 
-
-        
-        if (Input.GetKeyDown("x"))
-        {
-            Calibrate();
-        }
-
-        if (Input.GetKeyDown("z"))
-        {
-            BendReset();
-        }
-
-
-
         if (calibrate)
         {
             cylinder.SetActive(true);

@@ -63,6 +63,8 @@ public class dataRecordingController : MonoBehaviour {
 
     public bool deviceInit = false;
 
+    public bool testsDone = false;
+
     //
     [System.Serializable]
     public class TestCategorization : System.Object
@@ -111,12 +113,6 @@ public class dataRecordingController : MonoBehaviour {
 
     public void Update()
     {
-        //// Find Completed test types and add to list ////
-        testCateg.VisLtdRandom = TestsOfType("True", "Ltd Random", tests);
-        testCateg.InvisLtdRandom = TestsOfType("False", "Ltd Random", tests);
-        testCateg.VisPresets = TestsOfType("True", "Presets", tests);
-        testCateg.InvisPresets = TestsOfType("False", "Presets", tests);
-
         // Initial Device Calibration
         if (errorGathered && !deviceInit)
         {
@@ -126,10 +122,19 @@ public class dataRecordingController : MonoBehaviour {
             deviceInit = true;
         }
 
+        // Check if tests are done
+        if (testCateg.VisLtdRandom.Count >= testCateg.VisLtdLimit &&
+            testCateg.InvisLtdRandom.Count >= testCateg.InvisLtdLimit && 
+            testCateg.VisPresets.Count >= testCateg.VisPresetLimit &&
+            testCateg.InvisPresets.Count >= testCateg.InvisPresetLimit)
+        {
+            testsDone = true;
+        }
+
         // Inputs during test
         if (inputTime > inputTimer)
         {
-            if (Input.GetButton("ExecuteTest"))
+            if (Input.GetButton("ExecuteTest") && !testsDone)
             {
                 if (!currTest.GetComponent<dataRecorder>().recordAngles)
                 {
@@ -144,7 +149,7 @@ public class dataRecordingController : MonoBehaviour {
                 GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
-            if (Input.GetButton("CreateTest"))
+            if (Input.GetButton("CreateTest") && !testsDone)
             {
                 NewTest();
                 currAction = "Test_" + (tests.Count - 1) + " Created";
@@ -211,7 +216,15 @@ public class dataRecordingController : MonoBehaviour {
                 currAction = "Device Recalibrated";
                 inputTime = 0f;
                 GetComponent<testDataGUI>().FetchAction(currAction);
-            }        
+            }  
+            if (Input.GetButton("BadTest"))
+            {
+                activeDockStyle = "BAD DATA";
+
+                currAction = currTest.name + " Trashed";
+                inputTime = 0f;
+                GetComponent<testDataGUI>().FetchAction(currAction);
+            }      
         }
 
         SetCurrTest();
@@ -282,6 +295,58 @@ public class dataRecordingController : MonoBehaviour {
     // Create a new test object
     public void NewTest()
     {
+        TestCatCheck();
+
+        //// If using an experiment procedure do this ////
+        if (testCateg.automateTypes)
+        {
+            while (true)
+            {
+                // Generate a random style choice and exit with a break when done
+                float index = Random.Range(0f, 1.0f);
+
+                if ((index >= 0f && index < 0.25f) && testCateg.VisLtdRandom.Count < testCateg.VisLtdLimit)
+                {
+                    activeDockStyle = dockStyles[2];
+                    virtualDeviceVisible = true;
+                    //Debug.Log("VisLtdRandom");
+                    break;
+                }
+                else if ((index >= 0.25f && index < 0.5f) && testCateg.InvisLtdRandom.Count < testCateg.InvisLtdLimit)
+                {
+                    activeDockStyle = dockStyles[2];
+                    virtualDeviceVisible = false;
+                    //Debug.Log("InvisLtdRandom");
+                    break;
+                }
+                else if ((index >= 0.5f && index < 0.75f) && testCateg.VisPresets.Count < testCateg.VisPresetLimit)
+                {
+                    activeDockStyle = dockStyles[1];
+                    virtualDeviceVisible = true;
+                    //Debug.Log("VisPresets");
+                    break;
+                }
+                else if ((index >= 0.75f && index <= 1.0f) && testCateg.InvisPresets.Count < testCateg.InvisPresetLimit)
+                {
+                    activeDockStyle = dockStyles[1];
+                    virtualDeviceVisible = false;
+                    //Debug.Log("InvisPresets");
+                    break;
+                }
+                else if (testCateg.VisLtdRandom.Count >= testCateg.VisLtdLimit &&
+                        testCateg.InvisLtdRandom.Count >= testCateg.InvisLtdLimit && 
+                        testCateg.VisPresets.Count >= testCateg.VisPresetLimit &&
+                        testCateg.InvisPresets.Count >= testCateg.InvisPresetLimit)
+                {
+                    currAction = "Tests Finished";
+                    GetComponent<testDataGUI>().FetchAction(currAction);
+                    break;
+                }
+            }
+
+            FlipDeviceVisibilityInHMD(virtualDeviceVisible);
+        }
+
         // Create test Object
         GameObject test = Instantiate<GameObject>(testObject, Vector3.zero, Quaternion.identity, this.transform);
         dataRecorder testParams = test.GetComponent<dataRecorder>();
@@ -304,42 +369,7 @@ public class dataRecordingController : MonoBehaviour {
         testParams.dockAngleObjects[2] = GameObject.FindGameObjectWithTag("dockRotateInverse");
         testParams.dockAngleObjects[3] = GameObject.FindGameObjectWithTag("dockChildRotateInverse");
 
-        //// If using an experiment procedure do this ////
-        if (testCateg.automateTypes)
-        {
-            while (true)
-            {
-                // Generate a random style choice and exit with a break when done
-                float index = Random.Range(0f, 1.0f);
-
-                if (index < 0.25f && testCateg.VisLtdRandom.Count < testCateg.VisLtdLimit)
-                {
-                    activeDockStyle = dockStyles[2];
-                    virtualDeviceVisible = true;
-                    break;
-                }
-                else if ((index >= 0.25f && index < 0.5f) && testCateg.InvisLtdRandom.Count < testCateg.InvisLtdLimit)
-                {
-                    activeDockStyle = dockStyles[2];
-                    virtualDeviceVisible = false;
-                    break;
-                }
-                else if ((index >= 0.5f && index < 0.75f) && testCateg.VisPresets.Count < testCateg.VisPresetLimit)
-                {
-                    activeDockStyle = dockStyles[1];
-                    virtualDeviceVisible = true;
-                    break;
-                }
-                else if ((index >= 0.75f && index <= 1.0f) && testCateg.InvisPresets.Count < testCateg.InvisPresetLimit)
-                {
-                    activeDockStyle = dockStyles[1];
-                    virtualDeviceVisible = false;
-                    break;
-                }
-            }
-
-            FlipDeviceVisibilityInHMD(virtualDeviceVisible);
-        }
+        
 
         // Name the TestObject
         test.name = "Test_" + tests.Count;
@@ -347,12 +377,23 @@ public class dataRecordingController : MonoBehaviour {
         // Add to test list
         tests.Add(test);
 
+        TestCatCheck();
+
         // Set the current test if it has not yet beens set
         if (!currTest)
             SetCurrTest();
 
         // Once test is created give it a new dock shape
         NewDockShape();
+    }
+
+    //// Find Completed test types and add to list ////
+    public void TestCatCheck()
+    {
+        testCateg.VisLtdRandom = TestsOfType("True", "Ltd Random", tests);
+        testCateg.InvisLtdRandom = TestsOfType("False", "Ltd Random", tests);
+        testCateg.VisPresets = TestsOfType("True", "Presets", tests);
+        testCateg.InvisPresets = TestsOfType("False", "Presets", tests);
     }
 
     // Create Final Report Summary

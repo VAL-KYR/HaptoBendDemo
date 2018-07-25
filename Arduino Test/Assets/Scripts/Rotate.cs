@@ -47,12 +47,7 @@ public class Rotate : MonoBehaviour {
         float zAngleChange = zAngle - zAnglePrev;
 
         transform.Rotate(0, 0, -zAngleChange, Space.Self);
-
-        if (Input.GetKeyDown("z"))
-        {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-
+        
         zAnglePrev = zAngle;
         rollPrev = roll;
     }

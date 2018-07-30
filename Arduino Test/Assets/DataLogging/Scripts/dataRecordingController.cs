@@ -400,16 +400,16 @@ public class dataRecordingController : MonoBehaviour {
     public void FinalReport()
     {
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisLtdRandom);
-        GetComponent<dataSummary>().ExportSummaryFile("VisLtdRandom");
+        GetComponent<dataSummary>().ExportSummaryFile("VisLtdRandom", false);
         GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisLtdRandom);
-        GetComponent<dataSummary>().ExportSummaryFile("InvisLtdRandom");
+        GetComponent<dataSummary>().ExportSummaryFile("InvisLtdRandom", false);
         GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisPresets);
-        GetComponent<dataSummary>().ExportSummaryFile("VisPresets");
+        GetComponent<dataSummary>().ExportSummaryFile("VisPresets", false);
         GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisPresets);
-        GetComponent<dataSummary>().ExportSummaryFile("InvisPresets");
+        GetComponent<dataSummary>().ExportSummaryFile("InvisPresets", false);
         GetComponent<dataSummary>().EraseResultsLists();
     }
 

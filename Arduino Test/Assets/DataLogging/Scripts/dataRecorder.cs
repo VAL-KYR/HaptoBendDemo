@@ -83,6 +83,7 @@ public class dataRecorder : MonoBehaviour {
         public float efficiency;
 
         public float deviceError;
+
         public float MV;
         public int TRE;
 
@@ -622,6 +623,7 @@ public class dataRecorder : MonoBehaviour {
     public void AnalyseData()
     {
 
+        // Creat columns of the size of the first row of allData
         for(int col = 0; col < allData.row[0].Count; col++)
         {
             // scale the MV error by the device's initial error (twitch)

@@ -70,12 +70,14 @@ public class dataSummary : MonoBehaviour {
     }
 
     //// REPORT CALCULATION AND CREATION ////
-    public void ExportSummaryFile(string resultsName)
+    public void ExportSummaryFile(string resultsName, bool createSumLines)
     {
-        /// FIRST SUMMARIES LINE
         textLog.exportedText = "";
 
-        textLog.exportedText += "All " + resultsName + " Averages" + textLog.cellSeperatorType + 
+        /// FIRST SUMMARIES LINE
+        if (createSumLines)
+        {
+            textLog.exportedText += "All " + resultsName + " Averages" + textLog.cellSeperatorType + 
                                 "Tester Name" + textLog.cellSeperatorType + 
                                 "Test Timestamp" + textLog.cellSeperatorType + 
                                 "Dock Shape Style" + textLog.cellSeperatorType +
@@ -88,6 +90,8 @@ public class dataSummary : MonoBehaviour {
                                 "Total Difficulty" + textLog.cellSeperatorType + 
                                 "MV" + textLog.cellSeperatorType + 
                                 "TRE" + textLog.cellSeperatorType;
+        }
+        
 
         // skip the first test to prevent counting the blank next test
         for (int i = 0; i < summary.allTimeTaken.Count; i++)
@@ -113,17 +117,22 @@ public class dataSummary : MonoBehaviour {
         // seperate for new section
         textLog.exportedText += "\n" + "\n";
 
+
+
         /// FIRST SUMMARY SUM LINE
-        textLog.exportedText += resultsName + " Averages" + textLog.cellSeperatorType + 
-                                "Tester Name" + textLog.cellSeperatorType + 
-                                "Time Taken (avg)" + textLog.cellSeperatorType +
-                                "Shape Precision % (avg)" + textLog.cellSeperatorType +
-                                "Orientation Precision % (avg)" + textLog.cellSeperatorType +
-                                "Overall Precision % (avg)" + textLog.cellSeperatorType + 
-                                "Efficiency % (avg)" + textLog.cellSeperatorType + 
-                                "Total Difficulty (avg)" + textLog.cellSeperatorType + 
-                                "MV (avg)" + textLog.cellSeperatorType + 
-                                "TRE (avg)" + textLog.cellSeperatorType;
+        if (createSumLines)
+        {
+            textLog.exportedText += resultsName + " Averages" + textLog.cellSeperatorType + 
+                                    "Tester Name" + textLog.cellSeperatorType + 
+                                    "Time Taken (avg)" + textLog.cellSeperatorType +
+                                    "Shape Precision % (avg)" + textLog.cellSeperatorType +
+                                    "Orientation Precision % (avg)" + textLog.cellSeperatorType +
+                                    "Overall Precision % (avg)" + textLog.cellSeperatorType + 
+                                    "Efficiency % (avg)" + textLog.cellSeperatorType + 
+                                    "Total Difficulty (avg)" + textLog.cellSeperatorType + 
+                                    "MV (avg)" + textLog.cellSeperatorType + 
+                                    "TRE (avg)" + textLog.cellSeperatorType;
+        }
 
         /// SUMMARY SUM LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType + 
@@ -167,7 +176,7 @@ public class dataSummary : MonoBehaviour {
         // SEND DATA TO THE GUI
         this.GetComponent<testDataGUI>().testData.Add(resultsName + " Summary:" + textLog.cellSeperatorType + guiResults + "\n" + "\n" + "\n");
 
-        // Send the data
+        // SEND DATA TO THE FILE
         fileEditor.Append(textLog.path, textLog.exportedText + "\n" + "\n" + "\n");
 
         // Update the debug and inspector

@@ -69,8 +69,8 @@ public class dataSummary : MonoBehaviour {
         return total / numbers.Count;
     }
 
-    //// REPORT CALCULATION AND CREATION ////
-    public void ExportSummaryFile(string resultsName, bool createSumLines)
+    //// ALL REPORT SUMMARY CREATION ////
+    public void ExportTrials (string resultsName, bool createSumLines, bool textSeperation)
     {
         textLog.exportedText = "";
 
@@ -115,24 +115,39 @@ public class dataSummary : MonoBehaviour {
         }
 
         // seperate for new section
-        textLog.exportedText += "\n" + "\n";
+        if (textSeperation)
+            textLog.exportedText += "\n" + "\n";
 
+        // SEND DATA TO THE FILE
+        fileEditor.Append(textLog.path, textLog.exportedText);
 
+        // Update the debug and inspector
+        fileEditor.Read(textLog.path);
+#if UNITY_EDITOR
+        fileEditor.UpdateEditor(textLog.path, textLog.fileName);
+#endif
+    }
+
+    /// FINAL SUMMARIES CREATION ////
+    public void ExportTrialSummaries (string resultsName, bool createSumLines, bool textSeperation)
+    {
+        textLog.exportedText = "";
 
         /// FIRST SUMMARY SUM LINE
         if (createSumLines)
         {
             textLog.exportedText += resultsName + " Averages" + textLog.cellSeperatorType + 
-                                    "Tester Name" + textLog.cellSeperatorType + 
-                                    "Time Taken (avg)" + textLog.cellSeperatorType +
-                                    "Shape Precision % (avg)" + textLog.cellSeperatorType +
-                                    "Orientation Precision % (avg)" + textLog.cellSeperatorType +
-                                    "Overall Precision % (avg)" + textLog.cellSeperatorType + 
-                                    "Efficiency % (avg)" + textLog.cellSeperatorType + 
-                                    "Total Difficulty (avg)" + textLog.cellSeperatorType + 
-                                    "MV (avg)" + textLog.cellSeperatorType + 
-                                    "TRE (avg)" + textLog.cellSeperatorType;
+                                "Tester Name" + textLog.cellSeperatorType + 
+                                "Time Taken (avg)" + textLog.cellSeperatorType +
+                                "Shape Precision % (avg)" + textLog.cellSeperatorType +
+                                "Orientation Precision % (avg)" + textLog.cellSeperatorType +
+                                "Overall Precision % (avg)" + textLog.cellSeperatorType + 
+                                "Efficiency % (avg)" + textLog.cellSeperatorType + 
+                                "Total Difficulty (avg)" + textLog.cellSeperatorType + 
+                                "MV (avg)" + textLog.cellSeperatorType + 
+                                "TRE (avg)" + textLog.cellSeperatorType;
         }
+        
 
         /// SUMMARY SUM LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType + 
@@ -146,38 +161,17 @@ public class dataSummary : MonoBehaviour {
                                 summary.MV + textLog.cellSeperatorType + 
                                 summary.TRE + textLog.cellSeperatorType;
 
-        string guiResults = "Tester Name" + textLog.cellSeperatorType + 
-                            "Time Taken" + textLog.cellSeperatorType + 
-
-                            "\n" + textLog.cellSeperatorType +
-                            summary.testerName + textLog.cellSeperatorType +
-                            summary.timeTaken + textLog.cellSeperatorType +
-
-                            "\n" + "\n" + textLog.cellSeperatorType + "Shape Precision %" + textLog.cellSeperatorType +
-                            "Orientation Precision %" + textLog.cellSeperatorType +
-                            "Overall Precision %" + textLog.cellSeperatorType +
-
-                            "\n" + textLog.cellSeperatorType +
-                            summary.shapePrecision + textLog.cellSeperatorType +
-                            summary.orientationPrecision + textLog.cellSeperatorType +
-                            summary.precision + textLog.cellSeperatorType + 
-
-                            "\n" + "\n" + textLog.cellSeperatorType + "Efficiency %" + textLog.cellSeperatorType + 
-                            "Difficulty" + textLog.cellSeperatorType + 
-                            "Total MV" + textLog.cellSeperatorType + 
-                            "Total TRE" + textLog.cellSeperatorType +
-
-                            "\n" + textLog.cellSeperatorType +
-                            summary.efficiency + textLog.cellSeperatorType + 
-                            summary.totalDifficulty + textLog.cellSeperatorType + 
-                            summary.MV + textLog.cellSeperatorType + 
-                            summary.TRE + textLog.cellSeperatorType;
-
+        /*
         // SEND DATA TO THE GUI
         this.GetComponent<testDataGUI>().testData.Add(resultsName + " Summary:" + textLog.cellSeperatorType + guiResults + "\n" + "\n" + "\n");
+        */
+
+        // seperate for new section
+        if (textSeperation)
+            textLog.exportedText += "\n" + "\n";
 
         // SEND DATA TO THE FILE
-        fileEditor.Append(textLog.path, textLog.exportedText + "\n" + "\n" + "\n");
+        fileEditor.Append(textLog.path, textLog.exportedText);
 
         // Update the debug and inspector
         fileEditor.Read(textLog.path);
@@ -186,8 +180,11 @@ public class dataSummary : MonoBehaviour {
 #endif
     }
 
+    //++ When adding new summary data start by adding it here to these temporary export variables
     public void CalculateFinalResults(List<GameObject> testsToSummarize)
     {
+        EraseResultsLists();
+
         // skip the first test to prevent counting the blank next test
         for(int i = 0; i < testsToSummarize.Count; i++)
         {
@@ -217,6 +214,8 @@ public class dataSummary : MonoBehaviour {
         summary.totalDifficulty = unweightedAverage(summary.allTotalDifficulty);
         summary.MV = unweightedAverage(summary.allMV);
         summary.TRE = (int)unweightedAverage(summary.allTRE);
+
+
     }
 
     /// Clear the data

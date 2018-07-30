@@ -134,7 +134,7 @@ public class dataRecordingController : MonoBehaviour {
         // Inputs during test
         if (inputTime > inputTimer)
         {
-            if (Input.GetButton("ExecuteTest") && !testsDone)
+            if ((Input.GetButton("ExecuteTest") || Input.GetButton("Pedal")) && !testsDone)
             {
                 if (!currTest.GetComponent<dataRecorder>().recordAngles)
                 {
@@ -399,18 +399,17 @@ public class dataRecordingController : MonoBehaviour {
     // Create Final Report Summary
     public void FinalReport()
     {
+        GetComponent<dataSummary>().CalculateFinalResults(tests);
+        GetComponent<dataSummary>().ExportTrials("Test", true, true);
+
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisLtdRandom);
-        GetComponent<dataSummary>().ExportSummaryFile("VisLtdRandom", false);
-        GetComponent<dataSummary>().EraseResultsLists();
+        GetComponent<dataSummary>().ExportTrialSummaries("VisLtdRandom", true, false);
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisLtdRandom);
-        GetComponent<dataSummary>().ExportSummaryFile("InvisLtdRandom", false);
-        GetComponent<dataSummary>().EraseResultsLists();
+        GetComponent<dataSummary>().ExportTrialSummaries("InvisLtdRandom", true, false);
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisPresets);
-        GetComponent<dataSummary>().ExportSummaryFile("VisPresets", false);
-        GetComponent<dataSummary>().EraseResultsLists();
+        GetComponent<dataSummary>().ExportTrialSummaries("VisPresets", true, false);
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisPresets);
-        GetComponent<dataSummary>().ExportSummaryFile("InvisPresets", false);
-        GetComponent<dataSummary>().EraseResultsLists();
+        GetComponent<dataSummary>().ExportTrialSummaries("InvisPresets", true, false);
     }
 
     // Get a new shape to dock to

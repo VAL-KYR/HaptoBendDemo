@@ -399,9 +399,15 @@ public class dataRecordingController : MonoBehaviour {
     // Create Final Report Summary
     public void FinalReport()
     {
+        //-- Remove the debug/dummy tests
+        tests.RemoveAt(tests.Count - 1);
+        tests.RemoveAt(0);
+
+        // Export the test list summary
         GetComponent<dataSummary>().CalculateFinalResults(tests);
         GetComponent<dataSummary>().ExportTrials("Test", true, true);
 
+        // Export the test category summaries
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisLtdRandom);
         GetComponent<dataSummary>().ExportTrialSummaries("VisLtdRandom", true, false);
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisLtdRandom);

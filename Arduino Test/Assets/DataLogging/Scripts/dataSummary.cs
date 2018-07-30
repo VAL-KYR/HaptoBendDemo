@@ -18,11 +18,10 @@ public class dataSummary : MonoBehaviour {
     [System.Serializable]
     public class Summary : System.Object
     {
-        public List<GameObject> tests;
-
         public List<string> allTesterName;
         public List<string> allTestTimestamp;
         public List<string> allDockShapeStyle;
+        public List<string> allDeviceVisibility;
 
         public List<float> allTimeTaken;
         public List<float> allShapePrecision;
@@ -71,13 +70,16 @@ public class dataSummary : MonoBehaviour {
     }
 
     //// REPORT CALCULATION AND CREATION ////
-    public void ExportSummaryFile()
+    public void ExportSummaryFile(string resultsName)
     {
         /// FIRST SUMMARIES LINE
-        textLog.exportedText += "All Report Averages" + textLog.cellSeperatorType + 
+        textLog.exportedText = "";
+
+        textLog.exportedText += "All " + resultsName + " Averages" + textLog.cellSeperatorType + 
                                 "Tester Name" + textLog.cellSeperatorType + 
                                 "Test Timestamp" + textLog.cellSeperatorType + 
-                                "Dock Shape Style" + textLog.cellSeperatorType + 
+                                "Dock Shape Style" + textLog.cellSeperatorType +
+                                "Virtual Device Visible" + textLog.cellSeperatorType + 
                                 "Time Taken" + textLog.cellSeperatorType +
                                 "Shape Precision %" + textLog.cellSeperatorType +
                                 "Orientation Precision %" + textLog.cellSeperatorType +
@@ -97,7 +99,7 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += summary.allTesterName[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allTestTimestamp[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allDockShapeStyle[i] + textLog.cellSeperatorType;
-
+            textLog.exportedText += summary.allDeviceVisibility[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allTimeTaken[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allShapePrecision[i] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allOrientationPrecision[i] + textLog.cellSeperatorType;
@@ -112,7 +114,7 @@ public class dataSummary : MonoBehaviour {
         textLog.exportedText += "\n" + "\n";
 
         /// FIRST SUMMARY SUM LINE
-        textLog.exportedText += "Session Averages" + textLog.cellSeperatorType + 
+        textLog.exportedText += resultsName + " Averages" + textLog.cellSeperatorType + 
                                 "Tester Name" + textLog.cellSeperatorType + 
                                 "Time Taken (avg)" + textLog.cellSeperatorType +
                                 "Shape Precision % (avg)" + textLog.cellSeperatorType +
@@ -122,17 +124,6 @@ public class dataSummary : MonoBehaviour {
                                 "Total Difficulty (avg)" + textLog.cellSeperatorType + 
                                 "MV (avg)" + textLog.cellSeperatorType + 
                                 "TRE (avg)" + textLog.cellSeperatorType;
-
-        string guiResults = "Session Averages" + textLog.cellSeperatorType + 
-                            "Tester Name" + textLog.cellSeperatorType + 
-                            "Time Taken (avg)" + textLog.cellSeperatorType + 
-                            "Shape Precision % (avg)" + textLog.cellSeperatorType +
-                            "Orientation Precision % (avg)" + textLog.cellSeperatorType +
-                            "Overall Precision % (avg)" + textLog.cellSeperatorType +
-                            "Efficiency % (avg)" + textLog.cellSeperatorType + 
-                            "Total Difficulty (avg)" + textLog.cellSeperatorType + 
-                            "MV (avg)" + textLog.cellSeperatorType + 
-                            "TRE (avg)" + textLog.cellSeperatorType;
 
         /// SUMMARY SUM LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType + 
@@ -146,22 +137,38 @@ public class dataSummary : MonoBehaviour {
                                 summary.MV + textLog.cellSeperatorType + 
                                 summary.TRE + textLog.cellSeperatorType;
 
-        guiResults += "\n" + textLog.cellSeperatorType + 
+        string guiResults = "Tester Name" + textLog.cellSeperatorType + 
+                            "Time Taken" + textLog.cellSeperatorType + 
+
+                            "\n" + textLog.cellSeperatorType +
                             summary.testerName + textLog.cellSeperatorType +
                             summary.timeTaken + textLog.cellSeperatorType +
+
+                            "\n" + "\n" + textLog.cellSeperatorType + "Shape Precision %" + textLog.cellSeperatorType +
+                            "Orientation Precision %" + textLog.cellSeperatorType +
+                            "Overall Precision %" + textLog.cellSeperatorType +
+
+                            "\n" + textLog.cellSeperatorType +
                             summary.shapePrecision + textLog.cellSeperatorType +
                             summary.orientationPrecision + textLog.cellSeperatorType +
                             summary.precision + textLog.cellSeperatorType + 
+
+                            "\n" + "\n" + textLog.cellSeperatorType + "Efficiency %" + textLog.cellSeperatorType + 
+                            "Difficulty" + textLog.cellSeperatorType + 
+                            "Total MV" + textLog.cellSeperatorType + 
+                            "Total TRE" + textLog.cellSeperatorType +
+
+                            "\n" + textLog.cellSeperatorType +
                             summary.efficiency + textLog.cellSeperatorType + 
                             summary.totalDifficulty + textLog.cellSeperatorType + 
                             summary.MV + textLog.cellSeperatorType + 
                             summary.TRE + textLog.cellSeperatorType;
 
         // SEND DATA TO THE GUI
-        this.GetComponent<testDataGUI>().testData.Add("Test Results Summary: " + "\n" + guiResults + "\n" + "\n" + "\n");
+        this.GetComponent<testDataGUI>().testData.Add(resultsName + " Summary:" + textLog.cellSeperatorType + guiResults + "\n" + "\n" + "\n");
 
         // Send the data
-        fileEditor.Append(textLog.path, textLog.exportedText);
+        fileEditor.Append(textLog.path, textLog.exportedText + "\n" + "\n" + "\n");
 
         // Update the debug and inspector
         fileEditor.Read(textLog.path);
@@ -170,26 +177,24 @@ public class dataSummary : MonoBehaviour {
 #endif
     }
 
-    public void CalculateFinalResults()
+    public void CalculateFinalResults(List<GameObject> testsToSummarize)
     {
-        // Get all test results into lists
-        summary.tests = this.GetComponent<dataRecordingController>().tests;
-
         // skip the first test to prevent counting the blank next test
-        for(int i = 0; i < summary.tests.Count - 1; i++)
+        for(int i = 0; i < testsToSummarize.Count; i++)
         {
-            summary.allTesterName.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.testerName);
-            summary.allTestTimestamp.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.testTimestamp);
-            summary.allDockShapeStyle.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.dockShapeStyle);
-
-            summary.allTimeTaken.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.timeTaken);
-            summary.allShapePrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.shapePrecision);
-            summary.allOrientationPrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.orientationPrecision);
-            summary.allPrecision.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.precision);
-            summary.allEfficiency.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.efficiency);
-            summary.allTotalDifficulty.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.totalDifficulty);
-            summary.allMV.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.MV);
-            summary.allTRE.Add(summary.tests[i].GetComponent<dataRecorder>().finalResults.TRE);
+            summary.allTesterName.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.testerName);
+            summary.allTestTimestamp.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.testTimestamp);
+            summary.allDockShapeStyle.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.dockShapeStyle);
+            summary.allDeviceVisibility.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.deviceVisibility);
+            
+            summary.allTimeTaken.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.timeTaken);
+            summary.allShapePrecision.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.shapePrecision);
+            summary.allOrientationPrecision.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.orientationPrecision);
+            summary.allPrecision.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.precision);
+            summary.allEfficiency.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.efficiency);
+            summary.allTotalDifficulty.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.totalDifficulty);
+            summary.allMV.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.MV);
+            summary.allTRE.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.TRE);
         }
 
         // Get averages of all data
@@ -203,6 +208,24 @@ public class dataSummary : MonoBehaviour {
         summary.totalDifficulty = unweightedAverage(summary.allTotalDifficulty);
         summary.MV = unweightedAverage(summary.allMV);
         summary.TRE = (int)unweightedAverage(summary.allTRE);
+    }
+
+    /// Clear the data
+    public void EraseResultsLists()
+    {
+        summary.allTesterName.Clear();
+        summary.allTestTimestamp.Clear();
+        summary.allDockShapeStyle.Clear();
+        summary.allDeviceVisibility.Clear();
+        
+        summary.allTimeTaken.Clear();
+        summary.allShapePrecision.Clear();
+        summary.allOrientationPrecision.Clear();
+        summary.allPrecision.Clear();
+        summary.allEfficiency.Clear();
+        summary.allTotalDifficulty.Clear();
+        summary.allMV.Clear();
+        summary.allTRE.Clear();
     }
     
 }

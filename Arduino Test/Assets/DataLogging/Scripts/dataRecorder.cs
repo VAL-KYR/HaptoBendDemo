@@ -33,6 +33,8 @@ public class dataRecorder : MonoBehaviour {
         public string testerName;
         public string testTimestamp;
         public string dockShapeStyle;
+
+        public bool deviceVisibility;
     }
     public TextLog textLog = new TextLog();
 
@@ -87,6 +89,8 @@ public class dataRecorder : MonoBehaviour {
         public string testerName;
         public string testTimestamp;
         public string dockShapeStyle;
+
+        public string deviceVisibility;
     }
     public FinalSummary finalResults = new FinalSummary();
 
@@ -109,14 +113,10 @@ public class dataRecorder : MonoBehaviour {
     // Update
     void Update() {
         // Get the dockstyle so we know what it is before we write to finalResults
-        if (this.GetComponentInParent<dataRecordingController>().randomDock)
-        {
-            textLog.dockShapeStyle = "Random";
-        }
-        else
-        {
-            textLog.dockShapeStyle = "Presets";
-        }
+        textLog.dockShapeStyle = this.GetComponentInParent<dataRecordingController>().activeDockStyle;
+
+        // Get the dock visibility 
+        textLog.deviceVisibility = this.GetComponentInParent<dataRecordingController>().virtualDeviceVisible;
 
         // Get the testername from the dataController
         textLog.testerName = this.GetComponentInParent<testDataGUI>().name;
@@ -179,9 +179,8 @@ public class dataRecorder : MonoBehaviour {
                 stopWriting = true;
             }
 
-            // Create a new test when a test finishes & creates a new dock shape for that new test
+            // Create a new test when a test finishes
             this.GetComponentInParent<dataRecordingController>().NewTest();
-            this.GetComponentInParent<dataRecordingController>().NewDockShape();
 
             anglesRecorded = true;
         }
@@ -192,7 +191,7 @@ public class dataRecorder : MonoBehaviour {
     {
         ///////////////////////////////////////////////////// Take from Controller as Editable Fields
     }
-    
+
     //// Device Twitch Calibration ////
     float DeviceTwichCalibration(DataTable deviceData)
     {
@@ -546,57 +545,68 @@ public class dataRecorder : MonoBehaviour {
                                             "Tester Name" + textLog.cellSeperatorType +
                                             "Time of Test" + textLog.cellSeperatorType +
                                             "Dock Shape Style" + textLog.cellSeperatorType +
+                                            "Virtual Device Visible" + textLog.cellSeperatorType +
                                             "Time Taken" + textLog.cellSeperatorType +
                                             "Shape Precision %" + textLog.cellSeperatorType +
                                             "Orientation Precision %" + textLog.cellSeperatorType +
                                             "Overall Precision %" + textLog.cellSeperatorType + 
                                             "Efficiency %" + textLog.cellSeperatorType + 
+                                            "Difficulty" + textLog.cellSeperatorType + 
                                             "Total MV" + textLog.cellSeperatorType + 
                                             "Total TRE" + textLog.cellSeperatorType;
 
-        // For GUI presentation
-        string guiResults = "\n" + "\n" + "Final Results" + textLog.cellSeperatorType +
-                                        "Tester Name" + textLog.cellSeperatorType +
-                                        "Time of Test" + textLog.cellSeperatorType +
-                                        "Dock Shape Style" + textLog.cellSeperatorType +
-                                        "Time Taken" + textLog.cellSeperatorType +
-                                        "Shape Precision %" + textLog.cellSeperatorType +
-                                        "Orientation Precision %" + textLog.cellSeperatorType +
-                                        "Overall Precision %" + textLog.cellSeperatorType +
-                                        "Efficiency %" + textLog.cellSeperatorType + 
-                                        "Total MV" + textLog.cellSeperatorType + 
-                                        "Total TRE" + textLog.cellSeperatorType;
-
-        /// SUMMARY LINES
+         /// SUMMARY LINES
         textLog.exportedText += "\n" + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.testerName + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.testTimestamp + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.dockShapeStyle + textLog.cellSeperatorType;
-
+        textLog.exportedText += finalResults.deviceVisibility + textLog.cellSeperatorType;
         textLog.exportedText += efficiency.completionTime + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.shapePrecision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.orientationPrecision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.precision + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.efficiency + textLog.cellSeperatorType;
+        textLog.exportedText += finalResults.totalDifficulty + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.MV + textLog.cellSeperatorType;
         textLog.exportedText += finalResults.TRE + textLog.cellSeperatorType;
 
         // For GUI presentation
-        guiResults += "\n" + textLog.cellSeperatorType;
-        guiResults += finalResults.testerName + textLog.cellSeperatorType;
-        guiResults += finalResults.testTimestamp + textLog.cellSeperatorType;
-        guiResults += finalResults.dockShapeStyle + textLog.cellSeperatorType;
+        string guiResults = "\n" + "\n" + this.name + " Results:" + textLog.cellSeperatorType +
+                                        "Tester Name" + textLog.cellSeperatorType +
+                                        "Time of Test" + textLog.cellSeperatorType +
+                                        "Dock Shape Style" + textLog.cellSeperatorType +
+                                        "Virtual Device Visible" + textLog.cellSeperatorType +
+                                        "Time Taken" + textLog.cellSeperatorType +
 
-        guiResults += efficiency.completionTime + textLog.cellSeperatorType;
-        guiResults += finalResults.shapePrecision + textLog.cellSeperatorType;
-        guiResults += finalResults.orientationPrecision + textLog.cellSeperatorType;
-        guiResults += finalResults.precision + textLog.cellSeperatorType;
-        guiResults += finalResults.efficiency + textLog.cellSeperatorType;
-        guiResults += finalResults.MV + textLog.cellSeperatorType;
-        guiResults += finalResults.TRE + textLog.cellSeperatorType;
+                                        "\n" + textLog.cellSeperatorType +
+                                        finalResults.testerName + textLog.cellSeperatorType +
+                                        finalResults.testTimestamp + textLog.cellSeperatorType +
+                                        finalResults.dockShapeStyle + textLog.cellSeperatorType +
+                                        finalResults.deviceVisibility + textLog.cellSeperatorType +
+                                        efficiency.completionTime + textLog.cellSeperatorType +
+
+                                        "\n" + "\n" + textLog.cellSeperatorType + "Shape Precision %" + textLog.cellSeperatorType +
+                                        "Orientation Precision %" + textLog.cellSeperatorType +
+                                        "Overall Precision %" + textLog.cellSeperatorType +
+                                        
+
+                                        "\n" + textLog.cellSeperatorType + finalResults.shapePrecision + textLog.cellSeperatorType +
+                                        finalResults.orientationPrecision + textLog.cellSeperatorType +
+                                        finalResults.precision + textLog.cellSeperatorType +
+                                        
+
+                                        "\n" + "\n" + textLog.cellSeperatorType + "Efficiency %" + textLog.cellSeperatorType + 
+                                        "Difficulty" + textLog.cellSeperatorType + 
+                                        "Total MV" + textLog.cellSeperatorType + 
+                                        "Total TRE" + textLog.cellSeperatorType +
+
+                                        "\n" + textLog.cellSeperatorType + finalResults.efficiency + textLog.cellSeperatorType +
+                                        finalResults.totalDifficulty + textLog.cellSeperatorType +
+                                        finalResults.MV + textLog.cellSeperatorType +
+                                        finalResults.TRE + textLog.cellSeperatorType;
 
         // SEND DATA TO THE GUI
-        this.transform.parent.GetComponent<testDataGUI>().testData.Add(this.name + " Results: " + "\n" + guiResults + "\n" + "\n" + "\n");
+        this.transform.parent.GetComponent<testDataGUI>().testData.Add("\n" + guiResults + "\n" + "\n" + "\n");
 
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);
@@ -723,6 +733,7 @@ public class dataRecorder : MonoBehaviour {
         finalResults.testerName = textLog.testerName;
         finalResults.testTimestamp = textLog.testTimestamp;
         finalResults.dockShapeStyle = textLog.dockShapeStyle;
+        finalResults.deviceVisibility = textLog.deviceVisibility.ToString();
 
         // timetaken math
         finalResults.timeTaken = efficiency.secondsTaken;

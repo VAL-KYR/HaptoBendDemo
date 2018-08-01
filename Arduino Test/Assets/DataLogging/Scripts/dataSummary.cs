@@ -45,9 +45,9 @@ public class dataSummary : MonoBehaviour {
         public float efficiency;
         public float totalDifficulty;
         public float MV;
-        public float MVJoints;
+        public List<float> MVJoints;
         public int TRE;
-        public int TREJoins;
+        public List<int> TREJoints;
     }
     public Summary summary = new Summary();
 
@@ -170,8 +170,8 @@ public class dataSummary : MonoBehaviour {
         fileEditor.Append(textLog.sendFile, textLog.exportedText);
 
         // Update the debug and inspector
-        fileEditor.Read(textLog.sendFile);
 #if UNITY_EDITOR
+        fileEditor.Read(textLog.sendFile);
         fileEditor.UpdateEditor(textLog.sendFile, textLog.fileName);
 #endif
     }
@@ -193,7 +193,21 @@ public class dataSummary : MonoBehaviour {
                                 "Efficiency % (avg)" + textLog.cellSeperatorType + 
                                 "Total Difficulty (avg)" + textLog.cellSeperatorType + 
                                 "MV (avg)" + textLog.cellSeperatorType + 
-                                "TRE (avg)" + textLog.cellSeperatorType;
+                                "MV Rotate Angle" + textLog.cellSeperatorType +
+                                "MV ChildRotate Angle" + textLog.cellSeperatorType + 
+                                "MV RotateInverse Angle" + textLog.cellSeperatorType + 
+                                "MV ChildRotateInverse Angle" + textLog.cellSeperatorType + 
+                                "MV x Rotation" + textLog.cellSeperatorType + 
+                                "MV y Rotation" + textLog.cellSeperatorType +  
+                                "MV z Rotation" + textLog.cellSeperatorType +
+                                "TRE (avg)" + textLog.cellSeperatorType + 
+                                "TRE Rotate Angle" + textLog.cellSeperatorType +
+                                "TRE ChildRotate Angle" + textLog.cellSeperatorType + 
+                                "TRE RotateInverse Angle" + textLog.cellSeperatorType + 
+                                "TRE ChildRotateInverse Angle" + textLog.cellSeperatorType + 
+                                "TRE x Rotation" + textLog.cellSeperatorType + 
+                                "TRE y Rotation" + textLog.cellSeperatorType +  
+                                "TRE z Rotation" + textLog.cellSeperatorType;
         }
         
 
@@ -205,9 +219,16 @@ public class dataSummary : MonoBehaviour {
                                 summary.orientationPrecision + textLog.cellSeperatorType +
                                 summary.precision + textLog.cellSeperatorType + 
                                 summary.efficiency + textLog.cellSeperatorType + 
-                                summary.totalDifficulty + textLog.cellSeperatorType + 
-                                summary.MV + textLog.cellSeperatorType + 
-                                summary.TRE + textLog.cellSeperatorType;
+                                summary.totalDifficulty + textLog.cellSeperatorType;
+        textLog.exportedText += summary.MV + textLog.cellSeperatorType; 
+        
+        foreach (float angle in summary.MVJoints)
+            textLog.exportedText += angle + textLog.cellSeperatorType;
+
+        textLog.exportedText += summary.TRE + textLog.cellSeperatorType;
+
+        foreach (float angle in summary.TREJoints)
+            textLog.exportedText += angle + textLog.cellSeperatorType;
 
         /*
         // SEND DATA TO THE GUI
@@ -222,8 +243,8 @@ public class dataSummary : MonoBehaviour {
         fileEditor.Append(textLog.sendFile, textLog.exportedText);
 
         // Update the debug and inspector
-        fileEditor.Read(textLog.sendFile);
 #if UNITY_EDITOR
+        fileEditor.Read(textLog.sendFile);
         fileEditor.UpdateEditor(textLog.sendFile, textLog.fileName);
 #endif
     }
@@ -273,8 +294,19 @@ public class dataSummary : MonoBehaviour {
         summary.TRE = (int)unweightedAverage(summary.allTRE);
 
         //++ add joints MV and TRE averages
-        //** ADD TRE AND MV PER JOINT AVERAGES TOO MIGHT HAVE TO MOVE TO LOOP
-        //summary.MVJoints.Add();
+        for (int x = 0; x < summary.allMVAngles[0].Count; x++)
+        {
+            List<float> sum = new List<float>();
+
+            for (int y = 0; y < summary.allMVAngles.Count; y++)
+            {
+                sum.Add(summary.allMVAngles[x][y]);
+            }
+
+            summary.MVJoints.Add(unweightedAverage(sum));
+            sum.Clear();
+        }
+        // the average of all MVAngles by column... I think
     }
 
     /// Clear the data
@@ -294,8 +326,10 @@ public class dataSummary : MonoBehaviour {
         summary.allTotalDifficulty.Clear();
         summary.allMV.Clear();
         summary.allMVAngles.Clear();
+        summary.MVJoints.Clear();
         summary.allTRE.Clear();
         summary.allTREAngles.Clear();
+        summary.TREJoints.Clear();
     }
 
     /// Set filepath 

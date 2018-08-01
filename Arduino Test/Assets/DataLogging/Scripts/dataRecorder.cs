@@ -614,8 +614,8 @@ public class dataRecorder : MonoBehaviour {
         fileEditor.Append(textLog.path, textLog.exportedText);
 
         // Update the debug and inspector
-        fileEditor.Read(textLog.path);
 #if UNITY_EDITOR
+        fileEditor.Read(textLog.path);
         fileEditor.UpdateEditor(textLog.path, textLog.fileName);
 #endif
     }
@@ -636,14 +636,7 @@ public class dataRecorder : MonoBehaviour {
         //++ Send the per joint MV Amounts [THERE IS AN ERROR IN ALLOCATION ORDER]
         for (int x = 0; x < allDataMV.row.Count; x++)
         {
-            float MVSum = 0;
-
-            for (int y = 0; y < allDataMV.row[x].Count; y++)
-            {
-                MVSum += allDataMV.row[x][y];
-            }
-
-            finalResults.MVAngles.Add(MVSum);
+            finalResults.MVAngles.Add(allDataMV.row[x].Sum());
         }
 
         // Send the per joint TREs

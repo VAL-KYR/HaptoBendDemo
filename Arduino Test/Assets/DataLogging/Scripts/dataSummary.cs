@@ -100,15 +100,22 @@ public class dataSummary : MonoBehaviour {
                                 "Dock z Rotation" + textLog.cellSeperatorType + 
                                 "Efficiency %" + textLog.cellSeperatorType + 
                                 "Total Difficulty" + textLog.cellSeperatorType + 
-                                "MV" + textLog.cellSeperatorType + 
-                                "TRE" + textLog.cellSeperatorType + 
-                                "Rotate Angle TRE" + textLog.cellSeperatorType +
-                                "ChildRotate Angle TRE" + textLog.cellSeperatorType + 
-                                "RotateInverse Angle TRE" + textLog.cellSeperatorType + 
-                                "ChildRotateInverse Angle TRE" + textLog.cellSeperatorType + 
-                                "x Rotation TRE" + textLog.cellSeperatorType + 
-                                "y Rotation TRE" + textLog.cellSeperatorType +  
-                                "z Rotation TRE" + textLog.cellSeperatorType;
+                                "MV Avg" + textLog.cellSeperatorType + 
+                                "MV Rotate Angle" + textLog.cellSeperatorType +
+                                "MV ChildRotate Angle" + textLog.cellSeperatorType + 
+                                "MV RotateInverse Angle" + textLog.cellSeperatorType + 
+                                "MV ChildRotateInverse Angle" + textLog.cellSeperatorType + 
+                                "MV x Rotation" + textLog.cellSeperatorType + 
+                                "MV y Rotation" + textLog.cellSeperatorType +  
+                                "MV z Rotation" + textLog.cellSeperatorType +
+                                "TRE Avg" + textLog.cellSeperatorType + 
+                                "TRE Rotate Angle" + textLog.cellSeperatorType +
+                                "TRE ChildRotate Angle" + textLog.cellSeperatorType + 
+                                "TRE RotateInverse Angle" + textLog.cellSeperatorType + 
+                                "TRE ChildRotateInverse Angle" + textLog.cellSeperatorType + 
+                                "TRE x Rotation" + textLog.cellSeperatorType + 
+                                "TRE y Rotation" + textLog.cellSeperatorType +  
+                                "TRE z Rotation" + textLog.cellSeperatorType;
         }
         
 
@@ -138,13 +145,12 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += summary.allTotalDifficulty[x] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allMV[x] + textLog.cellSeperatorType;
 
-            /*
             //++ MV PER JOINT BREAKDOWN [loop]
-            for (int y = 0; y < summary.allMVAngles[x].Count; x++)
+            for (int y = 0; y < summary.allMVAngles[x].Count; y++)
             {
                 textLog.exportedText += summary.allMVAngles[x][y] + textLog.cellSeperatorType;
             }
-            */
+            
             textLog.exportedText += summary.allTRE[x] + textLog.cellSeperatorType;
 
             // TRE PER JOINT BREAKDOWN [loop]

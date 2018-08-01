@@ -408,12 +408,17 @@ public class dataRecordingController : MonoBehaviour {
         GetComponent<dataSummary>().ExportTrials("Test", true, true);
 
         // Export the test category summaries
+        GetComponent<dataSummary>().SetFileDestination(filePath, "Trial_Category_Summary", ".txt");
+        GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisLtdRandom);
         GetComponent<dataSummary>().ExportTrialSummaries("VisLtdRandom", true, false);
+        GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisLtdRandom);
         GetComponent<dataSummary>().ExportTrialSummaries("InvisLtdRandom", true, false);
+        GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.VisPresets);
         GetComponent<dataSummary>().ExportTrialSummaries("VisPresets", true, false);
+        GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisPresets);
         GetComponent<dataSummary>().ExportTrialSummaries("InvisPresets", true, false);
     }

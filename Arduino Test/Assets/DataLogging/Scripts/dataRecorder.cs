@@ -84,8 +84,11 @@ public class dataRecorder : MonoBehaviour {
 
         public float deviceError;
 
+        // Calculate MV/TREAngles per joint somewhere as a SUM of all instanced TRE and MV per joint
         public float MV;
+        public List<float> MVAngles;
         public int TRE;
+        public List<float> TREAngles;
 
         public string testerName;
         public string testTimestamp;
@@ -95,8 +98,7 @@ public class dataRecorder : MonoBehaviour {
     }
     public FinalSummary finalResults = new FinalSummary();
 
-    //+++ Mass Table Compiler Method
-    //+++ Main Table
+    // Mass Table Compiler Method
     public DataTable allData = new DataTable();
     public DataTable allDataMV = new DataTable();
     public DataTable allDataTRE = new DataTable();
@@ -302,9 +304,8 @@ public class dataRecorder : MonoBehaviour {
     //// COMPILE CURRANGLES INTO TABLE ////
     // Take total angles recorded every second and compile into single line array of angles in time increments
     void AngleRecord()
-    {
-        ////+++ ADD RECORDED ANGLE LINES [NEW]      
-        //+++ Add to official Data Table for Angles
+    {   
+        // Add to official Data Table for Angles
         allData.row.Add(angleSummary.currAngles.ToList());       
     }
 
@@ -315,7 +316,7 @@ public class dataRecorder : MonoBehaviour {
 
     //// WRITING DATA TO FILE ////
     // Create Single Mass String
-    //+++ SPLIT THIS WHOLE THING INTO BASIC FLOATS AND STRINGS TO SEND TO THE SUB TABLES AND LATER COMPILE AS A EXPORT STRING
+    //** SPLIT THIS WHOLE THING INTO BASIC FLOATS AND STRINGS TO SEND TO THE SUB TABLES AND LATER COMPILE AS A EXPORT STRING
     void ExportData()
     {
         fileEditor.Clear(textLog.path);
@@ -324,7 +325,7 @@ public class dataRecorder : MonoBehaviour {
         // Get and fill the test metadata
         MetaData();
 
-        ////+++ ADD RECORDED ANGLE LINES [NEW]  
+        //// ADD RECORDED ANGLE LINES [NEW]  
         /// FIRST ANGLES LINE
         textLog.exportedText += "\n" + "Angles Over Time";
         allData.columnNames.Add("Frames");
@@ -630,6 +631,25 @@ public class dataRecorder : MonoBehaviour {
             allDataMV.row.Add(AnalyseMV(allData, col, 2 + finalResults.deviceError));
             // scale the TRE zone by the device's initial error (twitch)
             allDataTRE.row.Add(AnalyseTRE(allData, col, 5 + finalResults.deviceError));
+        }
+
+        //++ Send the per joint MV Amounts [THERE IS AN ERROR IN ALLOCATION ORDER]
+        for (int x = 0; x < allDataMV.row.Count; x++)
+        {
+            float MVSum = 0;
+
+            for (int y = 0; y < allDataMV.row[x].Count; y++)
+            {
+                MVSum += allDataMV.row[x][y];
+            }
+
+            finalResults.MVAngles.Add(MVSum);
+        }
+
+        // Send the per joint TREs
+        for (int x = 0; x < allDataTRE.row.Count; x++)
+        {
+            finalResults.TREAngles.Add(allDataTRE.row[x].Count);
         }
 
         finalResults.MV = CountMV(allDataMV);

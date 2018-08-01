@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class dataSummary : MonoBehaviour {
 
@@ -9,8 +10,9 @@ public class dataSummary : MonoBehaviour {
     public class TextLog : System.Object
     {
         public string path = "Assets/DataLogging/Reports/";
-        public string fileName = "Report_Final_Summary";
+        public string fileName = "Reports_Summary";
         public string cellSeperatorType = "\t";
+        public string sendFile = "";
         public string exportedText;
     }
     public TextLog textLog = new TextLog();
@@ -25,13 +27,15 @@ public class dataSummary : MonoBehaviour {
 
         public List<float> allTimeTaken;
         public List<float> allShapePrecision;
+        public List<List<float>> allCorrectAngles = new List<List<float>>();
         public List<float> allOrientationPrecision;
         public List<float> allPrecision;
         public List<float> allEfficiency;
         public List<float> allTotalDifficulty;
         public List<float> allMV;
+        public List<List<float>> allMVAngles = new List<List<float>>();
         public List<float> allTRE;
-
+        public List<List<float>> allTREAngles = new List<List<float>>();
         public string testerName;
 
         public float timeTaken;
@@ -48,7 +52,8 @@ public class dataSummary : MonoBehaviour {
     // Use this for initialization
     void Start () {
         // Add filename to path
-        textLog.path += textLog.fileName + ".txt";
+        SetFileDestination(textLog.path, textLog.fileName, ".txt");
+        //textLog.path += textLog.fileName + ".txt";
 
         // Clear File before using
         fileEditor.Clear(textLog.path);
@@ -86,32 +91,67 @@ public class dataSummary : MonoBehaviour {
                                 "Shape Precision %" + textLog.cellSeperatorType +
                                 "Orientation Precision %" + textLog.cellSeperatorType +
                                 "Overall Precision %" + textLog.cellSeperatorType + 
+                                "Dock Rotate Angle" + textLog.cellSeperatorType + 
+                                "Dock ChildRotate Angle" + textLog.cellSeperatorType + 
+                                "Dock RotateInverse Angle" + textLog.cellSeperatorType + 
+                                "Dock ChildRotateInverse Angle" + textLog.cellSeperatorType + 
+                                "Dock x Rotation" + textLog.cellSeperatorType + 
+                                "Dock y Rotation" + textLog.cellSeperatorType + 
+                                "Dock z Rotation" + textLog.cellSeperatorType + 
                                 "Efficiency %" + textLog.cellSeperatorType + 
                                 "Total Difficulty" + textLog.cellSeperatorType + 
                                 "MV" + textLog.cellSeperatorType + 
-                                "TRE" + textLog.cellSeperatorType;
+                                "TRE" + textLog.cellSeperatorType + 
+                                "Rotate Angle TRE" + textLog.cellSeperatorType +
+                                "ChildRotate Angle TRE" + textLog.cellSeperatorType + 
+                                "RotateInverse Angle TRE" + textLog.cellSeperatorType + 
+                                "ChildRotateInverse Angle TRE" + textLog.cellSeperatorType + 
+                                "x Rotation TRE" + textLog.cellSeperatorType + 
+                                "y Rotation TRE" + textLog.cellSeperatorType +  
+                                "z Rotation TRE" + textLog.cellSeperatorType;
         }
         
 
         // skip the first test to prevent counting the blank next test
-        for (int i = 0; i < summary.allTimeTaken.Count; i++)
+        for (int x = 0; x < summary.allTimeTaken.Count; x++)
         {
             textLog.exportedText += "\n";
 
             textLog.exportedText += textLog.cellSeperatorType;
 
-            textLog.exportedText += summary.allTesterName[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allTestTimestamp[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allDockShapeStyle[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allDeviceVisibility[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allTimeTaken[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allShapePrecision[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allOrientationPrecision[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allPrecision[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allEfficiency[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allTotalDifficulty[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allMV[i] + textLog.cellSeperatorType;
-            textLog.exportedText += summary.allTRE[i] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTesterName[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTestTimestamp[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allDockShapeStyle[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allDeviceVisibility[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTimeTaken[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allShapePrecision[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allOrientationPrecision[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allPrecision[x] + textLog.cellSeperatorType;
+
+            // CORRECT JOINT BREAKDOWN [loop]
+            for (int y = 0; y < summary.allCorrectAngles[x].Count; y++)
+            {
+                textLog.exportedText += summary.allCorrectAngles[x][y] + textLog.cellSeperatorType;
+            }
+            
+            textLog.exportedText += summary.allEfficiency[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTotalDifficulty[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allMV[x] + textLog.cellSeperatorType;
+
+            /*
+            //++ MV PER JOINT BREAKDOWN [loop]
+            for (int y = 0; y < summary.allMVAngles[x].Count; x++)
+            {
+                textLog.exportedText += summary.allMVAngles[x][y] + textLog.cellSeperatorType;
+            }
+            */
+            textLog.exportedText += summary.allTRE[x] + textLog.cellSeperatorType;
+
+            // TRE PER JOINT BREAKDOWN [loop]
+            for (int y = 0; y < summary.allTREAngles[x].Count; y++)
+            {
+                textLog.exportedText += summary.allTREAngles[x][y] + textLog.cellSeperatorType;
+            }
         }
 
         // seperate for new section
@@ -119,12 +159,12 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += "\n" + "\n";
 
         // SEND DATA TO THE FILE
-        fileEditor.Append(textLog.path, textLog.exportedText);
+        fileEditor.Append(textLog.sendFile, textLog.exportedText);
 
         // Update the debug and inspector
-        fileEditor.Read(textLog.path);
+        fileEditor.Read(textLog.sendFile);
 #if UNITY_EDITOR
-        fileEditor.UpdateEditor(textLog.path, textLog.fileName);
+        fileEditor.UpdateEditor(textLog.sendFile, textLog.fileName);
 #endif
     }
 
@@ -171,36 +211,46 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += "\n" + "\n";
 
         // SEND DATA TO THE FILE
-        fileEditor.Append(textLog.path, textLog.exportedText);
+        fileEditor.Append(textLog.sendFile, textLog.exportedText);
 
         // Update the debug and inspector
-        fileEditor.Read(textLog.path);
+        fileEditor.Read(textLog.sendFile);
 #if UNITY_EDITOR
-        fileEditor.UpdateEditor(textLog.path, textLog.fileName);
+        fileEditor.UpdateEditor(textLog.sendFile, textLog.fileName);
 #endif
     }
 
-    //++ When adding new summary data start by adding it here to these temporary export variables
+    // When adding new summary data start by adding it here to these temporary export variables
     public void CalculateFinalResults(List<GameObject> testsToSummarize)
     {
-        EraseResultsLists();
-
         // skip the first test to prevent counting the blank next test
-        for(int i = 0; i < testsToSummarize.Count; i++)
+        for (int x = 0; x < testsToSummarize.Count; x++)
         {
-            summary.allTesterName.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.testerName);
-            summary.allTestTimestamp.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.testTimestamp);
-            summary.allDockShapeStyle.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.dockShapeStyle);
-            summary.allDeviceVisibility.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.deviceVisibility);
+            summary.allTesterName.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.testerName);
+            summary.allTestTimestamp.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.testTimestamp);
+            summary.allDockShapeStyle.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.dockShapeStyle);
+            summary.allDeviceVisibility.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.deviceVisibility);
             
-            summary.allTimeTaken.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.timeTaken);
-            summary.allShapePrecision.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.shapePrecision);
-            summary.allOrientationPrecision.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.orientationPrecision);
-            summary.allPrecision.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.precision);
-            summary.allEfficiency.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.efficiency);
-            summary.allTotalDifficulty.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.totalDifficulty);
-            summary.allMV.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.MV);
-            summary.allTRE.Add(testsToSummarize[i].GetComponent<dataRecorder>().finalResults.TRE);
+            summary.allTimeTaken.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.timeTaken);
+            summary.allShapePrecision.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.shapePrecision);
+            summary.allOrientationPrecision.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.orientationPrecision);
+
+            // CORRECT JOINT BREAKDOWN
+            summary.allCorrectAngles.Add(testsToSummarize[x].GetComponent<dataRecorder>().angleSummary.correctAngles.ToList());
+
+            summary.allPrecision.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.precision);
+            summary.allEfficiency.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.efficiency);
+            summary.allTotalDifficulty.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.totalDifficulty);
+            summary.allMV.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.MV);
+
+            //++ MV PER JOINT BREAKDOWN
+            summary.allMVAngles.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.MVAngles);
+
+            summary.allTRE.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.TRE);
+
+            // TRE PER JOINT BREAKDOWN
+            summary.allTREAngles.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.TREAngles);
+
         }
 
         // Get averages of all data
@@ -214,6 +264,7 @@ public class dataSummary : MonoBehaviour {
         summary.totalDifficulty = unweightedAverage(summary.allTotalDifficulty);
         summary.MV = unweightedAverage(summary.allMV);
         summary.TRE = (int)unweightedAverage(summary.allTRE);
+        //** ADD TRE AND MV PER JOINT AVERAGES TOO MIGHT HAVE TO MOVE TO LOOP
 
 
     }
@@ -230,10 +281,21 @@ public class dataSummary : MonoBehaviour {
         summary.allShapePrecision.Clear();
         summary.allOrientationPrecision.Clear();
         summary.allPrecision.Clear();
+        summary.allCorrectAngles.Clear();
         summary.allEfficiency.Clear();
         summary.allTotalDifficulty.Clear();
         summary.allMV.Clear();
+        summary.allMVAngles.Clear();
         summary.allTRE.Clear();
+        summary.allTREAngles.Clear();
+    }
+
+    /// Set filepath 
+    public void SetFileDestination(string path, string fileName, string extension)
+    {
+        textLog.sendFile = path + fileName + extension;
+        textLog.path = path;
+        textLog.fileName = fileName;
     }
     
 }

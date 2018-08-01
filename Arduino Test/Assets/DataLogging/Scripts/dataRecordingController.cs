@@ -700,7 +700,6 @@ public class dataRecordingController : MonoBehaviour {
         return dockStyles[index];
     }
 
-    //++
     public List<GameObject> TestsOfType(string DesiredVisibility, string DesiredDockStyle, List<GameObject> listToSearch)
     {
         List<GameObject> testList = new List<GameObject>(); 

@@ -633,7 +633,7 @@ public class dataRecorder : MonoBehaviour {
             allDataTRE.row.Add(AnalyseTRE(allData, col, 5 + finalResults.deviceError));
         }
 
-        //++ Send the per joint MV Amounts [THERE IS AN ERROR IN ALLOCATION ORDER]
+        // Send the per joint MV Amounts [THERE IS AN ERROR IN ALLOCATION ORDER]
         for (int x = 0; x < allDataMV.row.Count; x++)
         {
             finalResults.MVAngles.Add(allDataMV.row[x].Sum());

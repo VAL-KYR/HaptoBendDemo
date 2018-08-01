@@ -45,7 +45,9 @@ public class dataSummary : MonoBehaviour {
         public float efficiency;
         public float totalDifficulty;
         public float MV;
+        public float MVJoints;
         public int TRE;
+        public int TREJoins;
     }
     public Summary summary = new Summary();
 
@@ -145,7 +147,7 @@ public class dataSummary : MonoBehaviour {
             textLog.exportedText += summary.allTotalDifficulty[x] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allMV[x] + textLog.cellSeperatorType;
 
-            //++ MV PER JOINT BREAKDOWN [loop]
+            // MV PER JOINT BREAKDOWN [loop]
             for (int y = 0; y < summary.allMVAngles[x].Count; y++)
             {
                 textLog.exportedText += summary.allMVAngles[x][y] + textLog.cellSeperatorType;
@@ -249,14 +251,13 @@ public class dataSummary : MonoBehaviour {
             summary.allTotalDifficulty.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.totalDifficulty);
             summary.allMV.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.MV);
 
-            //++ MV PER JOINT BREAKDOWN
+            // MV PER JOINT BREAKDOWN
             summary.allMVAngles.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.MVAngles);
 
             summary.allTRE.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.TRE);
 
             // TRE PER JOINT BREAKDOWN
             summary.allTREAngles.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.TREAngles);
-
         }
 
         // Get averages of all data
@@ -268,11 +269,12 @@ public class dataSummary : MonoBehaviour {
         summary.precision = unweightedAverage(summary.allPrecision);
         summary.efficiency = unweightedAverage(summary.allEfficiency);
         summary.totalDifficulty = unweightedAverage(summary.allTotalDifficulty);
-        summary.MV = unweightedAverage(summary.allMV);
+        summary.MV = unweightedAverage(summary.allMV); 
         summary.TRE = (int)unweightedAverage(summary.allTRE);
+
+        //++ add joints MV and TRE averages
         //** ADD TRE AND MV PER JOINT AVERAGES TOO MIGHT HAVE TO MOVE TO LOOP
-
-
+        //summary.MVJoints.Add();
     }
 
     /// Clear the data

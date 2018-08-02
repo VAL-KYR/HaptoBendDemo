@@ -20,6 +20,7 @@ public class dataSummary : MonoBehaviour {
     [System.Serializable]
     public class Summary : System.Object
     {
+        public List<int> allTrialNumbers;
         public List<string> allTesterName;
         public List<string> allTestTimestamp;
         public List<string> allDockShapeStyle;
@@ -85,8 +86,9 @@ public class dataSummary : MonoBehaviour {
         if (createSumLines)
         {
             textLog.exportedText += "All " + resultsName + " Averages" + textLog.cellSeperatorType + 
-                                "Tester Name" + textLog.cellSeperatorType + 
-                                "Test Timestamp" + textLog.cellSeperatorType + 
+                                "Trial Number" + textLog.cellSeperatorType + 
+                                "Test Timestamp" + textLog.cellSeperatorType +
+                                "Tester Name" + textLog.cellSeperatorType +  
                                 "Dock Shape Style" + textLog.cellSeperatorType +
                                 "Virtual Device Visible" + textLog.cellSeperatorType + 
                                 "Time Taken" + textLog.cellSeperatorType +
@@ -124,12 +126,11 @@ public class dataSummary : MonoBehaviour {
         // skip the first test to prevent counting the blank next test
         for (int x = 0; x < summary.allTimeTaken.Count; x++)
         {
-            textLog.exportedText += "\n";
+            textLog.exportedText += "\n" + textLog.cellSeperatorType;
 
-            textLog.exportedText += textLog.cellSeperatorType;
-
-            textLog.exportedText += summary.allTesterName[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTrialNumbers[x] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allTestTimestamp[x] + textLog.cellSeperatorType;
+            textLog.exportedText += summary.allTesterName[x] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allDockShapeStyle[x] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allDeviceVisibility[x] + textLog.cellSeperatorType;
             textLog.exportedText += summary.allTimeTaken[x] + textLog.cellSeperatorType;
@@ -255,6 +256,7 @@ public class dataSummary : MonoBehaviour {
         // skip the first test to prevent counting the blank next test
         for (int x = 0; x < testsToSummarize.Count; x++)
         {
+            summary.allTrialNumbers.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.trialNumber);
             summary.allTesterName.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.testerName);
             summary.allTestTimestamp.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.testTimestamp);
             summary.allDockShapeStyle.Add(testsToSummarize[x].GetComponent<dataRecorder>().finalResults.dockShapeStyle);

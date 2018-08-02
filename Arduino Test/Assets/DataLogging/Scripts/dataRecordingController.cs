@@ -373,6 +373,8 @@ public class dataRecordingController : MonoBehaviour {
 
         // Name the TestObject
         test.name = "Test_" + tests.Count;
+        // Give a trial ID
+        testParams.finalResults.trialNumber = tests.Count;
 
         // Add to test list
         tests.Add(test);

@@ -69,6 +69,7 @@ public class dataRecorder : MonoBehaviour {
     [System.Serializable]
     public class FinalSummary : System.Object
     {
+        public int trialNumber;
         public float timeTaken;
         public float shapePrecision;
         public float orientationPrecision;

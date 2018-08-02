@@ -329,8 +329,9 @@ public class dataSummary : MonoBehaviour {
     /// Clear the data
     public void EraseResultsLists()
     {
-        summary.allTesterName.Clear();
+        summary.allTrialNumbers.Clear();
         summary.allTestTimestamp.Clear();
+        summary.allTesterName.Clear();
         summary.allDockShapeStyle.Clear();
         summary.allDeviceVisibility.Clear();
         

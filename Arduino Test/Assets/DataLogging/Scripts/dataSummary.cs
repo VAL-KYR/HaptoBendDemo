@@ -293,7 +293,7 @@ public class dataSummary : MonoBehaviour {
         summary.MV = unweightedAverage(summary.allMV); 
         summary.TRE = (int)unweightedAverage(summary.allTRE);
 
-        //++ add joints MV averages
+        // add joints MV averages
         for (int x = 0; x < summary.allMVAngles[0].Count; x++)
         {
             List<float> sum = new List<float>();
@@ -308,7 +308,7 @@ public class dataSummary : MonoBehaviour {
         }
         // the average of all MVAngles by column
 
-        //++ add joints TRE averages
+        // add joints TRE averages
         for (int x = 0; x < summary.allMVAngles[0].Count; x++)
         {
             List<float> sum = new List<float>();

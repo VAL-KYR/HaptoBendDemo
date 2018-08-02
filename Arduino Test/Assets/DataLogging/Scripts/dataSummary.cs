@@ -293,20 +293,35 @@ public class dataSummary : MonoBehaviour {
         summary.MV = unweightedAverage(summary.allMV); 
         summary.TRE = (int)unweightedAverage(summary.allTRE);
 
-        //++ add joints MV and TRE averages
+        //++ add joints MV averages
         for (int x = 0; x < summary.allMVAngles[0].Count; x++)
         {
             List<float> sum = new List<float>();
 
             for (int y = 0; y < summary.allMVAngles.Count; y++)
             {
-                sum.Add(summary.allMVAngles[x][y]);
+                sum.Add(summary.allMVAngles[y][x]);
             }
 
             summary.MVJoints.Add(unweightedAverage(sum));
             sum.Clear();
         }
-        // the average of all MVAngles by column... I think
+        // the average of all MVAngles by column
+
+        //++ add joints TRE averages
+        for (int x = 0; x < summary.allMVAngles[0].Count; x++)
+        {
+            List<float> sum = new List<float>();
+
+            for (int y = 0; y < summary.allMVAngles.Count; y++)
+            {
+                sum.Add((float)summary.allTREAngles[y][x]);
+            }
+
+            summary.TREJoints.Add((int)unweightedAverage(sum));
+            sum.Clear();
+        }
+        // the average of all TREAngles by column
     }
 
     /// Clear the data

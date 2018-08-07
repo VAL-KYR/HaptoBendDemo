@@ -14,6 +14,10 @@ public class JohnArduinoManager : MonoBehaviour
     public SerialPort mySPort = new SerialPort(serialName, 9600);
     public float[] currentVals = new float[10];
 
+    string serialValue;
+    string[] serialValues;
+    string[] bendValues;
+
     // Use this for initialization
     void Start()
     {
@@ -23,18 +27,19 @@ public class JohnArduinoManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        string serialValue = mySPort.ReadLine();
-        string[] serialValues = serialValue.Split('&');
+        serialValue = mySPort.ReadLine();
+        serialValues = serialValue.Split('&');
 
         if (serialValues.Length > 1)
         {
-            string[] bendValues = serialValues[1].Split(',');
+            bendValues = serialValues[1].Split(',');
 
             for (int j = 0; j < (bendValues.Length); j++)
             {
                 currentVals[j] = float.Parse(bendValues[j]);
             }
         }
+        
     }
 
 }

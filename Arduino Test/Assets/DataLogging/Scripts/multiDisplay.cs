@@ -7,11 +7,17 @@ public class multiDisplay : MonoBehaviour {
 
 	public List<GameObject> ovrDisplays;
 	public bool multiDisplays = false;
+	public bool duplicateDeviceView = false;
 
 	// Use this for initialization
 	void Start () {
 
 		ovrDisplays = GameObject.FindGameObjectsWithTag("MainCamera").ToList();
+
+		if (!duplicateDeviceView)
+			UnityEngine.XR.XRSettings.showDeviceView = false;
+		else
+			UnityEngine.XR.XRSettings.showDeviceView = true;
 
 		if (multiDisplays)
 		{
@@ -27,8 +33,6 @@ public class multiDisplay : MonoBehaviour {
 		}
 		else
 		{
-			UnityEngine.XR.XRSettings.showDeviceView = false;
-
 			foreach (GameObject cam in ovrDisplays) 
 			{
 				cam.GetComponent<Camera>().targetDisplay = 0;

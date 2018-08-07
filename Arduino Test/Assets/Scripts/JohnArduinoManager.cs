@@ -11,7 +11,7 @@ public class JohnArduinoManager : MonoBehaviour
 {
     /// Val | I've changed this value from COM7 to COM3 for testing on another computer
     public static string serialName = "COM3";
-    public SerialPort mySPort = new SerialPort(serialName, 9600);
+    public SerialPort sp = new SerialPort(serialName, 9600);
     public float[] currentVals = new float[10];
 
     string serialValue;
@@ -21,15 +21,26 @@ public class JohnArduinoManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        mySPort.Open();
+        sp.Open();
     }
 
     // Update is called once per frame
     void Update()
     {
-        serialValue = mySPort.ReadLine();
-        serialValues = serialValue.Split('&');
+        if (sp.IsOpen)
+        {
+            try
+            {
+                serialValue = sp.ReadLine();
+            }
+            catch (System.Exception)
+            {
 
+            }
+
+            serialValues = serialValue.Split('&');
+        }
+        
         if (serialValues.Length > 1)
         {
             bendValues = serialValues[1].Split(',');
@@ -39,7 +50,6 @@ public class JohnArduinoManager : MonoBehaviour
                 currentVals[j] = float.Parse(bendValues[j]);
             }
         }
-        
     }
 
 }

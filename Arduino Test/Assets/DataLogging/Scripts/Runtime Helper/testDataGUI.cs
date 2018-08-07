@@ -106,6 +106,11 @@ public class testDataGUI : MonoBehaviour {
         GUI.skin.label.fontSize = (int)(fontSize * 1.5f);
         name = GUILayout.TextField(name, GUILayout.Width(200f));
 
+        if(GUILayout.Button("New Tester"))
+        {
+            GetComponent<dataMaster>().newDataLogger();
+        }
+
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();

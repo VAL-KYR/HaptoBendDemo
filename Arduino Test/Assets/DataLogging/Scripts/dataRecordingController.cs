@@ -54,8 +54,8 @@ public class dataRecordingController : MonoBehaviour {
     public string testerName; //** change this with a text field
 
 
-    Transform rightWing;
-    Transform leftWing;
+    public Transform rightWing;
+    public Transform leftWing;
 
     // Get Layer names
     public string indexVDName = "VD";
@@ -146,14 +146,14 @@ public class dataRecordingController : MonoBehaviour {
                     currTest.GetComponent<dataRecorder>().recordAngles = false;
                     currAction = currTest.name + " Ended";
                 }
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
             if (Input.GetButton("CreateTest") && !testsDone)
             {
                 NewTest();
                 currAction = "Test_" + (tests.Count - 1) + " Created";
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
             if (Input.GetButton("RandomizeDock"))
@@ -161,14 +161,14 @@ public class dataRecordingController : MonoBehaviour {
                 NewDockShape();
                 currAction = "Dock Randomized";
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("ZeroDock"))
             {
                 ZeroDockShape();
                 currAction = "Dock Zeroed";
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DockStyle"))
             {
@@ -176,28 +176,28 @@ public class dataRecordingController : MonoBehaviour {
                 activeDockStyle = NextDockStyle();
                 currAction = "Docks are " + activeDockStyle;
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("SummarizeTests"))
             {
                 FinalReport();
                 currAction = "Tests Summarized";
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteTests"))
             {
                 ClearTests();
                 currAction = "All Tests Deleted";
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteReports"))
             {
                 ClearReports();
                 currAction = "All Reports Deleted";
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeviceVisible"))
             {
@@ -205,7 +205,7 @@ public class dataRecordingController : MonoBehaviour {
                 FlipDeviceVisibilityInHMD(virtualDeviceVisible);
                 currAction = "Device Visible " + virtualDeviceVisible;
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("ReCalDevice"))
             {
@@ -215,7 +215,7 @@ public class dataRecordingController : MonoBehaviour {
 
                 currAction = "Device Recalibrated";
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }  
             if (Input.GetButton("BadTest"))
             {
@@ -223,7 +223,7 @@ public class dataRecordingController : MonoBehaviour {
 
                 currAction = currTest.name + " Trashed";
                 inputTime = 0f;
-                GetComponent<testDataGUI>().FetchAction(currAction);
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }      
         }
 
@@ -339,7 +339,7 @@ public class dataRecordingController : MonoBehaviour {
                         testCateg.InvisPresets.Count >= testCateg.InvisPresetLimit)
                 {
                     currAction = "Tests Finished";
-                    GetComponent<testDataGUI>().FetchAction(currAction);
+                    transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
                     break;
                 }
             }

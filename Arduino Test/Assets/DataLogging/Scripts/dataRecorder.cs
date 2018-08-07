@@ -25,7 +25,7 @@ public class dataRecorder : MonoBehaviour {
     [System.Serializable]
     public class TextLog : System.Object
     {
-        public string path = "Assets/Resources/";
+        public string path = "Assets/DataLogging/Reports/";
         public string fileName = "Report_Raw";
         public string cellSeperatorType = "\t";
         public string exportedText;
@@ -123,7 +123,7 @@ public class dataRecorder : MonoBehaviour {
         textLog.deviceVisibility = this.GetComponentInParent<dataRecordingController>().virtualDeviceVisible;
 
         // Get the testername from the dataController
-        textLog.testerName = this.GetComponentInParent<testDataGUI>().name;
+        textLog.testerName = transform.parent.GetComponentInParent<testDataGUI>().name;
 
         // Get the real world time and assign to this textlog
         DateTime now = DateTime.Now;
@@ -609,7 +609,7 @@ public class dataRecorder : MonoBehaviour {
                                         finalResults.TRE + textLog.cellSeperatorType;
 
         // SEND DATA TO THE GUI
-        this.transform.parent.GetComponent<testDataGUI>().testData.Add("\n" + guiResults + "\n" + "\n" + "\n");
+        this.transform.parent.parent.GetComponent<testDataGUI>().testData.Add("\n" + guiResults + "\n" + "\n" + "\n");
 
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);

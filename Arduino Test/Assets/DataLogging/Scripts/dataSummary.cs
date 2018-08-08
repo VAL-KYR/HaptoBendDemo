@@ -55,11 +55,11 @@ public class dataSummary : MonoBehaviour {
     // Use this for initialization
     void Start () {
         // Add filename to path
+        textLog.path = GetComponent<dataRecordingController>().filePath;
         SetFileDestination(textLog.path, textLog.fileName, ".txt");
-        //textLog.path += textLog.fileName + ".txt";
 
         // Clear File before using
-        fileEditor.Clear(textLog.path);
+        fileEditor.Clear(textLog.sendFile);
         textLog.exportedText = "";
     }
 

@@ -8,15 +8,6 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-//**
-public class Test 
-{
-    GameObject testObject;
-    string dockStyleType;
-    string visibility;
-}
-
-
 public class dataRecordingController : MonoBehaviour {
     public string filePrefix = "Report_Raw_";
     public string filePath = "Assets/DataLogging/Reports/";
@@ -91,16 +82,16 @@ public class dataRecordingController : MonoBehaviour {
         imu = device.GetComponent<IMU>();
         rightWing = new GameObject("virtualWingR").transform;
         leftWing = new GameObject("virtualWingL").transform;
+        dockPresets = GameObject.FindGameObjectsWithTag("dockPresets").ToList();
 
         rightWing.position = new Vector3(10, 0, 0);
         leftWing.position = new Vector3(-10, 0, 0);
 
         ClearTests();
-        ClearReports();
+        fileEditor.ClearDir(filePath);
 
         // Creates a new test before starting
         NewTest();
-        SetCurrTest();
 
         // set dock shape preset before first new dock shape
         lastDockPreset = selectedDockPreset;
@@ -194,7 +185,7 @@ public class dataRecordingController : MonoBehaviour {
             }
             if (Input.GetButton("DeleteReports"))
             {
-                ClearReports();
+                fileEditor.ClearDir(filePath);
                 currAction = "All Reports Deleted";
                 inputTime = 0f;
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
@@ -635,22 +626,6 @@ public class dataRecordingController : MonoBehaviour {
         // Reset Test List
         tests.Clear();
     }
-
-    // Clear all Reports
-    public void ClearReports()
-    {
-        // If the path exists delete every file in it and refresh the unity editor if we're using it
-        if (Directory.Exists(filePath))
-        {
-            Directory.Delete(filePath, true);
-        }
-
-        Directory.CreateDirectory(filePath);
-#if UNITY_EDITOR
-        AssetDatabase.Refresh();
-#endif
-    }
-
 
     /// GENERIC FUNCTIONS ///
     float NewAngle(float negativeLimit, float positiveLimit)

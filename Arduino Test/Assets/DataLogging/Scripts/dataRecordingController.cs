@@ -8,15 +8,6 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-//**
-public class Test 
-{
-    GameObject testObject;
-    string dockStyleType;
-    string visibility;
-}
-
-
 public class dataRecordingController : MonoBehaviour {
     public string filePrefix = "Report_Raw_";
     public string filePath = "Assets/DataLogging/Reports/";
@@ -91,6 +82,7 @@ public class dataRecordingController : MonoBehaviour {
         imu = device.GetComponent<IMU>();
         rightWing = new GameObject("virtualWingR").transform;
         leftWing = new GameObject("virtualWingL").transform;
+        dockPresets = GameObject.FindGameObjectsWithTag("dockPresets").ToList();
 
         rightWing.position = new Vector3(10, 0, 0);
         leftWing.position = new Vector3(-10, 0, 0);
@@ -100,7 +92,6 @@ public class dataRecordingController : MonoBehaviour {
 
         // Creates a new test before starting
         NewTest();
-        SetCurrTest();
 
         // set dock shape preset before first new dock shape
         lastDockPreset = selectedDockPreset;

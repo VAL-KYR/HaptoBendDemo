@@ -107,6 +107,7 @@ public class dataRecorder : MonoBehaviour {
     // Start
     void Start() {
         // Add filename to path
+        textLog.path = transform.parent.GetComponent<dataRecordingController>().filePath;
         textLog.path += textLog.fileName + ".txt";
 
         // Clear File before using

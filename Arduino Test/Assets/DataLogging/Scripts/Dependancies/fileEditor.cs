@@ -64,4 +64,19 @@ public static class fileEditor {
 
         return allContents;
     }
+
+    // Clear a directory
+    public static void ClearDir(string path)
+    {
+        // If the path exists delete every file in it and refresh the unity editor if we're using it
+        if (Directory.Exists(path))
+        {
+            Directory.Delete(path, true);
+        }
+
+        Directory.CreateDirectory(path);
+#if UNITY_EDITOR
+        AssetDatabase.Refresh();
+#endif
+    }
 }

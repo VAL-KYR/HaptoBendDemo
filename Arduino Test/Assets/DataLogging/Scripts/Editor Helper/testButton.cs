@@ -39,7 +39,7 @@ public class testButton : Editor
         }
         if (GUILayout.Button("Delete All Reports"))
         {
-            dataRecControl.ClearReports();
+            fileEditor.ClearDir(dataRecControl.filePath);
         }
     }
 }

@@ -108,7 +108,15 @@ public class dataRecordingController : MonoBehaviour {
         if (errorGathered && !deviceInit)
         {
             // Calibrate the Device before first test
-            CalIMU();
+            if (imu.calibrate)
+            {
+                CalIMU();
+            }
+            else
+            {
+                ReCalIMU();
+            }
+            
 
             deviceInit = true;
         }
@@ -200,9 +208,7 @@ public class dataRecordingController : MonoBehaviour {
             }
             if (Input.GetButton("ReCalDevice"))
             {
-                StartCoroutine(ReCalIMU());
-                new WaitForSeconds(0.1f);
-                StartCoroutine(ReCalIMU());
+                ReCalIMU();
 
                 currAction = "Device Recalibrated";
                 inputTime = 0f;
@@ -224,7 +230,13 @@ public class dataRecordingController : MonoBehaviour {
     }
 
     //// Recalibrate With Wait
-    public IEnumerator ReCalIMU()
+    public void ReCalIMU()
+    {
+        StartCoroutine(ReCalIMUSeq());
+        new WaitForSeconds(0.1f);
+        StartCoroutine(ReCalIMUSeq());
+    }
+    public IEnumerator ReCalIMUSeq()
     {
         imu.Calibrate();
         yield return new WaitForSeconds(0.1f);
@@ -232,7 +244,7 @@ public class dataRecordingController : MonoBehaviour {
         imu.Calibrate();
     }
 
-    //// Calibrate With Wait
+    //// Calibrate
     public void CalIMU()
     {
         imu.BendReset();

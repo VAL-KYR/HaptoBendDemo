@@ -186,7 +186,7 @@ public class dataSummary : MonoBehaviour {
         if (createSumLines)
         {
             textLog.exportedText += resultsName + " Averages" + textLog.cellSeperatorType + 
-                                "Tester Name" + textLog.cellSeperatorType + 
+                                "Tester Names" + textLog.cellSeperatorType + 
                                 "Time Taken (avg)" + textLog.cellSeperatorType +
                                 "Shape Precision % (avg)" + textLog.cellSeperatorType +
                                 "Orientation Precision % (avg)" + textLog.cellSeperatorType +
@@ -284,7 +284,18 @@ public class dataSummary : MonoBehaviour {
         }
 
         // Get averages of all data
-        summary.testerName = summary.allTesterName[0];
+        //summary.testerName = summary.allTesterName[0];
+        List<string> priorNames = new List<string>();
+
+        foreach (string name in summary.allTesterName)
+        {
+            if (!priorNames.Contains(name)) 
+            {
+                priorNames.Add(name);
+                summary.testerName += name + " "; 
+            }
+        }
+
 
         summary.timeTaken = unweightedAverage(summary.allTimeTaken);
         summary.shapePrecision = unweightedAverage(summary.allShapePrecision);
@@ -329,6 +340,8 @@ public class dataSummary : MonoBehaviour {
     /// Clear the data
     public void EraseResultsLists()
     {
+        summary.testerName = "";
+
         summary.allTrialNumbers.Clear();
         summary.allTestTimestamp.Clear();
         summary.allTesterName.Clear();

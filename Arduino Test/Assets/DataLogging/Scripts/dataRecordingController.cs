@@ -376,6 +376,8 @@ public class dataRecordingController : MonoBehaviour {
 
         // Name the TestObject
         test.name = "Test_" + tests.Count;
+        // Tag that trial
+        test.tag = "trial";
         // Give a trial ID
         testParams.finalResults.trialNumber = tests.Count;
 
@@ -404,9 +406,27 @@ public class dataRecordingController : MonoBehaviour {
     // Create Final Report Summary
     public void FinalReport()
     {
-        //-- Remove the debug/dummy tests
-        tests.RemoveAt(tests.Count - 1);
-        tests.RemoveAt(0);
+        // Export an All Participants summary
+        // Add all trials to this list
+        if (transform.parent.GetComponent<testDataGUI>().name == "alldata")
+        {
+            tests = GameObject.FindGameObjectsWithTag("trial").ToList();
+
+            //-- Remove the debug/dummy tests
+            Destroy(tests[tests.Count - 1]);
+            tests.RemoveAt(tests.Count - 1);
+
+            TestCatCheck();
+        }
+        // Just do local trials
+        else
+        {
+            //-- Remove the debug/dummy tests
+            Destroy(tests[tests.Count - 1]);
+            Destroy(tests[0]);
+            tests.RemoveAt(tests.Count - 1);
+            tests.RemoveAt(0);
+        }
 
         // Export the test list summary
         GetComponent<dataSummary>().CalculateFinalResults(tests);
@@ -426,6 +446,7 @@ public class dataRecordingController : MonoBehaviour {
         GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisPresets);
         GetComponent<dataSummary>().ExportTrialSummaries("InvisPresets", true, false);
+        
     }
 
     // Get a new shape to dock to

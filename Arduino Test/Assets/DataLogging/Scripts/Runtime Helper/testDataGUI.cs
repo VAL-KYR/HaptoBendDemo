@@ -108,7 +108,7 @@ public class testDataGUI : MonoBehaviour {
 
         if (GUILayout.Button("New Tester"))
         {
-            GetComponent<dataMaster>().newDataLogger();
+            GetComponent<dataMaster>().NewDataLogger();
         }
 
         GUILayout.EndVertical();

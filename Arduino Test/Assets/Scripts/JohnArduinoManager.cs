@@ -18,6 +18,10 @@ public class JohnArduinoManager : MonoBehaviour
     string[] serialValues;
     string[] bendValues;
 
+    float elapsed = 0f;
+    public bool pollingSlowdown = true;
+    public float pollRate = 0.065f;
+
     // Use this for initialization
     void Start()
     {
@@ -31,15 +35,33 @@ public class JohnArduinoManager : MonoBehaviour
         {
             try
             {
-                serialValue = sp.ReadLine();
+                if (pollingSlowdown) 
+                {
+                    elapsed += Time.deltaTime;
+                    if (elapsed >= pollRate)
+                    {
+                        elapsed = 0f;
+                        ReadDevice();
+                    }
+                }
+                else
+                {
+                    ReadDevice();
+                }
+                
             }
             catch (System.Exception)
             {
 
             }
-
-            serialValues = serialValue.Split('&');
         }
+    }
+
+    void ReadDevice()
+    {
+        serialValue = sp.ReadLine();
+
+        serialValues = serialValue.Split('&');
         
         if (serialValues.Length > 1)
         {

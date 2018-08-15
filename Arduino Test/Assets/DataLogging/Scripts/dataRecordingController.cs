@@ -446,7 +446,6 @@ public class dataRecordingController : MonoBehaviour {
         GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisPresets);
         GetComponent<dataSummary>().ExportTrialSummaries("InvisPresets", true, false);
-        
     }
 
     // Get a new shape to dock to

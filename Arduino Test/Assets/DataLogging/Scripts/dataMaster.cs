@@ -39,8 +39,6 @@ public class dataMaster : MonoBehaviour {
 			if (Input.GetButton("NewLogger")) 
             {
                 NewDataLogger();
-
-				GetComponent<testDataGUI>().FetchAction("New Logger - " + GetComponent<testDataGUI>().name);
                 inputTime = 0f;
             }
 		}
@@ -50,6 +48,8 @@ public class dataMaster : MonoBehaviour {
 
 	public void NewDataLogger()
 	{
+		GetComponent<testDataGUI>().FetchAction("New Logger - " + GetComponent<testDataGUI>().name);
+
 		foreach (GameObject logger in dataLoggers)
 			logger.GetComponent<dataRecordingController>().enabled = false;
 

@@ -11,7 +11,7 @@ public class JohnArduinoManager : MonoBehaviour
 {
     /// Val | I've changed this value from COM7 to COM3 for testing on another computer
     public static string serialName = "COM3";
-    public SerialPort sp = new SerialPort(serialName, 9600);
+    public SerialPort sp = new SerialPort(serialName, 115200);
     public float[] currentVals = new float[10];
 
     string serialValue;

@@ -22,7 +22,7 @@ public class JohnArduinoManager : MonoBehaviour
     public bool pollingSlowdown = true;
 
     [Range(0.05f, 0.06f)]
-    public float pollRate = 0.0665f;
+    public float pollRate = 0.055f;
 
     // Use this for initialization
     void Start()

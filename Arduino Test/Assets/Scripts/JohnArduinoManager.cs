@@ -20,7 +20,9 @@ public class JohnArduinoManager : MonoBehaviour
 
     float elapsed = 0f;
     public bool pollingSlowdown = true;
-    public float pollRate = 0.065f;
+
+    [Range(0.01f, 0.09f)]
+    public float pollRate = 0.0665f;
 
     // Use this for initialization
     void Start()

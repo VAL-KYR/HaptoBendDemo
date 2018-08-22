@@ -14,9 +14,13 @@ public class testButton : Editor
         DrawDefaultInspector();
 
         dataRecordingController dataRecControl = (dataRecordingController)target;
-        if (GUILayout.Button("Create Test"))
+        if (GUILayout.Button("Create Regular Test"))
         {
-            dataRecControl.NewTest();
+            dataRecControl.NewTest(false);
+        }
+        if (GUILayout.Button("Create Zero Test"))
+        {
+            dataRecControl.NewTest(true);
         }
         
         if (GUILayout.Button("New Dock Shape"))

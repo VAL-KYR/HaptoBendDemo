@@ -184,8 +184,11 @@ public class dataRecorder : MonoBehaviour {
                 stopWriting = true;
             }
 
-            // Create a new test when a test finishes
-            this.GetComponentInParent<dataRecordingController>().NewTest();
+            //++ ReCal the dock if this is a ZEROING DATA test type     
+            if (textLog.dockShapeStyle == "ZEROING DATA")
+            {
+                this.transform.parent.GetComponent<dataRecordingController>().ReCalIMU();
+            }
 
             anglesRecorded = true;
         }

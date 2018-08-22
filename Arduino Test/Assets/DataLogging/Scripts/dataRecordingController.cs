@@ -91,15 +91,7 @@ public class dataRecordingController : MonoBehaviour {
         fileEditor.ClearDir(filePath);
 
         // Creates a new test before starting
-        NewTest();
-
-        // set dock shape preset before first new dock shape
-        lastDockPreset = selectedDockPreset;
-        // set dock shape mode before first new dock shape
-        activeDockStyle = dockStyles[0];
-
-        if (startWithNewDock)
-            NewDockShape();
+        NewTest(true);
     }
 
     public void Update()
@@ -116,7 +108,6 @@ public class dataRecordingController : MonoBehaviour {
             {
                 ReCalIMU();
             }
-            
 
             deviceInit = true;
         }
@@ -150,7 +141,7 @@ public class dataRecordingController : MonoBehaviour {
             }
             if (Input.GetButton("CreateTest") && !testsDone)
             {
-                NewTest();
+                NewTest(false);
                 currAction = "Test_" + (tests.Count - 1) + " Created";
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
@@ -223,6 +214,18 @@ public class dataRecordingController : MonoBehaviour {
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }      
         }
+        //++ Automatically Creates and Starts new tests
+        if (!testsDone)
+        {
+            if (currTest.GetComponent<dataRecorder>().anglesRecorded)
+            {
+                NewTest(false);
+                SetCurrTest();
+                currTest.GetComponent<dataRecorder>().recordAngles = true;
+                currAction = currTest.name + " Started";
+            }
+        }
+        
 
         SetCurrTest();
 
@@ -296,7 +299,7 @@ public class dataRecordingController : MonoBehaviour {
 
     //// GENERIC TEST FUNCTIONS ////
     // Create a new test object
-    public void NewTest()
+    public void NewTest(bool zeroDockCal)
     {
         TestCatCheck();
 
@@ -372,7 +375,7 @@ public class dataRecordingController : MonoBehaviour {
         testParams.dockAngleObjects[2] = GameObject.FindGameObjectWithTag("dockRotateInverse");
         testParams.dockAngleObjects[3] = GameObject.FindGameObjectWithTag("dockChildRotateInverse");
 
-        
+
 
         // Name the TestObject
         test.name = "Test_" + tests.Count;
@@ -384,14 +387,34 @@ public class dataRecordingController : MonoBehaviour {
         // Add to test list
         tests.Add(test);
 
+        //++ Zero shape for calibration on end
+        if (zeroDockCal)
+        {
+            test.name = "Test_dock_zero";
+            test.tag = "zeroTrial";
+
+            activeDockStyle = "ZEROING DATA";
+            virtualDeviceVisible = true;
+            FlipDeviceVisibilityInHMD(virtualDeviceVisible);
+        }
+
         TestCatCheck();
 
         // Set the current test if it has not yet beens set
         if (!currTest)
             SetCurrTest();
 
-        // Once test is created give it a new dock shape
-        NewDockShape();
+        //++ Zero shape for calibration on end
+        if (zeroDockCal)
+        {
+            ZeroDockShape();
+            Debug.Log("Wat");
+        }
+        else
+        {
+            // Once test is created give it a new dock shape
+            NewDockShape();
+        }
     }
 
     //// Find Completed test types and add to list ////

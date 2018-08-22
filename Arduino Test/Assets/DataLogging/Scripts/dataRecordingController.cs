@@ -56,6 +56,7 @@ public class dataRecordingController : MonoBehaviour {
 
     public bool testsDone = false;
 
+    public bool deviceReset = true;
     //
     [System.Serializable]
     public class TestCategorization : System.Object
@@ -91,7 +92,7 @@ public class dataRecordingController : MonoBehaviour {
         fileEditor.ClearDir(filePath);
 
         // Creates a new test before starting
-        NewTest(true);
+        NewTest(deviceReset);
     }
 
     public void Update()
@@ -219,7 +220,9 @@ public class dataRecordingController : MonoBehaviour {
         {
             if (currTest.GetComponent<dataRecorder>().anglesRecorded)
             {
-                NewTest(false);
+                deviceReset = !deviceReset;
+                NewTest(deviceReset);
+
                 SetCurrTest();
                 currTest.GetComponent<dataRecorder>().recordAngles = true;
                 currAction = currTest.name + " Started";

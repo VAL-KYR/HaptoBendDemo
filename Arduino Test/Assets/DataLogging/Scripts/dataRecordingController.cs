@@ -411,7 +411,6 @@ public class dataRecordingController : MonoBehaviour {
         if (zeroDockCal)
         {
             ZeroDockShape();
-            Debug.Log("Wat");
         }
         else
         {
@@ -508,7 +507,6 @@ public class dataRecordingController : MonoBehaviour {
         }
 
         //// LIMITED ANGLE GENERATIVE [Rob Style]
-        //++ Make the angles more severe open up possibilities
         else if (activeDockStyle == dockStyles[2])
         {
             // random dock reorientation
@@ -547,6 +545,7 @@ public class dataRecordingController : MonoBehaviour {
 
             }
 
+            //++ Replace with bounds angle correction
             // Dock shape collision fixer
             while (Vector3.Distance(leftWing.position, rightWing.position) < dockPartSeperation)
             {
@@ -580,6 +579,8 @@ public class dataRecordingController : MonoBehaviour {
 
                 }
             }
+
+
         }
 
         //// RANDOM GENERATIVE DOCK SHAPES
@@ -656,7 +657,7 @@ public class dataRecordingController : MonoBehaviour {
             }
         }
         
-
+        TestAngleBounds(currTest.GetComponent<dataRecorder>().dockAngleObjects.ToList());
     }
 
     // Test Dock Shape
@@ -714,7 +715,7 @@ public class dataRecordingController : MonoBehaviour {
                 angle = pureAnglesOrient[2];
             }
         }
-        //++ adjust for higher angle balance
+        // adjust for higher angle balance
         else if (angleType == "bend")
         {
             if (chance >= 0f && chance < 0.4f)
@@ -732,6 +733,29 @@ public class dataRecordingController : MonoBehaviour {
         }
 
         return angle;
+    }
+
+    //++ bounds testing 
+    public void TestAngleBounds(List<GameObject> angles)
+    {
+        List<GameObject> physicalPieces = new List<GameObject>();
+
+        foreach (GameObject angle in angles)
+        {
+            physicalPieces.Add(angle.transform.GetChild(0).gameObject);
+        }
+
+        foreach (GameObject piece in physicalPieces)
+        {
+            Debug.Log(piece);
+            Debug.Log(piece.GetComponent<Collider>().bounds);
+        }
+    }
+
+    //++ bounds fixing
+    public void CorrectAngleBounds()
+    {
+        
     }
 
     string NextDockStyle()

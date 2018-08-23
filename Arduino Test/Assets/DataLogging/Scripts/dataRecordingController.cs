@@ -694,17 +694,41 @@ public class dataRecordingController : MonoBehaviour {
 
     float NewPresetAngle(string angleType)
     {
-        int index = (int)Random.Range(1,3);
+        float chance = Random.Range(0.0f, 1.0f);
+        Debug.Log(chance);
 
         float angle = 0;
 
         if (angleType == "shape")
         {
-            angle = pureAnglesOrient[index - 1];
+            if (chance >= 0f && chance < 0.2f)
+            {
+                angle = pureAnglesOrient[0];
+            }
+            else if (chance >= 0.2f && chance < 0.6f)
+            {
+                angle = pureAnglesOrient[1];
+            }
+            else if (chance >= 0.6f && chance <= 1.0f)
+            {
+                angle = pureAnglesOrient[2];
+            }
         }
+        //++ adjust for higher angle balance
         else if (angleType == "bend")
         {
-            angle = pureAnglesShape[index - 1];
+            if (chance >= 0f && chance < 0.4f)
+            {
+                angle = pureAnglesShape[0];
+            }
+            else if (chance >= 0.4f && chance < 0.9f)
+            {
+                angle = pureAnglesShape[1];
+            }
+            else if (chance >= 0.9f && chance <= 1.0f)
+            {
+                angle = pureAnglesShape[2];
+            }
         }
 
         return angle;

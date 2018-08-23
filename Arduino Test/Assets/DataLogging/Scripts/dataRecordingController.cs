@@ -215,7 +215,7 @@ public class dataRecordingController : MonoBehaviour {
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }      
         }
-        //++ Automatically Creates and Starts new tests
+        // Automatically Creates and Starts new tests
         if (!testsDone)
         {
             if (currTest.GetComponent<dataRecorder>().anglesRecorded)
@@ -390,7 +390,7 @@ public class dataRecordingController : MonoBehaviour {
         // Add to test list
         tests.Add(test);
 
-        //++ Zero shape for calibration on end
+        // Zero shape for calibration on end
         if (zeroDockCal)
         {
             test.name = "Test_dock_zero";
@@ -407,7 +407,7 @@ public class dataRecordingController : MonoBehaviour {
         if (!currTest)
             SetCurrTest();
 
-        //++ Zero shape for calibration on end
+        // Zero shape for calibration on end
         if (zeroDockCal)
         {
             ZeroDockShape();
@@ -508,6 +508,7 @@ public class dataRecordingController : MonoBehaviour {
         }
 
         //// LIMITED ANGLE GENERATIVE [Rob Style]
+        //++ Make the angles more severe open up possibilities
         else if (activeDockStyle == dockStyles[2])
         {
             // random dock reorientation

@@ -184,7 +184,7 @@ public class dataRecorder : MonoBehaviour {
                 stopWriting = true;
             }
 
-            //++ ReCal the dock if this is a ZEROING DATA test type     
+            // ReCal the dock if this is a ZEROING DATA test type     
             if (textLog.dockShapeStyle == "ZEROING DATA")
             {
                 this.transform.parent.GetComponent<dataRecordingController>().ReCalIMU();

@@ -277,12 +277,23 @@ public class dataRecordingController : MonoBehaviour {
                                                     dockFoldSpeed * Time.deltaTime);
                 if (angle.tag.Contains("Child"))
                 {
-                    angle.transform.localRotation = Quaternion.Lerp(angle.transform.localRotation, 
+                    // This is a special distinction for a special case where the angle won't reach -150 with lerp but only -82 no idea why
+                    if (activeDockStyle == "Presets" && selectedDockPreset.name == "dockPreset_1")
+                    {
+                        angle.transform.localRotation = Quaternion.Euler(new Vector3(
+                                                            angle.transform.localRotation.x,
+                                                            angle.transform.localRotation.y,
+                                                            nextDockAngles[1]));
+                    }
+                    else 
+                    {
+                        angle.transform.localRotation = Quaternion.Lerp(angle.transform.localRotation, 
                                                     Quaternion.Euler(new Vector3(
                                                         angle.transform.localRotation.x,
                                                         angle.transform.localRotation.y,
                                                         nextDockAngles[1])), 
                                                     dockFoldSpeed * Time.deltaTime);
+                    }
                 }
             }
 

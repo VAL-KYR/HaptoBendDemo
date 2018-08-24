@@ -44,10 +44,6 @@ public class dataRecordingController : MonoBehaviour {
 
     public string testerName; //** change this with a text field
 
-
-    public Transform rightWing;
-    public Transform leftWing;
-
     // Get Layer names
     public string indexVDName = "VD";
     public string indexDefaultName = "Default";
@@ -89,13 +85,8 @@ public class dataRecordingController : MonoBehaviour {
     {
         device = GameObject.FindGameObjectWithTag("virtualDevice");
         imu = device.GetComponent<IMU>();
-        rightWing = new GameObject("virtualWingR").transform;
-        leftWing = new GameObject("virtualWingL").transform;
         dockPresets = GameObject.FindGameObjectsWithTag("dockPresets").ToList();
         checkObjects = GameObject.FindGameObjectsWithTag("clipCheck").ToList();
-
-        rightWing.position = new Vector3(10, 0, 0);
-        leftWing.position = new Vector3(-10, 0, 0);
 
         ClearTests();
         fileEditor.ClearDir(filePath);
@@ -242,16 +233,13 @@ public class dataRecordingController : MonoBehaviour {
         // Check what the current test is
         SetCurrTest();
 
-        // If the dock is clipping against itself outside of using presets then get a new dock shape
-        if (activeDockStyle != "Presets")
+        // Check for clipping and correct by choosing a new dock of the same dock style
+        if (ClippingChecker())
         {
-            if (ClippingChecker())
-            {
-                NewDockShape();
+            NewDockShape();
 
-                currAction = "Fixing Clipping";
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
-            }
+            currAction = "Fixing Clipping";
+            transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
         }
 
         // Always move the dock to a new position
@@ -273,7 +261,7 @@ public class dataRecordingController : MonoBehaviour {
                                                     Quaternion.Euler(new Vector3(
                                                         angle.transform.localRotation.x,
                                                         angle.transform.localRotation.y,
-                                                        nextDockAngles[0])), 
+                                                        nextDockAngles[2])), 
                                                     dockFoldSpeed * Time.deltaTime);
                 }
 
@@ -285,7 +273,7 @@ public class dataRecordingController : MonoBehaviour {
                                                     Quaternion.Euler(new Vector3(
                                                         angle.transform.localRotation.x,
                                                         angle.transform.localRotation.y,
-                                                        -nextDockAngles[1])), 
+                                                        nextDockAngles[0])), 
                                                     dockFoldSpeed * Time.deltaTime);
                 if (angle.tag.Contains("Child"))
                 {
@@ -293,7 +281,7 @@ public class dataRecordingController : MonoBehaviour {
                                                     Quaternion.Euler(new Vector3(
                                                         angle.transform.localRotation.x,
                                                         angle.transform.localRotation.y,
-                                                        -nextDockAngles[2])), 
+                                                        nextDockAngles[1])), 
                                                     dockFoldSpeed * Time.deltaTime);
                 }
             }
@@ -587,8 +575,8 @@ public class dataRecordingController : MonoBehaviour {
             // Creating a new set of nextDockAngles
             nextDockAngles = new List<float>
             {
-                NewPresetAngle("bend"),
-                NewPresetAngle("bend"), 
+                -NewPresetAngle("bend"),
+                -NewPresetAngle("bend"), 
                 NewPresetAngle("bend")
             };
         }
@@ -605,8 +593,8 @@ public class dataRecordingController : MonoBehaviour {
             // Creating a new set of nextDockAngles
             nextDockAngles = new List<float>
             {
-                NewAngle(deviceLimits[0], deviceLimits[1]),
-                NewAngle(deviceLimits[0], deviceLimits[1]), 
+                -NewAngle(deviceLimits[0], deviceLimits[1]),
+                -NewAngle(deviceLimits[0], deviceLimits[1]), 
                 NewAngle(deviceLimits[0], deviceLimits[1])
             };
         }
@@ -697,11 +685,11 @@ public class dataRecordingController : MonoBehaviour {
         // Check each of the checkObjects (physical objects) scipt for clippingObjects and add to a general list of clipping Objects
         foreach (GameObject checkObj in checkObjects)
         {
-            Debug.Log(checkObj.GetComponent<clippingManager>().clippingObjects.Count);
-
             foreach (GameObject clippingObj in checkObj.GetComponent<clippingManager>().clippingObjects)
             {
+#if UNITY_EDITOR
                 Debug.Log("clipping found");
+#endif
                 allClippingObjects.Add(clippingObj);
             }
         }

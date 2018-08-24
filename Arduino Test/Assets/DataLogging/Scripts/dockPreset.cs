@@ -4,4 +4,5 @@ using UnityEngine;
 
 public class dockPreset : MonoBehaviour {
     public List<GameObject> shapes;
+    public List<float> angles;
 }

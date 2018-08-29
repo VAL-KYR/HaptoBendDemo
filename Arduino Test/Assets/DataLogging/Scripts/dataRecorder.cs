@@ -158,6 +158,7 @@ public class dataRecorder : MonoBehaviour {
         if (recordAngles && !stopWriting)
         {
             AngleRecord();
+            
             if (compareToDock)
                 GetDockAngles();
             readyToExportData = true;
@@ -173,6 +174,9 @@ public class dataRecorder : MonoBehaviour {
             // Calculate final efficiency results from data tables
             efficiency.completionTime = NiceTimeFromSeconds(efficiency.secondsTaken);
             efficiency.rawCompletionTime = RawTimeFromSeconds(efficiency.secondsTaken);
+
+            // Set Box State
+            UiBox.box.index = 1;
 
             // Export Report
             ExportData();

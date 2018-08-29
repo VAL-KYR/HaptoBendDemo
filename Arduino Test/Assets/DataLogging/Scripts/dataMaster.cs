@@ -27,6 +27,9 @@ public class dataMaster : MonoBehaviour {
 	void Start () {
 		//ClearReports(textLog.path);
 		fileEditor.ClearDir(textLog.path);
+
+		// Set Box State
+        UiBox.box.index = 2;
 	}
 	
 	// Update is called once per frame

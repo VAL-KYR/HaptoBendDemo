@@ -17,6 +17,7 @@ public class dataRecordingController : MonoBehaviour {
 
     public GameObject currTest;
     public GameObject device;
+    public dockProperties dock;
     public IMU imu;
 
     public List<string> dockStyles = new List<string>(3);
@@ -83,6 +84,7 @@ public class dataRecordingController : MonoBehaviour {
     // Delete all Test Objects and files before starting
     public void Start()
     {
+        dock = GameObject.FindGameObjectWithTag("dockDevice").GetComponent<dockProperties>();
         device = GameObject.FindGameObjectWithTag("virtualDevice");
         imu = device.GetComponent<IMU>();
         dockPresets = GameObject.FindGameObjectsWithTag("dockPresets").ToList();
@@ -227,6 +229,17 @@ public class dataRecordingController : MonoBehaviour {
                 currTest.GetComponent<dataRecorder>().recordAngles = true;
                 currAction = currTest.name + " Started";
             }
+
+            if (currTest.GetComponent<dataRecorder>().recordAngles)
+            {
+                // Set Box State
+                UiBox.box.index = 0;
+            }
+        }
+        else
+        {
+            // Set Box State
+            UiBox.box.index = 3;
         }
         
 
@@ -236,6 +249,9 @@ public class dataRecordingController : MonoBehaviour {
         // Check for clipping and correct by choosing a new dock of the same dock style
         if (ClippingChecker())
         {
+            // Set Box State
+            UiBox.box.index = 2;
+
             NewDockShape();
 
             currAction = "Fixing Clipping";
@@ -251,7 +267,7 @@ public class dataRecordingController : MonoBehaviour {
     //++ for lerping the dock to remove collisions
     public void MoveDock()
     {
-        foreach (GameObject angle in currTest.GetComponent<dataRecorder>().dockAngleObjects)
+        foreach (GameObject angle in dock.shape)
         {
             if (angle.tag.Contains("Inverse"))
             {
@@ -369,6 +385,9 @@ public class dataRecordingController : MonoBehaviour {
     // Create a new test object
     public void NewTest(bool zeroDockCal)
     {
+        // Set Box State
+        UiBox.box.index = 2;
+
         TestCatCheck();
 
         //// If using an experiment procedure do this ////
@@ -540,7 +559,7 @@ public class dataRecordingController : MonoBehaviour {
 
     // Get a new shape to dock to
     public void NewDockShape()
-    {        
+    {      
         //// PURE PRESETS [Procedure Style]
         if (activeDockStyle == dockStyles[1])
         {
@@ -564,7 +583,7 @@ public class dataRecordingController : MonoBehaviour {
             nextDockAngles = new List<float>();
 
             //++ Creating a new set of nextDockAngles
-            for (int i = 0; i < currTest.GetComponent<dataRecorder>().dockAngleObjects.Length; i++)
+            for (int i = 0; i < dock.shape.Count; i++)
             {
                 if (selectedDockPreset.GetComponent<dockPreset>().shapes[i].name != "RotateInverse")
                 {

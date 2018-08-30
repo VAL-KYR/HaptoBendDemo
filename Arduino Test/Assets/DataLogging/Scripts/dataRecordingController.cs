@@ -245,6 +245,7 @@ public class dataRecordingController : MonoBehaviour {
         }
 
         // Always move the dock to a new position
+        dockFoldSpeed = transform.parent.GetComponent<testDataGUI>().dockFoldSpeed;
         MoveDock();
 
         inputTime += Time.smoothDeltaTime;

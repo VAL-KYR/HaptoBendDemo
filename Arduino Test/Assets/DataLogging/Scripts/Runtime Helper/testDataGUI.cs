@@ -14,6 +14,7 @@ public class testDataGUI : MonoBehaviour {
     public int InvisLtdRandom = 0;
     public int VisPresets = 0;
     public int InvisPresets = 0;
+    public float dockFoldSpeed = 3.0f;
 
     public Vector2 scrollPosition;
 
@@ -131,6 +132,8 @@ public class testDataGUI : MonoBehaviour {
                         GUILayout.Label("# of VisPresets: ", guiStyleL);
                         GUILayout.Space(8);
                         GUILayout.Label("# of InvisPresets: ", guiStyleL);
+                        GUILayout.Space(8);
+                        GUILayout.Label("Dock Fold Speed: ", guiStyleL);
                     GUILayout.EndVertical();
                     
 
@@ -139,16 +142,26 @@ public class testDataGUI : MonoBehaviour {
                         guiStyleI.font = font;
                         guiStyleI.fontSize = 30;
                         guiStyleL.alignment = TextAnchor.UpperLeft;
-                        GUILayout.Space(4);
-                        name = GUILayout.TextField(name, GUILayout.Width(150f));
-                        GUILayout.Space(4);
-                        VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
-                        GUILayout.Space(8);
-                        InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
-                        GUILayout.Space(8);
-                        VisPresets = int.Parse(GUILayout.TextField(VisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
-                        GUILayout.Space(8);
-                        InvisPresets = int.Parse(GUILayout.TextField(InvisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
+                        
+                        try
+                        {
+                            GUILayout.Space(4);
+                            name = GUILayout.TextField(name, GUILayout.Width(150f));
+                            GUILayout.Space(4);
+                            VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
+                            GUILayout.Space(8);
+                            InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
+                            GUILayout.Space(8);
+                            VisPresets = int.Parse(GUILayout.TextField(VisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
+                            GUILayout.Space(8);
+                            InvisPresets = int.Parse(GUILayout.TextField(InvisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
+                            GUILayout.Space(8);
+                            dockFoldSpeed = float.Parse(GUILayout.TextField(dockFoldSpeed.ToString(), guiStyleI, GUILayout.Width(20f)));
+                        }
+                        catch
+                        {
+                        }                        
+                        
                     GUILayout.EndVertical();
                 
                 GUILayout.EndHorizontal();

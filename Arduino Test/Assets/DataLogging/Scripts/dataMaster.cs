@@ -60,6 +60,10 @@ public class dataMaster : MonoBehaviour {
 		dataRecordingController dataLogPrefs = newDataLogger.GetComponent<dataRecordingController>();
 
 		newDataLogger.name = "DataLogger_" + GetComponent<testDataGUI>().name;
+		newDataLogger.GetComponent<dataRecordingController>().testCateg.VisLtdLimit = GetComponent<testDataGUI>().VisLtdRandom;
+		newDataLogger.GetComponent<dataRecordingController>().testCateg.InvisLtdLimit = GetComponent<testDataGUI>().InvisLtdRandom;
+        newDataLogger.GetComponent<dataRecordingController>().testCateg.VisPresetLimit = GetComponent<testDataGUI>().VisPresets;
+        newDataLogger.GetComponent<dataRecordingController>().testCateg.InvisPresetLimit = GetComponent<testDataGUI>().InvisPresets;
 		dataLogPrefs.filePath = textLog.path + GetComponent<testDataGUI>().name + "/";
 	}
 }

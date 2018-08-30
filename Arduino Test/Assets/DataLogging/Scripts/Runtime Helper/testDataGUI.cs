@@ -10,6 +10,11 @@ public class testDataGUI : MonoBehaviour {
     public string name = "";
     Vector2 totalLineSpace = new Vector2(0, 0);
 
+    public int VisLtdRandom = 0;
+    public int InvisLtdRandom = 0;
+    public int VisPresets = 0;
+    public int InvisPresets = 0;
+
     public Vector2 scrollPosition;
 
     public List<string> controlsList;
@@ -110,6 +115,26 @@ public class testDataGUI : MonoBehaviour {
         {
             GetComponent<dataMaster>().NewDataLogger();
         }
+
+        // Test Category Panel
+        GUILayout.BeginHorizontal();
+
+        GUILayout.BeginVertical();
+            GUILayout.Label("VisLtdRandom");
+            GUILayout.Label("InvisLtdRandom");
+            GUILayout.Label("VisPresets");
+            GUILayout.Label("InvisPresets");
+        GUILayout.EndVertical();
+        
+
+        GUILayout.BeginVertical();
+            VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), GUILayout.Width(200f)));
+            InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), GUILayout.Width(200f)));
+            VisPresets = int.Parse(GUILayout.TextField(VisPresets.ToString(), GUILayout.Width(200f)));
+            InvisPresets = int.Parse(GUILayout.TextField(InvisPresets.ToString(), GUILayout.Width(200f)));
+        GUILayout.EndVertical();
+        
+        GUILayout.EndHorizontal();
 
         GUILayout.EndVertical();
 

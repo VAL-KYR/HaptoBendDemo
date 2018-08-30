@@ -616,9 +616,6 @@ public class dataRecorder : MonoBehaviour {
                                         finalResults.MV + textLog.cellSeperatorType +
                                         finalResults.TRE + textLog.cellSeperatorType;
 
-        // SEND DATA TO THE GUI
-        this.transform.parent.parent.GetComponent<testDataGUI>().testData.Add("\n" + guiResults + "\n" + "\n" + "\n");
-
         // Send the data
         fileEditor.Append(textLog.path, textLog.exportedText);
 

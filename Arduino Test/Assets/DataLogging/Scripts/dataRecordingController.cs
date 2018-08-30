@@ -68,10 +68,10 @@ public class dataRecordingController : MonoBehaviour {
     {
         public bool automateTypes = true;
         
-        public int VisLtdLimit = 10;
-        public int InvisLtdLimit = 10;
-        public int VisPresetLimit = 10;
-        public int InvisPresetLimit = 10;
+        public int VisLtdLimit;
+        public int InvisLtdLimit;
+        public int VisPresetLimit;
+        public int InvisPresetLimit;
 
 
         public List<GameObject> VisLtdRandom;
@@ -145,89 +145,75 @@ public class dataRecordingController : MonoBehaviour {
             if (Input.GetButton("CreateTest") && !testsDone)
             {
                 NewTest(false);
+                inputTime = 0f;
                 currAction = "Test_" + (tests.Count - 1) + " Created";
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
-                inputTime = 0f;
             }
             if (Input.GetButton("RandomizeDock"))
             {
                 NewDockShape();
-                currAction = "Dock Randomized";
                 inputTime = 0f;
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("ZeroDock"))
             {
                 ZeroDockShape();
-                currAction = "Dock Zeroed";
                 inputTime = 0f;
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DockStyle"))
             {
                 // Instead of flipping dock style try cycling dock style 
                 activeDockStyle = NextDockStyle();
-                currAction = "Docks are " + activeDockStyle;
                 inputTime = 0f;
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("SummarizeTests"))
             {
                 FinalReport();
-                currAction = "Tests Summarized";
                 inputTime = 0f;
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteTests"))
             {
                 ClearTests();
-                currAction = "All Tests Deleted";
                 inputTime = 0f;
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeleteReports"))
             {
                 fileEditor.ClearDir(filePath);
-                currAction = "All Reports Deleted";
                 inputTime = 0f;
+                currAction = "All Reports Deleted";
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("DeviceVisible"))
             {
                 virtualDeviceVisible = !virtualDeviceVisible;
                 FlipDeviceVisibilityInHMD(virtualDeviceVisible);
-                currAction = "Device Visible " + virtualDeviceVisible;
                 inputTime = 0f;
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
             if (Input.GetButton("ReCalDevice"))
             {
                 ReCalIMU();
-
-                currAction = "Device Recalibrated";
                 inputTime = 0f;
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }  
             if (Input.GetButton("BadTest"))
             {
                 activeDockStyle = "BAD DATA";
-
-                currAction = currTest.name + " Trashed";
                 inputTime = 0f;
+                currAction = currTest.name + " Trashed";
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }      
         }
+
         // Automatically Creates and Starts new tests
         if (!testsDone)
         {
-            if (currTest.GetComponent<dataRecorder>().anglesRecorded)
+            if (currTest.GetComponent<dataRecorder>().anglesRecorded && !ClippingChecker())
             {
                 deviceReset = !deviceReset;
                 NewTest(deviceReset);
 
                 SetCurrTest();
                 currTest.GetComponent<dataRecorder>().recordAngles = true;
-                currAction = currTest.name + " Started";
+                currAction = currTest.name + " Started";                
+                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
             }
 
             if (currTest.GetComponent<dataRecorder>().recordAngles)
@@ -322,6 +308,9 @@ public class dataRecordingController : MonoBehaviour {
         StartCoroutine(ReCalIMUSeq());
         new WaitForSeconds(0.1f);
         StartCoroutine(ReCalIMUSeq());
+
+        currAction = "Device Recalibrated";
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
     public IEnumerator ReCalIMUSeq()
     {
@@ -336,6 +325,9 @@ public class dataRecordingController : MonoBehaviour {
     {
         imu.BendReset();
         imu.Calibrate();
+
+        currAction = "Device Calibrated";
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
 
     //// Find virtual device meshes [NEW]
@@ -364,6 +356,9 @@ public class dataRecordingController : MonoBehaviour {
                                                     1f);
             }
         }
+
+        currAction = "Device Visible " + virtualDeviceVisible;
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
 
     //// Keeps track of what is the test that will have data sent
@@ -555,6 +550,9 @@ public class dataRecordingController : MonoBehaviour {
         GetComponent<dataSummary>().EraseResultsLists();
         GetComponent<dataSummary>().CalculateFinalResults(testCateg.InvisPresets);
         GetComponent<dataSummary>().ExportTrialSummaries("InvisPresets", true, false);
+
+        currAction = "Tests Summarized";
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
 
     // Get a new shape to dock to
@@ -628,6 +626,9 @@ public class dataRecordingController : MonoBehaviour {
                 NewAngle(deviceLimits[0], deviceLimits[1])
             };
         }
+
+        currAction = "Dock Randomized";
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
 
     // Test Dock Shape
@@ -643,6 +644,9 @@ public class dataRecordingController : MonoBehaviour {
             0, 
             0
         };
+
+        currAction = "Dock Zeroed"; 
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
 
     // Delete all tests
@@ -657,6 +661,9 @@ public class dataRecordingController : MonoBehaviour {
 
         // Reset Test List
         tests.Clear();
+
+        currAction = "All Tests Deleted";
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
 
     /// GENERIC FUNCTIONS ///
@@ -758,6 +765,9 @@ public class dataRecordingController : MonoBehaviour {
             index++;
         }
         
+        currAction = "Docks are " + dockStyles[index];
+        transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
+
         return dockStyles[index];
     }
 

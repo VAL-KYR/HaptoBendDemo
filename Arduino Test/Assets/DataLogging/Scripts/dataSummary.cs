@@ -231,10 +231,9 @@ public class dataSummary : MonoBehaviour {
         foreach (float angle in summary.TREJoints)
             textLog.exportedText += angle + textLog.cellSeperatorType;
 
-        /*
+        
         // SEND DATA TO THE GUI
-        this.GetComponent<testDataGUI>().testData.Add(resultsName + " Summary:" + textLog.cellSeperatorType + guiResults + "\n" + "\n" + "\n");
-        */
+        transform.parent.GetComponent<testDataGUI>().AddElement(transform.parent.GetComponent<testDataGUI>().testData, resultsName + " Summary:" + textLog.cellSeperatorType + textLog.exportedText + "\n" + "\n" + "\n");
 
         // seperate for new section
         if (textSeperation)

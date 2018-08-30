@@ -92,51 +92,68 @@ public class testDataGUI : MonoBehaviour {
 
 
         GUILayout.BeginHorizontal();
-        GUILayout.Space(Screen.width - (scrollSize.x));
+            GUILayout.Space(Screen.width - (scrollSize.x));
 
-        GUILayout.BeginVertical();
-        GUILayout.Space(0);
+            GUILayout.BeginVertical();
+                GUILayout.Space(0);
 
-        GUILayout.Label("Test Data: ");
+                GUILayout.Label("Test Data: ");
 
-        GUI.color = Color.black;
-        scrollPosition = GUILayout.BeginScrollView(scrollPosition, 
-                                                    GUILayout.Width(scrollSize.x), 
-                                                    GUILayout.Height(scrollSize.y));
+                GUI.color = Color.black;
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, 
+                                                            GUILayout.Width(scrollSize.x), 
+                                                            GUILayout.Height(scrollSize.y));
 
-        GUILayout.Label(allTests);
+                    GUILayout.Label(allTests);
 
-        GUILayout.EndScrollView();
+                GUILayout.EndScrollView();
 
-        GUI.skin.label.fontSize = (int)(fontSize * 1.5f);
-        name = GUILayout.TextField(name, GUILayout.Width(200f));
+                if (GUILayout.Button("New Tester"))
+                {
+                    GetComponent<dataMaster>().NewDataLogger();
+                }
 
-        if (GUILayout.Button("New Tester"))
-        {
-            GetComponent<dataMaster>().NewDataLogger();
-        }
+                // Test Category Panel
+                GUILayout.BeginHorizontal();
 
-        // Test Category Panel
-        GUILayout.BeginHorizontal();
+                    GUILayout.BeginVertical();
+                        GUIStyle guiStyleL = new GUIStyle();
+                        guiStyleL.font = font;
+                        guiStyleL.fontSize = 30;
+                        guiStyleL.alignment = TextAnchor.UpperRight;
+                        GUILayout.Space(8);
+                        GUILayout.Label("Tester Alias: ", guiStyleL);
+                        GUILayout.Space(8);
+                        GUILayout.Label("# of VisLtdRandom: ", guiStyleL);
+                        GUILayout.Space(8);
+                        GUILayout.Label("# of InvisLtdRandom: ", guiStyleL);
+                        GUILayout.Space(8);
+                        GUILayout.Label("# of VisPresets: ", guiStyleL);
+                        GUILayout.Space(8);
+                        GUILayout.Label("# of InvisPresets: ", guiStyleL);
+                    GUILayout.EndVertical();
+                    
 
-        GUILayout.BeginVertical();
-            GUILayout.Label("VisLtdRandom");
-            GUILayout.Label("InvisLtdRandom");
-            GUILayout.Label("VisPresets");
-            GUILayout.Label("InvisPresets");
-        GUILayout.EndVertical();
-        
+                    GUILayout.BeginVertical();
+                        GUIStyle guiStyleI = new GUIStyle();
+                        guiStyleI.font = font;
+                        guiStyleI.fontSize = 30;
+                        guiStyleL.alignment = TextAnchor.UpperLeft;
+                        GUILayout.Space(4);
+                        name = GUILayout.TextField(name, GUILayout.Width(150f));
+                        GUILayout.Space(4);
+                        VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
+                        GUILayout.Space(8);
+                        InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
+                        GUILayout.Space(8);
+                        VisPresets = int.Parse(GUILayout.TextField(VisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
+                        GUILayout.Space(8);
+                        InvisPresets = int.Parse(GUILayout.TextField(InvisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
+                    GUILayout.EndVertical();
+                
+                GUILayout.EndHorizontal();
 
-        GUILayout.BeginVertical();
-            VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), GUILayout.Width(200f)));
-            InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), GUILayout.Width(200f)));
-            VisPresets = int.Parse(GUILayout.TextField(VisPresets.ToString(), GUILayout.Width(200f)));
-            InvisPresets = int.Parse(GUILayout.TextField(InvisPresets.ToString(), GUILayout.Width(200f)));
-        GUILayout.EndVertical();
-        
-        GUILayout.EndHorizontal();
-
-        GUILayout.EndVertical();
+            GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
 

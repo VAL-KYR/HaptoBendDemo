@@ -56,7 +56,7 @@ public class dataMaster : MonoBehaviour {
 		foreach (GameObject logger in dataLoggers)
 			logger.GetComponent<dataRecordingController>().enabled = false;
 
-		GameObject newDataLogger = Instantiate<GameObject>(dataLoggerPrefab, Vector3.zero, Quaternion.identity, this.transform);
+		GameObject newDataLogger = Instantiate<GameObject>(dataLoggerPrefab, Vector3.zero, Quaternion.identity, transform);
 		dataRecordingController dataLogPrefs = newDataLogger.GetComponent<dataRecordingController>();
 
 		newDataLogger.name = "DataLogger_" + GetComponent<testDataGUI>().name;

@@ -436,7 +436,7 @@ public class dataRecordingController : MonoBehaviour {
         }
 
         // Create test Object
-        GameObject test = Instantiate<GameObject>(testObject, Vector3.zero, Quaternion.identity, this.transform);
+        GameObject test = Instantiate<GameObject>(testObject, Vector3.zero, Quaternion.identity, transform);
         dataRecorder testParams = test.GetComponent<dataRecorder>();
         // Init file settings
         testParams.textLog.path = filePath;
@@ -653,7 +653,7 @@ public class dataRecordingController : MonoBehaviour {
     public void ClearTests()
     {
         // Destroy the Test Objects
-        foreach (Transform child in this.transform)
+        foreach (Transform child in transform)
         {
             Destroy(child.gameObject);
             // Corrupt them all!

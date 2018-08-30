@@ -118,10 +118,10 @@ public class dataRecorder : MonoBehaviour {
     // Update
     void Update() {
         // Get the dockstyle so we know what it is before we write to finalResults
-        textLog.dockShapeStyle = this.GetComponentInParent<dataRecordingController>().activeDockStyle;
+        textLog.dockShapeStyle = GetComponentInParent<dataRecordingController>().activeDockStyle;
 
         // Get the dock visibility 
-        textLog.deviceVisibility = this.GetComponentInParent<dataRecordingController>().virtualDeviceVisible;
+        textLog.deviceVisibility = GetComponentInParent<dataRecordingController>().virtualDeviceVisible;
 
         // Get the testername from the dataController
         textLog.testerName = transform.parent.GetComponentInParent<testDataGUI>().name;
@@ -135,7 +135,7 @@ public class dataRecorder : MonoBehaviour {
 
         // Accumulate data from GetAngles to gather twitch data
         if (efficiency.deviceTwitchCounter < efficiency.deviceTwitchSampleSize 
-        && !this.GetComponentInParent<dataRecordingController>().errorGathered)
+        && !GetComponentInParent<dataRecordingController>().errorGathered)
         {
             efficiency.deviceTwitch.row.Add(angleSummary.currAngles.ToList());
 
@@ -146,7 +146,7 @@ public class dataRecorder : MonoBehaviour {
                 finalResults.deviceError = Mathf.Abs(DeviceTwichCalibration(efficiency.deviceTwitch));
 
                 // This line assures the error is only gathered once per session
-                this.GetComponentInParent<dataRecordingController>().errorGathered = true;
+                GetComponentInParent<dataRecordingController>().errorGathered = true;
 #if UNITY_EDITOR
                 Debug.Log("device error = " + finalResults.deviceError);
 #endif
@@ -191,7 +191,7 @@ public class dataRecorder : MonoBehaviour {
             // ReCal the dock if this is a ZEROING DATA test type     
             if (textLog.dockShapeStyle == "ZEROING DATA")
             {
-                this.transform.parent.GetComponent<dataRecordingController>().ReCalIMU();
+                transform.parent.GetComponent<dataRecordingController>().ReCalIMU();
             }
 
             anglesRecorded = true;
@@ -582,7 +582,7 @@ public class dataRecorder : MonoBehaviour {
         textLog.exportedText += finalResults.TRE + textLog.cellSeperatorType;
 
         // For GUI presentation
-        string guiResults = "\n" + "\n" + this.name + " Results:" + textLog.cellSeperatorType +
+        string guiResults = "\n" + "\n" + name + " Results:" + textLog.cellSeperatorType +
                                         "Tester Name" + textLog.cellSeperatorType +
                                         "Time of Test" + textLog.cellSeperatorType +
                                         "Dock Shape Style" + textLog.cellSeperatorType +

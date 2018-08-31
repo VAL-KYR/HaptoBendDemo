@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,19 @@ public class testDataGUI : MonoBehaviour {
     public int fontSize = 12;
     public string name = "";
     Vector2 totalLineSpace = new Vector2(0, 0);
+
+     [System.Serializable]
+    public class Debugger : System.Object
+    {
+        public bool allTrials = false;
+        public bool trialsSum = false;
+        public string cmd = "";
+
+        public List<string> commands;
+
+    }
+    public Debugger debug = new Debugger();
+
 
     public int VisLtdRandom = 0;
     public int InvisLtdRandom = 0;
@@ -109,11 +123,6 @@ public class testDataGUI : MonoBehaviour {
 
                 GUILayout.EndScrollView();
 
-                if (GUILayout.Button("New Tester"))
-                {
-                    GetComponent<dataMaster>().NewDataLogger();
-                }
-
                 // Test Category Panel
                 GUILayout.BeginHorizontal();
 
@@ -122,8 +131,6 @@ public class testDataGUI : MonoBehaviour {
                         guiStyleL.font = font;
                         guiStyleL.fontSize = 30;
                         guiStyleL.alignment = TextAnchor.UpperRight;
-                        GUILayout.Space(8);
-                        GUILayout.Label("Tester Alias: ", guiStyleL);
                         GUILayout.Space(8);
                         GUILayout.Label("# of VisLtdRandom: ", guiStyleL);
                         GUILayout.Space(8);
@@ -146,8 +153,6 @@ public class testDataGUI : MonoBehaviour {
                         try
                         {
                             GUILayout.Space(4);
-                            name = GUILayout.TextField(name, GUILayout.Width(150f));
-                            GUILayout.Space(4);
                             VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
                             GUILayout.Space(8);
                             InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
@@ -160,7 +165,25 @@ public class testDataGUI : MonoBehaviour {
                         }
                         catch
                         {
-                        }                        
+                        }             
+                        GUI.skin.toggle.font = font;
+                        GUI.skin.toggle.active.textColor = Color.green;
+                        GUI.skin.toggle.fontSize = 30;
+                        GUI.skin.toggle.alignment = TextAnchor.UpperLeft;
+                        debug.allTrials = GUILayout.Toggle(debug.allTrials, " Monitor AllTrials");
+                        debug.trialsSum = GUILayout.Toggle(debug.trialsSum, " Monitor TrialCategorySum");    
+
+
+                        GUILayout.Space(8);
+                        debug.cmd = GUILayout.TextField(debug.cmd);
+                        if (GUILayout.Button("[Hit Enter Execute]", guiStyleI, GUILayout.Width(200f)))
+                        {
+                            ExecuteCmd(debug.cmd);
+                            //Send to Command Interpreter
+                            //Delete a folder maybe?
+                            //GetComponent<dataMaster>().NewDataLogger();
+                        }
+
                         
                     GUILayout.EndVertical();
                 
@@ -171,6 +194,27 @@ public class testDataGUI : MonoBehaviour {
         GUILayout.EndHorizontal();
 
         totalLineSpace.y = 0;
+    }
+
+    public void ExecuteCmd(string command)
+    {
+        string[] commandBreakdown = command.Split('.');
+
+        if (commandBreakdown.Contains("clear") && debug.commands.Contains("clear"))
+        {
+            if (commandBreakdown.Contains("folder") && debug.commands.Contains("folder"))
+            {
+                fileEditor.ClearDir(commandBreakdown[commandBreakdown.Length - 1]);
+            }
+        }
+        else if (commandBreakdown.Contains("logger") && debug.commands.Contains("logger"))
+        {
+            if (commandBreakdown.Contains("add") && debug.commands.Contains("add"))
+            {
+                name = commandBreakdown[commandBreakdown.Length - 1];
+                GetComponent<dataMaster>().NewDataLogger(commandBreakdown[commandBreakdown.Length - 1]);
+            }
+        }
     }
 
     public void FetchAction(string action)

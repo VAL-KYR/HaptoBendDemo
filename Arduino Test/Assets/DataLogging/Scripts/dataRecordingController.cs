@@ -518,8 +518,8 @@ public class dataRecordingController : MonoBehaviour {
             tests = GameObject.FindGameObjectsWithTag("trial").ToList();
 
             //-- Remove the debug/dummy tests
-            Destroy(tests[tests.Count - 1]);
-            tests.RemoveAt(tests.Count - 1);
+            //Destroy(tests[tests.Count - 1]);
+            //tests.RemoveAt(tests.Count - 1);
 
             TestCatCheck();
         }

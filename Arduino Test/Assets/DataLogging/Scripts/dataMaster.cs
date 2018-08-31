@@ -11,9 +11,6 @@ public class dataMaster : MonoBehaviour {
 	public GameObject dataLoggerPrefab;
 	public List<GameObject> dataLoggers;
 
-	float inputTime = 0;
-	float inputTimer = 0.5f;
-
 	[System.Serializable]
     public class TextLog : System.Object
     {
@@ -35,23 +32,11 @@ public class dataMaster : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		dataLoggers = GameObject.FindGameObjectsWithTag("dataLogger").ToList();
-
-		// Basic controls to create new Logger
-		if (inputTime > inputTimer)
-        {
-			if (Input.GetButton("NewLogger")) 
-            {
-                NewDataLogger();
-                inputTime = 0f;
-            }
-		}
-
-		inputTime += Time.smoothDeltaTime;
 	}
 
-	public void NewDataLogger()
+	public void NewDataLogger(string loggerName)
 	{
-		GetComponent<testDataGUI>().FetchAction("New Logger - " + GetComponent<testDataGUI>().name);
+		GetComponent<testDataGUI>().FetchAction("New Logger - " + loggerName);
 
 		foreach (GameObject logger in dataLoggers)
 			logger.GetComponent<dataRecordingController>().enabled = false;
@@ -59,11 +44,11 @@ public class dataMaster : MonoBehaviour {
 		GameObject newDataLogger = Instantiate<GameObject>(dataLoggerPrefab, Vector3.zero, Quaternion.identity, transform);
 		dataRecordingController dataLogPrefs = newDataLogger.GetComponent<dataRecordingController>();
 
-		newDataLogger.name = "DataLogger_" + GetComponent<testDataGUI>().name;
+		newDataLogger.name = "DataLogger_" + loggerName;
 		newDataLogger.GetComponent<dataRecordingController>().testCateg.VisLtdLimit = GetComponent<testDataGUI>().VisLtdRandom;
 		newDataLogger.GetComponent<dataRecordingController>().testCateg.InvisLtdLimit = GetComponent<testDataGUI>().InvisLtdRandom;
         newDataLogger.GetComponent<dataRecordingController>().testCateg.VisPresetLimit = GetComponent<testDataGUI>().VisPresets;
         newDataLogger.GetComponent<dataRecordingController>().testCateg.InvisPresetLimit = GetComponent<testDataGUI>().InvisPresets;
-		dataLogPrefs.filePath = textLog.path + GetComponent<testDataGUI>().name + "/";
+		dataLogPrefs.filePath = textLog.path + loggerName + "/";
 	}
 }

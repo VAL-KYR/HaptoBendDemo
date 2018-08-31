@@ -167,6 +167,12 @@ public class dataSummary : MonoBehaviour {
         if (textSeperation)
             textLog.exportedText += "\n" + "\n";
 
+        // SEND DATA TO THE GUI
+        if (transform.parent.GetComponent<testDataGUI>().debug.allTrials)
+            transform.parent.GetComponent<testDataGUI>().AddElement(
+                transform.parent.GetComponent<testDataGUI>().testData, 
+                resultsName + " Summary:" + textLog.cellSeperatorType + textLog.exportedText + "\n" + "\n" + "\n");
+
         // SEND DATA TO THE FILE
         fileEditor.Append(textLog.sendFile, textLog.exportedText);
 
@@ -233,7 +239,10 @@ public class dataSummary : MonoBehaviour {
 
         
         // SEND DATA TO THE GUI
-        transform.parent.GetComponent<testDataGUI>().AddElement(transform.parent.GetComponent<testDataGUI>().testData, resultsName + " Summary:" + textLog.cellSeperatorType + textLog.exportedText + "\n" + "\n" + "\n");
+        if (transform.parent.GetComponent<testDataGUI>().debug.trialsSum)
+            transform.parent.GetComponent<testDataGUI>().AddElement(
+                transform.parent.GetComponent<testDataGUI>().testData, 
+                resultsName + " Summary:" + textLog.cellSeperatorType + textLog.exportedText + "\n" + "\n" + "\n");
 
         // seperate for new section
         if (textSeperation)

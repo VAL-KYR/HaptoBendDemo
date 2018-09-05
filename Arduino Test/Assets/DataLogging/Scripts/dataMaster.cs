@@ -51,4 +51,19 @@ public class dataMaster : MonoBehaviour {
         newDataLogger.GetComponent<dataRecordingController>().testCateg.InvisPresetLimit = GetComponent<testDataGUI>().InvisPresets;
 		dataLogPrefs.filePath = textLog.path + loggerName + "/";
 	}
+
+	public void DeleteLogger(string suffix)
+	{
+		GameObject loggerToDelete = new GameObject();
+
+		//foreach (GameObject logger in dataLoggers)
+			//logger.GetComponent<dataRecordingController>().enabled = true;
+
+		foreach (GameObject logger in dataLoggers)
+			if (logger.name == "DataLogger_" + suffix)
+				Destroy(logger);
+				
+		//foreach (GameObject logger in dataLoggers)
+			//logger.GetComponent<dataRecordingController>().enabled = false;
+	}
 }

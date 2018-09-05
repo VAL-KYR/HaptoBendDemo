@@ -398,28 +398,24 @@ public class dataRecordingController : MonoBehaviour {
                 {
                     activeDockStyle = dockStyles[2];
                     virtualDeviceVisible = true;
-                    //Debug.Log("VisLtdRandom");
                     break;
                 }
                 else if ((index >= 0.25f && index < 0.5f) && testCateg.InvisLtdRandom.Count < testCateg.InvisLtdLimit)
                 {
                     activeDockStyle = dockStyles[2];
                     virtualDeviceVisible = false;
-                    //Debug.Log("InvisLtdRandom");
                     break;
                 }
                 else if ((index >= 0.5f && index < 0.75f) && testCateg.VisPresets.Count < testCateg.VisPresetLimit)
                 {
                     activeDockStyle = dockStyles[1];
                     virtualDeviceVisible = true;
-                    //Debug.Log("VisPresets");
                     break;
                 }
                 else if ((index >= 0.75f && index <= 1.0f) && testCateg.InvisPresets.Count < testCateg.InvisPresetLimit)
                 {
                     activeDockStyle = dockStyles[1];
                     virtualDeviceVisible = false;
-                    //Debug.Log("InvisPresets");
                     break;
                 }
                 else if (testCateg.VisLtdRandom.Count >= testCateg.VisLtdLimit &&
@@ -516,10 +512,6 @@ public class dataRecordingController : MonoBehaviour {
         if (transform.parent.GetComponent<testDataGUI>().name == "alldata")
         {
             tests = GameObject.FindGameObjectsWithTag("trial").ToList();
-
-            //-- Remove the debug/dummy tests
-            //Destroy(tests[tests.Count - 1]);
-            //tests.RemoveAt(tests.Count - 1);
 
             TestCatCheck();
         }
@@ -676,7 +668,6 @@ public class dataRecordingController : MonoBehaviour {
     float NewPresetAngle(string angleType)
     {
         float chance = Random.Range(0.0f, 1.0f);
-        Debug.Log(chance);
 
         float angle = 0;
 
@@ -698,15 +689,15 @@ public class dataRecordingController : MonoBehaviour {
         // adjust for higher angle balance
         else if (angleType == "bend")
         {
-            if (chance >= 0f && chance < 0.3f)
+            if (chance >= 0f && chance < 0.2f)
             {
                 angle = pureAnglesShape[0];
             }
-            else if (chance >= 0.3f && chance < 0.7f)
+            else if (chance >= 0.2f && chance < 0.6f)
             {
                 angle = pureAnglesShape[1];
             }
-            else if (chance >= 0.7f && chance <= 1.0f)
+            else if (chance >= 0.6f && chance <= 1.0f)
             {
                 angle = pureAnglesShape[2];
             }
@@ -725,9 +716,6 @@ public class dataRecordingController : MonoBehaviour {
         {
             foreach (GameObject clippingObj in checkObj.GetComponent<clippingManager>().clippingObjects)
             {
-#if UNITY_EDITOR
-                Debug.Log("clipping found");
-#endif
                 allClippingObjects.Add(clippingObj);
             }
         }

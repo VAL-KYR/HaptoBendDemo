@@ -175,13 +175,14 @@ public class testDataGUI : MonoBehaviour {
 
 
                         GUILayout.Space(8);
+                        GUI.SetNextControlName("console");
                         debug.cmd = GUILayout.TextField(debug.cmd);
-                        if (GUILayout.Button("[Hit Enter Execute]", guiStyleI, GUILayout.Width(200f)))
+                        GUILayout.Label("[Hit Enter Execute]", guiStyleI, GUILayout.Width(200f));
+
+                        if (Event.current.isKey && Event.current.keyCode == KeyCode.Return && 
+                            GUI.GetNameOfFocusedControl() == "console")
                         {
                             ExecuteCmd(debug.cmd);
-                            //Send to Command Interpreter
-                            //Delete a folder maybe?
-                            //GetComponent<dataMaster>().NewDataLogger();
                         }
 
                         
@@ -200,21 +201,40 @@ public class testDataGUI : MonoBehaviour {
     {
         string[] commandBreakdown = command.Split('.');
 
-        if (commandBreakdown.Contains("clear") && debug.commands.Contains("clear"))
-        {
-            if (commandBreakdown.Contains("folder") && debug.commands.Contains("folder"))
-            {
-                fileEditor.ClearDir(commandBreakdown[commandBreakdown.Length - 1]);
-            }
-        }
-        else if (commandBreakdown.Contains("logger") && debug.commands.Contains("logger"))
-        {
+        if (!commandBreakdown.Contains(""))
+        {   
             if (commandBreakdown.Contains("add") && debug.commands.Contains("add"))
             {
-                name = commandBreakdown[commandBreakdown.Length - 1];
-                GetComponent<dataMaster>().NewDataLogger(commandBreakdown[commandBreakdown.Length - 1]);
+                if (commandBreakdown.Contains("logger") && debug.commands.Contains("logger"))
+                {
+                    name = commandBreakdown[commandBreakdown.Length - 1];
+                    GetComponent<dataMaster>().NewDataLogger(commandBreakdown[commandBreakdown.Length - 1]);
+                }
+            }
+            else if (commandBreakdown.Contains("clear") && debug.commands.Contains("clear")) 
+            {
+                if (commandBreakdown.Contains("folder") && debug.commands.Contains("folder"))
+                {
+                    fileEditor.ClearDir("Assets/DataLogging/Reports/" + commandBreakdown[commandBreakdown.Length - 1]);
+                }
+                else if (commandBreakdown.Contains("all") && debug.commands.Contains("all"))
+                {
+                    fileEditor.ClearDir("Assets/DataLogging/Reports/");
+                }
+            }
+            else if (commandBreakdown.Contains("delete") && debug.commands.Contains("delete")) 
+            {
+                if (commandBreakdown.Contains("folder") && debug.commands.Contains("folder"))
+                {
+                    fileEditor.Delete("Assets/DataLogging/Reports/" + commandBreakdown[commandBreakdown.Length - 1]);
+                }
+                else if (commandBreakdown.Contains("logger") && debug.commands.Contains("logger"))
+                {
+                    GetComponent<dataMaster>().DeleteLogger(commandBreakdown[commandBreakdown.Length - 1]);
+                }
             }
         }
+       
     }
 
     public void FetchAction(string action)

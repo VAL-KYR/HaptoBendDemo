@@ -76,7 +76,8 @@ public class dataRecorder : MonoBehaviour {
         public float precision;
         public float angleDifficulty;
         // Three angles with 150 total possible bending in each joint + the total possible 180 difference with correctangle orientations
-        public float maxAngleDifficulty = (3f * 150f) + (3f * 180f);
+        // New angles absolute 358 || so 360 is the total shape summary
+        public float maxAngleDifficulty = (3f * 180f) + (360);
         public float totalDifficulty;
         public float MVPenalty;
         public float TREPenalty;

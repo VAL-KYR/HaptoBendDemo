@@ -83,7 +83,7 @@ public static class fileEditor {
     // Delete
     public static void Delete(string path)
     {
-        FileUtil.DeleteFileOrDirectory(path);
+        Directory.Delete(path);
 
 #if UNITY_EDITOR
         AssetDatabase.Refresh();

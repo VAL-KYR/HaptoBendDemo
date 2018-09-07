@@ -66,4 +66,17 @@ public class dataMaster : MonoBehaviour {
 		//foreach (GameObject logger in dataLoggers)
 			//logger.GetComponent<dataRecordingController>().enabled = false;
 	}
+
+	public void DeleteTrial(string loggerName, string trialName)
+	{
+		foreach (GameObject logger in dataLoggers)
+			if (logger.name == "DataLogger_" + loggerName)
+				foreach (GameObject trial in logger.GetComponent<dataRecordingController>().tests)
+					if (trial.name == "Test_" + trialName)
+					{
+						trial.name += "_Trashed";
+						trial.GetComponent<dataRecorder>().finalResults.dockShapeStyle = "BAD DATA";
+					}
+						
+	}
 }

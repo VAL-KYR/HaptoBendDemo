@@ -9,17 +9,13 @@ public class testDataGUI : MonoBehaviour {
     public Font font;
     public int fontSize = 12;
     public string name = "";
-    Vector2 totalLineSpace = new Vector2(0, 0);
 
-     [System.Serializable]
+    [System.Serializable]
     public class Debugger : System.Object
     {
         public bool allTrials = false;
         public bool trialsSum = false;
         public string cmd = "";
-
-        public List<string> commands;
-
     }
     public Debugger debug = new Debugger();
 
@@ -28,173 +24,210 @@ public class testDataGUI : MonoBehaviour {
     public int InvisLtdRandom = 0;
     public int VisPresets = 0;
     public int InvisPresets = 0;
-    public float dockFoldSpeed = 3.0f;
+    public float dockFoldSpeed = 10.0f;
 
     public Vector2 scrollPosition;
+    public Vector2 scrollPositionL;
 
     public List<string> controlsList;
     public List<string> actionList = new List<string>(6);
     public List<string> testData;
-    
+
+
+    GUIStyle guiStyleC = new GUIStyle();
+    GUIStyle guiStyleA = new GUIStyle();
+    GUIStyle guiStyleL = new GUIStyle();
+    GUIStyle guiStyleI = new GUIStyle();
+    GUIStyle guiStyleCmd = new GUIStyle();
 
     // Use this for initialization
     void Start () {
         AddElement(actionList, "Loaded");
-    }
-	
-	// Update is called once per frame
-	void Update () {
 
+        // Graphical Settings for Controls List Box
+        guiStyleC.font = font;
+        guiStyleC.alignment = TextAnchor.UpperLeft;
+
+        // Graphical Settings for Action List Box
+        guiStyleA.font = font;
+        guiStyleA.alignment = TextAnchor.UpperLeft;
+
+        // Graphical Settings for Logger List Box
+        guiStyleL.font = font;
+        guiStyleL.alignment = TextAnchor.UpperLeft;
+
+        // Graphical Settings for Command Prompt Input
+        guiStyleI.font = font;
+        guiStyleI.alignment = TextAnchor.UpperLeft;
     }
 
     public void OnGUI()
     {
-        // Controls list
-        string allControls = "";
-        foreach (string c in controlsList)
-        {
-            allControls += c + "\n";
-        }
-
-        // Graphical Settings for Controls List Box
-        GUI.color = Color.black;
-        GUI.skin.textArea.font = font;
-        GUI.skin.textArea.alignment = TextAnchor.UpperLeft;
-        GUI.skin.textArea.fontSize = (int)(fontSize * 0.75f);
-        GUI.TextArea(new Rect(0, 
-                            0, 
-                            20 * fontSize / 1.7f, 
-                            controlsList.Count * fontSize / 2.2f), 
-                            allControls);
-
-        totalLineSpace.y += controlsList.Count * fontSize / 2.2f;
-
-        // FetchAction();
-        // Called from dataRecordingController every time a button is pressed
-
-        // Action List
-        string allActions = "";
-        foreach (string a in actionList)
-        {
-            allActions += a + "\n";
-        }
-
-        // Graphical Settings for Action List Box
-        GUI.color = Color.green;
-        GUI.skin.textArea.font = font;
-        GUI.skin.textArea.alignment = TextAnchor.UpperLeft;
-        GUI.skin.textArea.fontSize = fontSize;
-        GUI.TextArea(new Rect(0, 
-                            (totalLineSpace.y), 
-                            15 * fontSize / 1.7f,
-                            actionList.Count * fontSize / 1.5f), 
-                            allActions);
-
-        totalLineSpace.y += (actionList.Count * fontSize / 1.5f) + 10f;
-
-        // Test List
-        string allTests = "";
-        foreach (string t in testData)
-        {
-            allTests += t + "\n";
-        }
- 
-        // Graphical Settings for Test List Box
-        GUI.color = Color.red;
-        GUI.skin.label.font = font;
-        GUI.skin.label.fontSize = (int)(fontSize * 0.7f);
-        Vector2 scrollSize = new Vector2(800, 300);
-
+        UpdateTextScaling();
 
         GUILayout.BeginHorizontal();
-            GUILayout.Space(Screen.width - (scrollSize.x));
 
             GUILayout.BeginVertical();
-                GUILayout.Space(0);
+            
+                string allControls = "";
+                foreach (string c in controlsList)
+                {
+                    allControls += c + "\n";
+                }
 
-                GUILayout.Label("Test Data: ");
+                GUILayout.BeginVertical();
 
-                GUI.color = Color.black;
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, 
-                                                            GUILayout.Width(scrollSize.x), 
-                                                            GUILayout.Height(scrollSize.y));
+                    GUI.color = Color.blue;
+                    GUI.skin.textArea.font = font;
+                    GUI.skin.textArea.fontSize = Screen.width / 60;
 
-                    GUILayout.Label(allTests);
+                    // Controls List Box
+                    GUILayout.TextArea(allControls);
 
-                GUILayout.EndScrollView();
+                    // Action List
+                    string allActions = "";
+                    foreach (string a in actionList)
+                    {
+                        allActions += a + "\n";
+                    }
 
-                // Test Category Panel
-                GUILayout.BeginHorizontal();
+                    GUI.color = Color.black;
 
-                    GUILayout.BeginVertical();
-                        GUIStyle guiStyleL = new GUIStyle();
-                        guiStyleL.font = font;
-                        guiStyleL.fontSize = 30;
-                        guiStyleL.alignment = TextAnchor.UpperRight;
-                        GUILayout.Space(8);
-                        GUILayout.Label("# of VisLtdRandom: ", guiStyleL);
-                        GUILayout.Space(8);
-                        GUILayout.Label("# of InvisLtdRandom: ", guiStyleL);
-                        GUILayout.Space(8);
-                        GUILayout.Label("# of VisPresets: ", guiStyleL);
-                        GUILayout.Space(8);
-                        GUILayout.Label("# of InvisPresets: ", guiStyleL);
-                        GUILayout.Space(8);
-                        GUILayout.Label("Dock Fold Speed: ", guiStyleL);
-                    GUILayout.EndVertical();
-                    
+                    // Action List Box
+                    GUILayout.TextArea(allActions);
 
-                    GUILayout.BeginVertical();
-                        GUIStyle guiStyleI = new GUIStyle();
-                        guiStyleI.font = font;
-                        guiStyleI.fontSize = 30;
-                        guiStyleL.alignment = TextAnchor.UpperLeft;
-                        
-                        try
-                        {
-                            GUILayout.Space(4);
-                            VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
-                            GUILayout.Space(8);
-                            InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), guiStyleI, GUILayout.Width(20f)));
-                            GUILayout.Space(8);
-                            VisPresets = int.Parse(GUILayout.TextField(VisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
-                            GUILayout.Space(8);
-                            InvisPresets = int.Parse(GUILayout.TextField(InvisPresets.ToString(), guiStyleI, GUILayout.Width(20f)));
-                            GUILayout.Space(8);
-                            dockFoldSpeed = float.Parse(GUILayout.TextField(dockFoldSpeed.ToString(), guiStyleI, GUILayout.Width(20f)));
-                        }
-                        catch
-                        {
-                        }             
-                        GUI.skin.toggle.font = font;
-                        GUI.skin.toggle.active.textColor = Color.green;
-                        GUI.skin.toggle.fontSize = 30;
-                        GUI.skin.toggle.alignment = TextAnchor.UpperLeft;
-                        debug.allTrials = GUILayout.Toggle(debug.allTrials, " Monitor AllTrials");
-                        debug.trialsSum = GUILayout.Toggle(debug.trialsSum, " Monitor TrialCategorySum");    
-
-
-                        GUILayout.Space(8);
-                        GUI.SetNextControlName("console");
-                        debug.cmd = GUILayout.TextField(debug.cmd);
-                        GUILayout.Label("[Hit Enter Execute]", guiStyleI, GUILayout.Width(200f));
-
-                        if (Event.current.isKey && Event.current.keyCode == KeyCode.Return && 
-                            GUI.GetNameOfFocusedControl() == "console")
-                        {
-                            ExecuteCmd(debug.cmd);
-                        }
-
-                        
-                    GUILayout.EndVertical();
+                GUILayout.EndVertical();
                 
-                GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+
+
+            GUILayout.Space(Screen.width * 0.25f);
+
+
+            GUILayout.BeginVertical();
+
+                GUILayout.BeginVertical();
+
+                    GUILayout.Space(0);
+
+                    GUILayout.Label("Test Data: ", guiStyleC);
+
+                    // Test List
+                    string allTests = "";
+                    foreach (string t in testData)
+                    {
+                        allTests += t + "\n";
+                    }
+
+                    //scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
+                        //GUILayout.Label(allTests, guiStyleC);
+
+                    //GUILayout.EndScrollView();
+
+                    // Show active loggers
+                    string loggerText = "";
+                    foreach (GameObject logger in GetComponent<dataMaster>().dataLoggers)
+                    {
+                        loggerText += logger.name + "\n";
+
+                        foreach (GameObject trial in logger.GetComponent<dataRecordingController>().tests)
+                        {
+                            loggerText += "\t" + trial.name + "\n";
+                        }
+                    }
+
+                    scrollPositionL = GUILayout.BeginScrollView(scrollPositionL);
+
+                        GUILayout.Label(loggerText, guiStyleC);
+
+                    GUILayout.EndScrollView();
+
+                    // Test Category Panel
+                    GUILayout.BeginHorizontal();
+
+                        GUILayout.BeginVertical();
+                            
+                            GUI.skin.toggle.font = font;
+                            GUI.skin.label.font = font;
+                            GUI.skin.textField.font = font;
+                            GUI.color = Color.black;
+                            GUI.skin.toggle.fontSize = Screen.width / 60;
+                            GUI.skin.label.fontSize = Screen.width / 60;
+                            GUI.skin.textField.fontSize = Screen.width / 60;
+                            GUI.skin.toggle.alignment = TextAnchor.UpperLeft;
+                            GUI.skin.textField.alignment = TextAnchor.MiddleLeft;
+
+                            GUILayout.BeginVertical();
+
+                                try
+                                {
+                                    GUILayout.BeginHorizontal();
+                                        GUILayout.Label("# of VisLtdRandom: ");
+                                        VisLtdRandom = int.Parse(GUILayout.TextField(VisLtdRandom.ToString(), GUILayout.Width(Screen.width * 0.1f)));
+                                    GUILayout.EndHorizontal();
+                                    GUILayout.BeginHorizontal();
+                                        GUILayout.Label("# of InvisLtdRandom: ");
+                                        InvisLtdRandom = int.Parse(GUILayout.TextField(InvisLtdRandom.ToString(), GUILayout.Width(Screen.width * 0.1f)));
+                                    GUILayout.EndHorizontal();
+                                    GUILayout.BeginHorizontal();
+                                        GUILayout.Label("# of VisPresets: ");
+                                        VisPresets = int.Parse(GUILayout.TextField(VisPresets.ToString(), GUILayout.Width(Screen.width * 0.1f)));
+                                    GUILayout.EndHorizontal();
+                                    GUILayout.BeginHorizontal();
+                                        GUILayout.Label("# of InvisPresets: ");
+                                        InvisPresets = int.Parse(GUILayout.TextField(InvisPresets.ToString(), GUILayout.Width(Screen.width * 0.1f)));
+                                    GUILayout.EndHorizontal();
+                                    GUILayout.BeginHorizontal();
+                                        GUILayout.Label("Dock Fold Speed: ");
+                                        dockFoldSpeed = float.Parse(GUILayout.TextField(dockFoldSpeed.ToString(), GUILayout.Width(Screen.width * 0.1f)));
+                                    GUILayout.EndHorizontal();
+                                }
+                                catch
+                                {
+                                }
+
+                            GUILayout.EndVertical(); 
+
+
+                            debug.allTrials = GUILayout.Toggle(debug.allTrials, " Monitor AllTrials", 
+                                                                                GUILayout.Width(Screen.width * 0.2f),
+                                                                                GUILayout.Height(Screen.height * 0.03f));
+                            debug.trialsSum = GUILayout.Toggle(debug.trialsSum, " Monitor TrialCategorySum",
+                                                                                GUILayout.Width(Screen.width * 0.2f),
+                                                                                GUILayout.Height(Screen.height * 0.03f));    
+
+                            GUI.SetNextControlName("console");
+
+                            debug.cmd = GUILayout.TextField(debug.cmd, GUILayout.Width(Screen.width * 0.2f), 
+                                                                        GUILayout.Height(Screen.height * 0.03f));
+                            GUILayout.Label("[Hit Enter to Execute Commands]", guiStyleI, GUILayout.Width(200f));
+
+                            if (Event.current.isKey && Event.current.keyCode == KeyCode.Return && 
+                                GUI.GetNameOfFocusedControl() == "console")
+                            {
+                                ExecuteCmd(debug.cmd);
+                            }
+                            
+                        GUILayout.EndVertical();
+                    
+                    GUILayout.EndHorizontal();
+
+                GUILayout.EndVertical();
+
+                GUILayout.Space(Screen.width * 0.15f);
 
             GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
+    }
 
-        totalLineSpace.y = 0;
+    public void UpdateTextScaling()
+    {
+        guiStyleC.fontSize = Screen.width / 60;
+        guiStyleA.fontSize = Screen.width / 60;
+        guiStyleL.fontSize = Screen.width / 60;
+        guiStyleI.fontSize = Screen.width / 60;
     }
 
     public void ExecuteCmd(string command)
@@ -203,34 +236,42 @@ public class testDataGUI : MonoBehaviour {
 
         if (!commandBreakdown.Contains(""))
         {   
-            if (commandBreakdown.Contains("add") && debug.commands.Contains("add"))
+            if (commandBreakdown.Contains("add"))
             {
-                if (commandBreakdown.Contains("logger") && debug.commands.Contains("logger"))
+                // add.logger.[loggername]
+                if (commandBreakdown.Contains("logger"))
                 {
                     name = commandBreakdown[commandBreakdown.Length - 1];
                     GetComponent<dataMaster>().NewDataLogger(commandBreakdown[commandBreakdown.Length - 1]);
                 }
             }
-            else if (commandBreakdown.Contains("clear") && debug.commands.Contains("clear")) 
+            else if (commandBreakdown.Contains("clear")) 
             {
-                if (commandBreakdown.Contains("folder") && debug.commands.Contains("folder"))
+                // clear.folder.[foldername]
+                if (commandBreakdown.Contains("folder"))
                 {
                     fileEditor.ClearDir("Assets/DataLogging/Reports/" + commandBreakdown[commandBreakdown.Length - 1]);
                 }
-                else if (commandBreakdown.Contains("all") && debug.commands.Contains("all"))
+                // clear.all
+                else if (commandBreakdown.Contains("all"))
                 {
                     fileEditor.ClearDir("Assets/DataLogging/Reports/");
                 }
             }
-            else if (commandBreakdown.Contains("delete") && debug.commands.Contains("delete")) 
+            else if (commandBreakdown.Contains("delete")) 
             {
-                if (commandBreakdown.Contains("folder") && debug.commands.Contains("folder"))
+                // delete.logger.[loggername]
+                if (commandBreakdown.Contains("folder"))
                 {
                     fileEditor.Delete("Assets/DataLogging/Reports/" + commandBreakdown[commandBreakdown.Length - 1]);
                 }
-                else if (commandBreakdown.Contains("logger") && debug.commands.Contains("logger"))
+                // delete.logger.[loggername].[trialname]
+                else if (commandBreakdown.Contains("logger"))
                 {
-                    GetComponent<dataMaster>().DeleteLogger(commandBreakdown[commandBreakdown.Length - 1]);
+                    if (commandBreakdown.Length > 3)
+                    {
+                        GetComponent<dataMaster>().DeleteTrial(commandBreakdown[commandBreakdown.Length - 2], commandBreakdown[commandBreakdown.Length - 1]);
+                    }
                 }
             }
         }

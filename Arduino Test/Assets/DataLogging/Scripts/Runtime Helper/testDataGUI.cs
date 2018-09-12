@@ -63,6 +63,8 @@ public class testDataGUI : MonoBehaviour {
 
     public void OnGUI()
     {
+        GUIStyle backing = new GUIStyle();
+        backing.normal.background = MakeTex(1, 1, new Color(1.0f, 1.0f, 1.0f, 0.5f));
         UpdateTextScaling();
 
         GUILayout.BeginHorizontal();
@@ -101,7 +103,7 @@ public class testDataGUI : MonoBehaviour {
             GUILayout.EndVertical();
 
 
-            GUILayout.Space(Screen.width * 0.25f);
+            GUILayout.Space(Screen.width * 0.42f);
 
 
             GUILayout.BeginVertical();
@@ -110,20 +112,12 @@ public class testDataGUI : MonoBehaviour {
 
                     GUILayout.Space(0);
 
-                    GUILayout.Label("Test Data: ", guiStyleC);
-
                     // Test List
                     string allTests = "";
                     foreach (string t in testData)
                     {
                         allTests += t + "\n";
                     }
-
-                    //scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-
-                        //GUILayout.Label(allTests, guiStyleC);
-
-                    //GUILayout.EndScrollView();
 
                     // Show active loggers
                     string loggerText = "";
@@ -133,25 +127,30 @@ public class testDataGUI : MonoBehaviour {
 
                         foreach (GameObject trial in logger.GetComponent<dataRecordingController>().tests)
                         {
-                            loggerText += "\t" + trial.name + "\n";
+                            loggerText += "\t" + trial.name + 
+                                        " || " + trial.GetComponent<dataRecorder>().finalResults.dockShapeStyle + 
+                                        "_v_" + trial.GetComponent<dataRecorder>().finalResults.deviceVisibility + "\n";
                         }
                     }
 
-                    scrollPositionL = GUILayout.BeginScrollView(scrollPositionL);
+                    scrollPositionL = GUILayout.BeginScrollView(scrollPositionL, backing);
 
+                        GUILayout.Label("Test Data: ", guiStyleC);
                         GUILayout.Label(loggerText, guiStyleC);
 
                     GUILayout.EndScrollView();
 
+                    GUILayout.Space(Screen.height * 0.01f);
+
                     // Test Category Panel
-                    GUILayout.BeginHorizontal();
+                    GUILayout.BeginHorizontal(backing);
 
                         GUILayout.BeginVertical();
                             
                             GUI.skin.toggle.font = font;
                             GUI.skin.label.font = font;
                             GUI.skin.textField.font = font;
-                            GUI.color = Color.black;
+                            GUI.color = Color.green;
                             GUI.skin.toggle.fontSize = Screen.width / 60;
                             GUI.skin.label.fontSize = Screen.width / 60;
                             GUI.skin.textField.fontSize = Screen.width / 60;
@@ -326,5 +325,19 @@ public class testDataGUI : MonoBehaviour {
 
 
 
+    }
+
+    private Texture2D MakeTex(int width, int height, Color col)
+    {
+        Color[] pix = new Color[width*height];
+ 
+        for(int i = 0; i < pix.Length; i++)
+            pix[i] = col;
+ 
+        Texture2D result = new Texture2D(width, height);
+        result.SetPixels(pix);
+        result.Apply();
+ 
+        return result;
     }
 }

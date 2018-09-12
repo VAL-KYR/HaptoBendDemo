@@ -457,10 +457,11 @@ public class dataRecordingController : MonoBehaviour {
 
 
         // Name the TestObject
-        test.name = "Test_" + (testCateg.VisLtdRandom.Count + 
-                                testCateg.InvisLtdRandom.Count + 
-                                testCateg.VisPresets.Count + 
-                                testCateg.InvisPresets.Count);
+        test.name = "Test_" + 
+                    (testCateg.VisLtdRandom.Count + 
+                    testCateg.InvisLtdRandom.Count + 
+                    testCateg.VisPresets.Count + 
+                    testCateg.InvisPresets.Count);
 
         // Tag that trial
         test.tag = "trial";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class testDataGUI : MonoBehaviour {
 
@@ -269,7 +270,8 @@ public class testDataGUI : MonoBehaviour {
                 {
                     if (commandBreakdown.Length > 3)
                     {
-                        GetComponent<dataMaster>().DeleteTrial(commandBreakdown[commandBreakdown.Length - 2], commandBreakdown[commandBreakdown.Length - 1]);
+                        GetComponent<dataMaster>().DeleteTrial(commandBreakdown[commandBreakdown.Length - 2], 
+                                                                commandBreakdown[commandBreakdown.Length - 1]);
                     }
                 }
             }
@@ -294,6 +296,10 @@ public class testDataGUI : MonoBehaviour {
                         .GetComponent<dataRecordingController>()
                         .dockFoldSpeed = dockFoldSpeed;
                 }
+            }
+            else if (commandBreakdown.Contains("reload"))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
        

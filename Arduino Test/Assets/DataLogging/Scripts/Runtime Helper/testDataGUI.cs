@@ -273,6 +273,28 @@ public class testDataGUI : MonoBehaviour {
                     }
                 }
             }
+            else if (commandBreakdown.Contains("update")) 
+            {
+                // update.logger
+                if (commandBreakdown.Contains("logger"))
+                {
+                    GetComponent<dataMaster>().currentLogger
+                        .GetComponent<dataRecordingController>()
+                        .testCateg.VisLtdLimit = VisLtdRandom;
+                    GetComponent<dataMaster>().currentLogger
+                        .GetComponent<dataRecordingController>()
+                        .testCateg.InvisLtdLimit = InvisLtdRandom;
+                    GetComponent<dataMaster>().currentLogger
+                        .GetComponent<dataRecordingController>()
+                        .testCateg.VisPresetLimit = VisPresets;
+                    GetComponent<dataMaster>().currentLogger
+                        .GetComponent<dataRecordingController>()
+                        .testCateg.InvisPresetLimit = InvisPresets;
+                    GetComponent<dataMaster>().currentLogger
+                        .GetComponent<dataRecordingController>()
+                        .dockFoldSpeed = dockFoldSpeed;
+                }
+            }
         }
        
     }

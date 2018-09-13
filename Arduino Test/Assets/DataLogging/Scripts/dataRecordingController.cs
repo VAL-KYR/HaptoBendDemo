@@ -127,6 +127,7 @@ public class dataRecordingController : MonoBehaviour {
         // Inputs during test
         if (inputTime > inputTimer)
         {
+            
             if ((Input.GetButton("ExecuteTest") || Input.GetButton("Pedal")) && !testsDone)
             {
                 if (!currTest.GetComponent<dataRecorder>().recordAngles)
@@ -136,8 +137,12 @@ public class dataRecordingController : MonoBehaviour {
                 }
                 else
                 {
-                    currTest.GetComponent<dataRecorder>().recordAngles = false;
-                    currAction = currTest.name + " Ended";
+                    // Only allow user to submit results if the UiBox flag indicates they can
+                    if (UiBox.box.index == 0)
+                    {
+                        currTest.GetComponent<dataRecorder>().recordAngles = false;
+                        currAction = currTest.name + " Ended";
+                    }
                 }
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;

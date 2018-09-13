@@ -10,6 +10,7 @@ public class dataMaster : MonoBehaviour {
 
 	public GameObject dataLoggerPrefab;
 	public List<GameObject> dataLoggers;
+	public GameObject currentLogger;
 
 	[System.Serializable]
     public class TextLog : System.Object
@@ -32,6 +33,15 @@ public class dataMaster : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		dataLoggers = GameObject.FindGameObjectsWithTag("dataLogger").ToList();
+
+		foreach(GameObject logger in dataLoggers)
+		{
+			if (logger.GetComponent<dataRecordingController>().enabled)
+			{
+				currentLogger = logger;
+			}
+		}
+		
 	}
 
 	public void NewDataLogger(string loggerName)

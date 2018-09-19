@@ -348,6 +348,15 @@ public class testDataGUI : MonoBehaviour {
                                     " = " + 
                                     PlayerPrefs.GetString(commandBreakdown[commandBreakdown.Length - 1]));
                     }
+                    else 
+                    {
+                        AddElement(actionList, "Usable PlayerPrefs Are: ");
+                        AddElement(actionList, "visLtdLimit = " + PlayerPrefs.GetInt("visLtdLimit"));
+                        AddElement(actionList, "invisLtdLimit = " + PlayerPrefs.GetInt("invisLtdLimit"));
+                        AddElement(actionList, "visPresetLimit = " + PlayerPrefs.GetInt("visPresetLimit"));
+                        AddElement(actionList, "invisPresetLimit = " + PlayerPrefs.GetInt("invisPresetLimit"));
+                        AddElement(actionList, "dockFoldSpeed = " + PlayerPrefs.GetFloat("dockFoldSpeed"));
+                    }
                 }  
                 // prefs.set.[variableType].[prefName].[prefValue]
                 else if (commandBreakdown.Contains("set"))
@@ -366,6 +375,19 @@ public class testDataGUI : MonoBehaviour {
                     {
                         PlayerPrefs.SetString(commandBreakdown[commandBreakdown.Length - 2], 
                                             commandBreakdown[commandBreakdown.Length - 1]);
+                    }
+                    else 
+                    {
+                        PlayerPrefs.SetInt("visLtdLimit", 
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 5]));
+                        PlayerPrefs.SetInt("invisLtdLimit", 
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 4]));
+                        PlayerPrefs.SetInt("visPresetLimit", 
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 3]));
+                        PlayerPrefs.SetInt("invisPresetLimit", 
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 2]));
+                        PlayerPrefs.SetFloat("dockFoldSpeed", 
+                                            float.Parse(commandBreakdown[commandBreakdown.Length - 1]));
                     }
                 }
                 // prefs.clear

@@ -236,6 +236,7 @@ public class testDataGUI : MonoBehaviour {
 
         if (!commandBreakdown.Contains(""))
         {   
+            // add
             if (commandBreakdown.Contains("add"))
             {
                 // add.logger.[loggername]
@@ -245,6 +246,7 @@ public class testDataGUI : MonoBehaviour {
                     GetComponent<dataMaster>().NewDataLogger(commandBreakdown[commandBreakdown.Length - 1]);
                 }
             }
+            // clear
             else if (commandBreakdown.Contains("clear")) 
             {
                 // clear.folder.[foldername]
@@ -258,6 +260,7 @@ public class testDataGUI : MonoBehaviour {
                     fileEditor.ClearDir("Assets/DataLogging/Reports/");
                 }
             }
+            // delete
             else if (commandBreakdown.Contains("delete")) 
             {
                 // delete.logger.[loggername]
@@ -275,28 +278,108 @@ public class testDataGUI : MonoBehaviour {
                     }
                 }
             }
+            // update
             else if (commandBreakdown.Contains("update")) 
             {
                 // update.logger
                 if (commandBreakdown.Contains("logger"))
                 {
-                    GetComponent<dataMaster>().currentLogger
-                        .GetComponent<dataRecordingController>()
-                        .testCateg.VisLtdLimit = VisLtdRandom;
-                    GetComponent<dataMaster>().currentLogger
-                        .GetComponent<dataRecordingController>()
-                        .testCateg.InvisLtdLimit = InvisLtdRandom;
-                    GetComponent<dataMaster>().currentLogger
-                        .GetComponent<dataRecordingController>()
-                        .testCateg.VisPresetLimit = VisPresets;
-                    GetComponent<dataMaster>().currentLogger
-                        .GetComponent<dataRecordingController>()
-                        .testCateg.InvisPresetLimit = InvisPresets;
-                    GetComponent<dataMaster>().currentLogger
-                        .GetComponent<dataRecordingController>()
-                        .dockFoldSpeed = dockFoldSpeed;
+                    if (commandBreakdown.Contains("prefs"))
+                    {
+                        VisLtdRandom = PlayerPrefs.GetInt("visLtdLimit");
+                        InvisLtdRandom = PlayerPrefs.GetInt("invisLtdLimit");
+                        VisPresets = PlayerPrefs.GetInt("visPresetLimit");
+                        InvisPresets = PlayerPrefs.GetInt("invisPresetLimit");
+                        dockFoldSpeed = PlayerPrefs.GetFloat("dockFoldSpeed");
+
+                        AddElement(actionList, "PlayerPrefs loaded into UI");
+                    }
+
+                    if (GetComponent<dataMaster>().currentLogger)
+                    {
+                        GetComponent<dataMaster>().currentLogger
+                            .GetComponent<dataRecordingController>()
+                            .testCateg.VisLtdLimit = VisLtdRandom;
+                        GetComponent<dataMaster>().currentLogger
+                            .GetComponent<dataRecordingController>()
+                            .testCateg.InvisLtdLimit = InvisLtdRandom;
+                        GetComponent<dataMaster>().currentLogger
+                            .GetComponent<dataRecordingController>()
+                            .testCateg.VisPresetLimit = VisPresets;
+                        GetComponent<dataMaster>().currentLogger
+                            .GetComponent<dataRecordingController>()
+                            .testCateg.InvisPresetLimit = InvisPresets;
+                        GetComponent<dataMaster>().currentLogger
+                            .GetComponent<dataRecordingController>()
+                            .dockFoldSpeed = dockFoldSpeed;
+
+                        AddElement(actionList, GetComponent<dataMaster>().currentLogger.name + " updated from UI");
+                    }
+                    else
+                    {
+                        AddElement(actionList, "no current logger to update");
+                    }
                 }
             }
+            // prefs
+            if (commandBreakdown.Contains("prefs"))
+            {
+                // prefs.get.[variableType].[prefName]
+                if (commandBreakdown.Contains("get"))
+                {   
+                    if (commandBreakdown.Contains("int"))
+                    {
+                        AddElement(actionList, 
+                                    commandBreakdown[commandBreakdown.Length - 1] +
+                                    " = " + 
+                                    PlayerPrefs.GetInt(commandBreakdown[commandBreakdown.Length - 1]));
+                    }
+                    else if (commandBreakdown.Contains("float"))
+                    {
+                        AddElement(actionList, 
+                                    commandBreakdown[commandBreakdown.Length - 1] +
+                                    " = " + 
+                                    PlayerPrefs.GetFloat(commandBreakdown[commandBreakdown.Length - 1]));
+                    }
+                    else if (commandBreakdown.Contains("string"))
+                    {
+                        AddElement(actionList, 
+                                    commandBreakdown[commandBreakdown.Length - 1] +
+                                    " = " + 
+                                    PlayerPrefs.GetString(commandBreakdown[commandBreakdown.Length - 1]));
+                    }
+                }  
+                // prefs.set.[variableType].[prefName].[prefValue]
+                else if (commandBreakdown.Contains("set"))
+                {
+                    if (commandBreakdown.Contains("int"))
+                    {
+                        PlayerPrefs.SetInt(commandBreakdown[commandBreakdown.Length - 2], 
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 1]));
+                    }
+                    else if (commandBreakdown.Contains("float"))
+                    {
+                        PlayerPrefs.SetFloat(commandBreakdown[commandBreakdown.Length - 2], 
+                                            float.Parse(commandBreakdown[commandBreakdown.Length - 1]));
+                    }
+                    else if (commandBreakdown.Contains("string"))
+                    {
+                        PlayerPrefs.SetString(commandBreakdown[commandBreakdown.Length - 2], 
+                                            commandBreakdown[commandBreakdown.Length - 1]);
+                    }
+                }
+                // prefs.clear
+                else if (commandBreakdown.Contains("clear"))
+                {
+                    PlayerPrefs.DeleteAll();
+                }
+                // prefs.save
+                else if (commandBreakdown.Contains("save"))
+                {
+                    PlayerPrefs.Save();
+                }
+            }
+            // reload
             else if (commandBreakdown.Contains("reload"))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);

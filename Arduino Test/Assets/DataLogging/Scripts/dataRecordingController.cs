@@ -73,6 +73,8 @@ public class dataRecordingController : MonoBehaviour {
         public int VisPresetLimit;
         public int InvisPresetLimit;
 
+        public int mindex = 0;
+
         public List<int> numPresetTypes = new List<int> 
         {
             0,
@@ -599,19 +601,16 @@ public class dataRecordingController : MonoBehaviour {
             */
             //++ select the preset that has the least trials of it's type or choose the last in an array
             int minima = int.MaxValue;
-            int mindex = 0;
 
             for (int i = 0; i < testCateg.numPresetTypes.Count; i++)
             {
-                Debug.Log("testCateg.numPresetTypes[i]: " + testCateg.numPresetTypes[i]);
-
                 if (testCateg.numPresetTypes[i] < minima)
-                    {minima = testCateg.numPresetTypes[i]; mindex = i;}
+                    {minima = testCateg.numPresetTypes[i]; testCateg.mindex = i; Debug.Log("Change");}
 
-                Debug.Log("mindex: " + mindex);
+                Debug.Log("mindex: " + testCateg.mindex);
             }
 
-            selectedDockPreset = dockPresets[mindex];
+            selectedDockPreset = dockPresets[testCateg.mindex];
 
 
 

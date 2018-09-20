@@ -73,6 +73,14 @@ public class dataRecordingController : MonoBehaviour {
         public int VisPresetLimit;
         public int InvisPresetLimit;
 
+        public List<int> numPresetTypes = new List<int> 
+        {
+            0,
+            0,
+            0,
+            0,
+            0
+        };
 
         public List<GameObject> VisLtdRandom;
         public List<GameObject> InvisLtdRandom;
@@ -256,7 +264,7 @@ public class dataRecordingController : MonoBehaviour {
         inputTime += Time.smoothDeltaTime;
     }
 
-    //++ for lerping the dock to remove collisions
+    // for lerping the dock to remove collisions
     public void MoveDock()
     {
         foreach (GameObject angle in dock.shape)
@@ -286,6 +294,7 @@ public class dataRecordingController : MonoBehaviour {
                 if (angle.tag.Contains("Child"))
                 {
                     // This is a special distinction for a special case where the angle won't reach -150 with lerp but only -82 no idea why
+                    //++ activeDockStyle should still work as a local access of the current dock
                     if (activeDockStyle == "Presets" && selectedDockPreset.name == "dockPreset_1")
                     {
                         angle.transform.localRotation = Quaternion.Euler(new Vector3(
@@ -512,6 +521,12 @@ public class dataRecordingController : MonoBehaviour {
         testCateg.InvisLtdRandom = TestsOfType("False", "Ltd Random", tests);
         testCateg.VisPresets = TestsOfType("True", "Presets", tests);
         testCateg.InvisPresets = TestsOfType("False", "Presets", tests);
+
+        testCateg.numPresetTypes[0] = PresetGather("dockPreset_1",tests).Count;
+        testCateg.numPresetTypes[1] = PresetGather("dockPreset_2",tests).Count;
+        testCateg.numPresetTypes[2] = PresetGather("dockPreset_3",tests).Count;
+        testCateg.numPresetTypes[3] = PresetGather("dockPreset_4",tests).Count;
+        testCateg.numPresetTypes[4] = PresetGather("dockPreset_5",tests).Count;
     }
 
     // Create Final Report Summary
@@ -572,18 +587,40 @@ public class dataRecordingController : MonoBehaviour {
                                                                                     NewAngle(180f, -180f),
                                                                                     NewAngle(180f, -180f)));
 
+            //++ make it choose a new one each time (implemented)
+            //++ make sure it's covered an equal amount of each preset
+            // This can be made obsolete
+            /*
             while (selectedDockPreset == lastDockPreset)
             {
                 // Random Preset to copy from preset shape to dock
                 selectedDockPreset = dockPresets[(int)Random.Range(0, dockPresets.Count - 1)];
             }
+            */
+            //++ select the preset that has the least trials of it's type or choose the last in an array
+            int minima = int.MaxValue;
+            int mindex = 0;
+
+            for (int i = 0; i < testCateg.numPresetTypes.Count; i++)
+            {
+                Debug.Log("testCateg.numPresetTypes[i]: " + testCateg.numPresetTypes[i]);
+
+                if (testCateg.numPresetTypes[i] < minima)
+                    {minima = testCateg.numPresetTypes[i]; mindex = i;}
+
+                Debug.Log("mindex: " + mindex);
+            }
+
+            selectedDockPreset = dockPresets[mindex];
+
+
 
             lastDockPreset = selectedDockPreset;
 
-            //++ Creating a new set of nextDockAngles
+            // Creating a new set of nextDockAngles
             nextDockAngles = new List<float>();
 
-            //++ Creating a new set of nextDockAngles
+            // Creating a new set of nextDockAngles
             for (int i = 0; i < dock.shape.Count; i++)
             {
                 if (selectedDockPreset.GetComponent<dockPreset>().shapes[i].name != "RotateInverse")
@@ -776,12 +813,25 @@ public class dataRecordingController : MonoBehaviour {
 
         foreach (GameObject test in listToSearch)
         {
-            if ((test.GetComponent<dataRecorder>().finalResults.dockShapeStyle == DesiredDockStyle &&
+            if ((test.GetComponent<dataRecorder>().finalResults.dockShapeStyle.Contains(DesiredDockStyle) &&
             test.GetComponent<dataRecorder>().finalResults.deviceVisibility == DesiredVisibility))
                 testList.Add(test);
         }
 
         return testList;
     } 
+
+    public List<GameObject> PresetGather(string DesiredPreset, List<GameObject> listToSearch)
+    {
+        List<GameObject> testList = new List<GameObject>(); 
+
+        foreach (GameObject test in listToSearch)
+        {
+            if ((test.GetComponent<dataRecorder>().finalResults.dockShapeStyle.Contains(DesiredPreset)))
+                testList.Add(test);
+        }
+
+        return testList;
+    }
     
 }

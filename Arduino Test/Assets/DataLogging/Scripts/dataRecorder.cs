@@ -754,7 +754,17 @@ public class dataRecorder : MonoBehaviour {
         // Basic metadata
         finalResults.testerName = textLog.testerName;
         finalResults.testTimestamp = textLog.testTimestamp;
-        finalResults.dockShapeStyle = textLog.dockShapeStyle;
+        //++ more detailed preset info
+        if (textLog.dockShapeStyle == "Presets")
+        {
+            finalResults.dockShapeStyle = textLog.dockShapeStyle + "_" + 
+                GetComponentInParent<dataRecordingController>().selectedDockPreset.name;
+        }
+        else
+        {
+            finalResults.dockShapeStyle = textLog.dockShapeStyle;
+        }
+        
         finalResults.deviceVisibility = textLog.deviceVisibility.ToString();
 
         // timetaken math

@@ -28,7 +28,6 @@ public class dataRecordingController : MonoBehaviour {
 
     public List<GameObject> dockPresets = new List<GameObject>();
     public GameObject selectedDockPreset;
-    public GameObject lastDockPreset;
 
     public float[] pureAnglesOrient = new float[3]; 
     public float[] pureAnglesShape = new float[3];
@@ -73,8 +72,6 @@ public class dataRecordingController : MonoBehaviour {
         public int VisPresetLimit;
         public int InvisPresetLimit;
 
-        public int mindex = 0;
-
         public List<int> numPresetTypes = new List<int> 
         {
             0,
@@ -99,6 +96,9 @@ public class dataRecordingController : MonoBehaviour {
         imu = device.GetComponent<IMU>();
         dockPresets = GameObject.FindGameObjectsWithTag("dockPresets").ToList();
         checkObjects = GameObject.FindGameObjectsWithTag("clipCheck").ToList();
+
+        // sort the dock presets
+        dockPresets = dockPresets.OrderBy(preset => preset.transform.position.x).ToList();
 
         ClearTests();
         fileEditor.ClearDir(filePath);
@@ -575,6 +575,72 @@ public class dataRecordingController : MonoBehaviour {
         transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
     }
 
+    ////++ MOVE THESE IDIOT
+    public int IndexOfSmallest(List<int> element)
+    {
+        int minima = int.MaxValue;
+        int mindex = 0;
+
+        for (int i = 0; i < element.Count; i++)
+        {
+            if (element[i] < minima)
+            {
+                minima = element[i];
+                mindex = i; 
+            }
+        }
+
+        return mindex;
+    }
+
+    public int IndexOfRandomSmall(List<int> element)
+    {
+        int maxima = int.MinValue;
+        int maxdex = 0;
+        int indexChoice = 0;
+
+        // Find maximum element
+        for (int i = 0; i < element.Count; i++)
+        {
+            if (element[i] > maxima)
+            {
+                maxima = element[i];
+                maxdex = i; 
+            }
+        }
+
+        List<int> maxElements = new List<int>();
+        List<int> viableIndex = new List<int>();
+
+        // Clones elements that are max to a list
+        for (int i = 0; i < element.Count; i++)
+        {
+            if (element[i] == maxima)
+            {
+                maxElements.Add(element[i]);
+            }
+            else 
+            {
+                viableIndex.Add(i);
+            }
+        }   
+
+        // If all elements are max (ie list of maxElements is full and same values as element[]) choose random index
+        if (element.Count == maxElements.Count)
+        {
+            indexChoice = (int)Random.Range(0, element.Count - 1);
+        }
+        // While the random index's relevant element returns a value of maxima it'll choose a new random index
+        else
+        {          
+            indexChoice = viableIndex[Random.Range(0, viableIndex.Count - 1)];
+        }
+
+        // return the random
+        return indexChoice;
+    }
+    ////
+
     // Get a new shape to dock to
     public void NewDockShape()
     {      
@@ -589,32 +655,11 @@ public class dataRecordingController : MonoBehaviour {
                                                                                     NewAngle(180f, -180f),
                                                                                     NewAngle(180f, -180f)));
 
-            //++ make it choose a new one each time (implemented)
-            //++ make sure it's covered an equal amount of each preset
-            // This can be made obsolete
-            /*
-            while (selectedDockPreset == lastDockPreset)
-            {
-                // Random Preset to copy from preset shape to dock
-                selectedDockPreset = dockPresets[(int)Random.Range(0, dockPresets.Count - 1)];
-            }
-            */
-            //++ select the preset that has the least trials of it's type or choose the last in an array
-            int minima = int.MaxValue;
-
-            for (int i = 0; i < testCateg.numPresetTypes.Count; i++)
-            {
-                if (testCateg.numPresetTypes[i] < minima)
-                    {minima = testCateg.numPresetTypes[i]; testCateg.mindex = i; Debug.Log("Change");}
-
-                Debug.Log("mindex: " + testCateg.mindex);
-            }
-
-            selectedDockPreset = dockPresets[testCateg.mindex];
-
-
-
-            lastDockPreset = selectedDockPreset;
+            //++ Target
+            // dock = soonest smallest of list from top to bottom [depricated]
+            //selectedDockPreset = dockPresets[IndexOfSmallest(testCateg.numPresetTypes)];
+            // dock = random of smaller than max values || random of all same values
+            selectedDockPreset = dockPresets[IndexOfRandomSmall(testCateg.numPresetTypes)];
 
             // Creating a new set of nextDockAngles
             nextDockAngles = new List<float>();

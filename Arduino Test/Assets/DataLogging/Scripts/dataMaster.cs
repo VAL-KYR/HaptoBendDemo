@@ -89,4 +89,27 @@ public class dataMaster : MonoBehaviour {
 					}
 						
 	}
+
+	public void SummarizeLogger(string loggerName)
+	{
+		foreach (GameObject logger in dataLoggers)
+			if (logger.name == "DataLogger_" + loggerName)
+				logger.GetComponent<dataRecordingController>().FinalReport();
+	}
+
+	public void SummarizeAll()
+	{
+		foreach (GameObject logger in dataLoggers)
+			if (logger.GetComponent<dataRecordingController>().testsDone)
+			{
+				logger.GetComponent<dataRecordingController>().FinalReport();
+			}	
+		foreach (GameObject logger in dataLoggers)
+		{
+			if (logger.name == "DataLogger_alldata")
+			{
+				logger.GetComponent<dataRecordingController>().FinalReport();
+			}
+		}
+	}
 }

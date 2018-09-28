@@ -278,6 +278,24 @@ public class testDataGUI : MonoBehaviour {
                     }
                 }
             }
+            // summarize
+            else if (commandBreakdown.Contains("summarize"))
+            {
+                // summarize.logger.[loggername]
+                if (commandBreakdown.Contains("logger"))
+                {
+                    if (commandBreakdown.Length > 2)
+                    {
+                        GetComponent<dataMaster>().SummarizeLogger(commandBreakdown[commandBreakdown.Length - 1]);
+                    }
+                }
+                // summarize.all
+                if (commandBreakdown.Contains("all"))
+                {
+                    GetComponent<dataMaster>().NewDataLogger("alldata");
+                    GetComponent<dataMaster>().SummarizeAll();
+                }
+            }
             // update
             else if (commandBreakdown.Contains("update")) 
             {

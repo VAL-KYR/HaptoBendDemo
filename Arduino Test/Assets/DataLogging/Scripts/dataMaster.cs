@@ -65,16 +65,10 @@ public class dataMaster : MonoBehaviour {
 	public void DeleteLogger(string suffix)
 	{
 		GameObject loggerToDelete = new GameObject();
-
-		//foreach (GameObject logger in dataLoggers)
-			//logger.GetComponent<dataRecordingController>().enabled = true;
-
+		
 		foreach (GameObject logger in dataLoggers)
 			if (logger.name == "DataLogger_" + suffix)
 				Destroy(logger);
-				
-		//foreach (GameObject logger in dataLoggers)
-			//logger.GetComponent<dataRecordingController>().enabled = false;
 	}
 
 	public void DeleteTrial(string loggerName, string trialName)

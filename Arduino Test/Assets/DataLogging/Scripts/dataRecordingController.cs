@@ -157,64 +157,68 @@ public class dataRecordingController : MonoBehaviour {
                 transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
                 inputTime = 0f;
             }
-            if (Input.GetButton("CreateTest") && !testsDone)
+            if (transform.parent.gameObject.GetComponent<testDataGUI>().debug.controls)
             {
-                NewTest(false);
-                inputTime = 0f;
-                currAction = "Test_" + (tests.Count - 1) + " Created";
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
+                if (Input.GetButton("CreateTest") && !testsDone)
+                {
+                    NewTest(false);
+                    inputTime = 0f;
+                    currAction = "Test_" + (tests.Count - 1) + " Created";
+                    transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
+                }
+                if (Input.GetButton("RandomizeDock"))
+                {
+                    NewDockShape();
+                    inputTime = 0f;
+                }
+                if (Input.GetButton("ZeroDock"))
+                {
+                    ZeroDockShape();
+                    inputTime = 0f;
+                }
+                if (Input.GetButton("DockStyle"))
+                {
+                    // Instead of flipping dock style try cycling dock style 
+                    activeDockStyle = NextDockStyle();
+                    inputTime = 0f;
+                }
+                if (Input.GetButton("SummarizeTests"))
+                {
+                    FinalReport();
+                    inputTime = 0f;
+                }
+                if (Input.GetButton("DeleteTests"))
+                {
+                    ClearTests();
+                    inputTime = 0f;
+                }
+                if (Input.GetButton("DeleteReports"))
+                {
+                    fileEditor.ClearDir(filePath);
+                    inputTime = 0f;
+                    currAction = "All Reports Deleted";
+                    transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
+                }
+                if (Input.GetButton("DeviceVisible"))
+                {
+                    virtualDeviceVisible = !virtualDeviceVisible;
+                    FlipDeviceVisibilityInHMD(virtualDeviceVisible);
+                    inputTime = 0f;
+                }
+                if (Input.GetButton("ReCalDevice"))
+                {
+                    ReCalIMU();
+                    inputTime = 0f;
+                }  
+                if (Input.GetButton("BadTest"))
+                {
+                    activeDockStyle = "BAD DATA";
+                    inputTime = 0f;
+                    currAction = currTest.name + " Trashed";
+                    transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
+                }
             }
-            if (Input.GetButton("RandomizeDock"))
-            {
-                NewDockShape();
-                inputTime = 0f;
-            }
-            if (Input.GetButton("ZeroDock"))
-            {
-                ZeroDockShape();
-                inputTime = 0f;
-            }
-            if (Input.GetButton("DockStyle"))
-            {
-                // Instead of flipping dock style try cycling dock style 
-                activeDockStyle = NextDockStyle();
-                inputTime = 0f;
-            }
-            if (Input.GetButton("SummarizeTests"))
-            {
-                FinalReport();
-                inputTime = 0f;
-            }
-            if (Input.GetButton("DeleteTests"))
-            {
-                ClearTests();
-                inputTime = 0f;
-            }
-            if (Input.GetButton("DeleteReports"))
-            {
-                fileEditor.ClearDir(filePath);
-                inputTime = 0f;
-                currAction = "All Reports Deleted";
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
-            }
-            if (Input.GetButton("DeviceVisible"))
-            {
-                virtualDeviceVisible = !virtualDeviceVisible;
-                FlipDeviceVisibilityInHMD(virtualDeviceVisible);
-                inputTime = 0f;
-            }
-            if (Input.GetButton("ReCalDevice"))
-            {
-                ReCalIMU();
-                inputTime = 0f;
-            }  
-            if (Input.GetButton("BadTest"))
-            {
-                activeDockStyle = "BAD DATA";
-                inputTime = 0f;
-                currAction = currTest.name + " Trashed";
-                transform.parent.GetComponent<testDataGUI>().FetchAction(currAction);
-            }      
+                  
         }
 
         // Automatically Creates and Starts new tests

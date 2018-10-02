@@ -292,7 +292,6 @@ public class dataSummary : MonoBehaviour {
         }
 
         // Get averages of all data
-        //summary.testerName = summary.allTesterName[0];
         List<string> priorNames = new List<string>();
 
         foreach (string name in summary.allTesterName)

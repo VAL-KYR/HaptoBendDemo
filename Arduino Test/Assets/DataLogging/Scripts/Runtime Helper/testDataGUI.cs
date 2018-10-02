@@ -14,6 +14,8 @@ public class testDataGUI : MonoBehaviour {
     [System.Serializable]
     public class Debugger : System.Object
     {
+        public bool controls = false;
+        public bool showCommands = true;
         public bool allTrials = false;
         public bool trialsSum = false;
         public string cmd = "";
@@ -31,6 +33,7 @@ public class testDataGUI : MonoBehaviour {
     public Vector2 scrollPositionL;
 
     public List<string> controlsList;
+    public List<string> commandList;
     public List<string> actionList = new List<string>(6);
     public List<string> testData;
 
@@ -78,6 +81,12 @@ public class testDataGUI : MonoBehaviour {
                     allControls += c + "\n";
                 }
 
+                string allCommands = "";
+                foreach (string c in commandList)
+                {
+                    allCommands += c + "\n";
+                }
+
                 GUILayout.BeginVertical();
 
                     GUI.color = Color.blue;
@@ -85,7 +94,11 @@ public class testDataGUI : MonoBehaviour {
                     GUI.skin.textArea.fontSize = Screen.width / 60;
 
                     // Controls List Box
-                    GUILayout.TextArea(allControls);
+                    if (debug.controls)
+                        GUILayout.TextArea(allControls);
+
+                    if (debug.showCommands)
+                        GUILayout.TextArea(allCommands);
 
                     // Action List
                     string allActions = "";
@@ -189,7 +202,12 @@ public class testDataGUI : MonoBehaviour {
 
                             GUILayout.EndVertical(); 
 
-
+                            debug.showCommands = GUILayout.Toggle(debug.showCommands, " Command List",
+                                                                                GUILayout.Width(Screen.width * 0.2f),
+                                                                                GUILayout.Height(Screen.height * 0.03f));
+                            debug.controls = GUILayout.Toggle(debug.controls, " Debug Keys",
+                                                                                GUILayout.Width(Screen.width * 0.2f),
+                                                                                GUILayout.Height(Screen.height * 0.03f));
                             debug.allTrials = GUILayout.Toggle(debug.allTrials, " Monitor AllTrials", 
                                                                                 GUILayout.Width(Screen.width * 0.2f),
                                                                                 GUILayout.Height(Screen.height * 0.03f));
@@ -302,6 +320,7 @@ public class testDataGUI : MonoBehaviour {
                 // update.logger
                 if (commandBreakdown.Contains("logger"))
                 {
+                    // update.logger.prefs
                     if (commandBreakdown.Contains("prefs"))
                     {
                         VisLtdRandom = PlayerPrefs.GetInt("visLtdLimit");

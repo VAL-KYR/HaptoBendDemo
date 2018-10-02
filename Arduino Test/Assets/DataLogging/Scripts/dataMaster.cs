@@ -100,16 +100,26 @@ public class dataMaster : MonoBehaviour {
 	public void SummarizeAll()
 	{
 		foreach (GameObject logger in dataLoggers)
-			if (logger.GetComponent<dataRecordingController>().testsDone)
-			{
-				logger.GetComponent<dataRecordingController>().FinalReport();
-			}	
-		foreach (GameObject logger in dataLoggers)
 		{
-			if (logger.name == "DataLogger_alldata")
+			if (logger.GetComponent<dataRecordingController>().testsDone)
 			{
 				logger.GetComponent<dataRecordingController>().FinalReport();
 			}
 		}
+	
+		SumDelayed();
 	}
+
+	IEnumerator SumDelayed()
+    {
+        yield return new WaitForSeconds(5);
+        foreach (GameObject logger in dataLoggers)
+		{
+			if (logger.name == "DataLogger_alldata")
+			{
+				yield return new WaitForSeconds(5);
+				logger.GetComponent<dataRecordingController>().FinalReport();
+			}
+		}
+    }
 }

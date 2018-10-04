@@ -78,27 +78,22 @@ public class testDataGUI : MonoBehaviour {
                 string allControls = "";
                 foreach (string c in controlsList)
                 {
-                    allControls += c + "\n";
+                    allControls += c;
+
+                    if (c != controlsList[controlsList.Count - 1])
+                    allControls += "\n";
                 }
 
                 string allCommands = "";
                 foreach (string c in commandList)
                 {
-                    allCommands += c + "\n";
+                    allCommands += c;
+
+                    if (c != commandList[commandList.Count - 1])
+                        allCommands += "\n";
                 }
 
                 GUILayout.BeginVertical();
-
-                    GUI.color = Color.blue;
-                    GUI.skin.textArea.font = font;
-                    GUI.skin.textArea.fontSize = Screen.width / 60;
-
-                    // Controls List Box
-                    if (debug.controls)
-                        GUILayout.TextArea(allControls);
-
-                    if (debug.showCommands)
-                        GUILayout.TextArea(allCommands);
 
                     // Action List
                     string allActions = "";
@@ -110,51 +105,32 @@ public class testDataGUI : MonoBehaviour {
                     GUI.color = Color.black;
 
                     // Action List Box
-                    GUILayout.TextArea(allActions);
+                    GUILayout.TextArea(allActions, GUILayout.Width(Screen.width * 0.25f));
+                    
+                    GUI.color = Color.blue;
+                    GUI.skin.textArea.font = font;
+                    GUI.skin.textArea.fontSize = Screen.width / 60;
+
+                    // Controls List Box
+                    if (debug.controls)
+                        GUILayout.TextArea(allControls);
+
+                    if (debug.showCommands)
+                        GUILayout.TextArea(allCommands);
+
+                    GUI.color = Color.black;
 
                 GUILayout.EndVertical();
                 
             GUILayout.EndVertical();
 
 
-            GUILayout.Space(Screen.width * 0.42f);
+            GUILayout.Space(Screen.width * 0.5f);
 
 
             GUILayout.BeginVertical();
 
                 GUILayout.BeginVertical();
-
-                    GUILayout.Space(0);
-
-                    // Test List
-                    string allTests = "";
-                    foreach (string t in testData)
-                    {
-                        allTests += t + "\n";
-                    }
-
-                    // Show active loggers
-                    string loggerText = "";
-                    foreach (GameObject logger in GetComponent<dataMaster>().dataLoggers)
-                    {
-                        loggerText += logger.name + "\n";
-
-                        foreach (GameObject trial in logger.GetComponent<dataRecordingController>().tests)
-                        {
-                            loggerText += "\t" + trial.name + 
-                                        " || " + trial.GetComponent<dataRecorder>().finalResults.dockShapeStyle + 
-                                        "_v_" + trial.GetComponent<dataRecorder>().finalResults.deviceVisibility + "\n";
-                        }
-                    }
-
-                    scrollPositionL = GUILayout.BeginScrollView(scrollPositionL, backing);
-
-                        GUILayout.Label("Test Data: ", guiStyleC);
-                        GUILayout.Label(loggerText, guiStyleC);
-
-                    GUILayout.EndScrollView();
-
-                    GUILayout.Space(Screen.height * 0.01f);
 
                     // Test Category Panel
                     GUILayout.BeginHorizontal(backing);
@@ -202,10 +178,10 @@ public class testDataGUI : MonoBehaviour {
 
                             GUILayout.EndVertical(); 
 
-                            debug.showCommands = GUILayout.Toggle(debug.showCommands, " Command List",
+                            debug.showCommands = GUILayout.Toggle(debug.showCommands, " Show Command List",
                                                                                 GUILayout.Width(Screen.width * 0.2f),
                                                                                 GUILayout.Height(Screen.height * 0.03f));
-                            debug.controls = GUILayout.Toggle(debug.controls, " Debug Keys",
+                            debug.controls = GUILayout.Toggle(debug.controls, " Show Debug Keys",
                                                                                 GUILayout.Width(Screen.width * 0.2f),
                                                                                 GUILayout.Height(Screen.height * 0.03f));
                             debug.allTrials = GUILayout.Toggle(debug.allTrials, " Monitor AllTrials", 
@@ -230,6 +206,42 @@ public class testDataGUI : MonoBehaviour {
                         GUILayout.EndVertical();
                     
                     GUILayout.EndHorizontal();
+
+                    GUILayout.Space(Screen.height * 0.01f);
+                    
+                    // Test List Panel
+                    GUILayout.BeginHorizontal();
+                        GUILayout.Space(0);
+                        GUI.color = Color.black;
+
+                        // Test List
+                        string allTests = "";
+                        foreach (string t in testData)
+                        {
+                            allTests += t + "\n";
+                        }
+
+                        // Show active loggers
+                        string loggerText = "";
+                        foreach (GameObject logger in GetComponent<dataMaster>().dataLoggers)
+                        {
+                            loggerText += logger.name + "\n";
+
+                            foreach (GameObject trial in logger.GetComponent<dataRecordingController>().tests)
+                            {
+                                loggerText += "\t" + trial.name + 
+                                            " || " + trial.GetComponent<dataRecorder>().finalResults.dockShapeStyle + 
+                                            "_v_" + trial.GetComponent<dataRecorder>().finalResults.deviceVisibility + "\n";
+                            }
+                        }
+
+                        scrollPositionL = GUILayout.BeginScrollView(scrollPositionL, backing);
+
+                            GUILayout.Label("Test Data: ", guiStyleC);
+                            GUILayout.Label(loggerText, guiStyleC);
+
+                        GUILayout.EndScrollView();
+                    GUILayout.EndHorizontal();                  
 
                 GUILayout.EndVertical();
 

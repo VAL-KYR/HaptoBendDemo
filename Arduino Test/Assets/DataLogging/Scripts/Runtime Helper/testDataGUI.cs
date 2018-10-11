@@ -28,6 +28,7 @@ public class testDataGUI : MonoBehaviour {
     public int VisPresets = 0;
     public int InvisPresets = 0;
     public float dockFoldSpeed = 10.0f;
+    public float clippingCheckTime = 0.1f;
 
     public Vector2 scrollPosition;
     public Vector2 scrollPositionL;
@@ -113,10 +114,10 @@ public class testDataGUI : MonoBehaviour {
 
                     // Controls List Box
                     if (debug.controls)
-                        GUILayout.TextArea(allControls);
+                        GUILayout.TextArea(allControls, GUILayout.Width(Screen.width * 0.25f));
 
                     if (debug.showCommands)
-                        GUILayout.TextArea(allCommands);
+                        GUILayout.TextArea(allCommands, GUILayout.Width(Screen.width * 0.25f));
 
                     GUI.color = Color.black;
 
@@ -170,6 +171,10 @@ public class testDataGUI : MonoBehaviour {
                                     GUILayout.BeginHorizontal();
                                         GUILayout.Label("Dock Fold Speed: ");
                                         dockFoldSpeed = float.Parse(GUILayout.TextField(dockFoldSpeed.ToString(), GUILayout.Width(Screen.width * 0.1f)));
+                                    GUILayout.EndHorizontal();
+                                    GUILayout.BeginHorizontal();
+                                        GUILayout.Label("Clipping Check Delay ");
+                                        clippingCheckTime = float.Parse(GUILayout.TextField(clippingCheckTime.ToString(), GUILayout.Width(Screen.width * 0.1f)));
                                     GUILayout.EndHorizontal();
                                 }
                                 catch
@@ -262,7 +267,7 @@ public class testDataGUI : MonoBehaviour {
 
     public void ExecuteCmd(string command)
     {
-        string[] commandBreakdown = command.Split('.');
+        string[] commandBreakdown = command.Split(' ');
 
         if (!commandBreakdown.Contains(""))
         {   
@@ -340,6 +345,7 @@ public class testDataGUI : MonoBehaviour {
                         VisPresets = PlayerPrefs.GetInt("visPresetLimit");
                         InvisPresets = PlayerPrefs.GetInt("invisPresetLimit");
                         dockFoldSpeed = PlayerPrefs.GetFloat("dockFoldSpeed");
+                        clippingCheckTime = PlayerPrefs.GetFloat("clippingCheckTime");//++
 
                         AddElement(actionList, "PlayerPrefs loaded into UI");
                     }
@@ -361,6 +367,9 @@ public class testDataGUI : MonoBehaviour {
                         GetComponent<dataMaster>().currentLogger
                             .GetComponent<dataRecordingController>()
                             .dockFoldSpeed = dockFoldSpeed;
+                        GetComponent<dataMaster>().currentLogger
+                            .GetComponent<dataRecordingController>()
+                            .clippingCheckTime = clippingCheckTime;//++
 
                         AddElement(actionList, GetComponent<dataMaster>().currentLogger.name + " updated from UI");
                     }
@@ -405,6 +414,7 @@ public class testDataGUI : MonoBehaviour {
                         AddElement(actionList, "visPresetLimit = " + PlayerPrefs.GetInt("visPresetLimit"));
                         AddElement(actionList, "invisPresetLimit = " + PlayerPrefs.GetInt("invisPresetLimit"));
                         AddElement(actionList, "dockFoldSpeed = " + PlayerPrefs.GetFloat("dockFoldSpeed"));
+                        AddElement(actionList, "clippingCheckTime = " + PlayerPrefs.GetFloat("clippingCheckTime"));
                     }
                 }  
                 // prefs.set.[variableType].[prefName].[prefValue]
@@ -428,14 +438,16 @@ public class testDataGUI : MonoBehaviour {
                     else 
                     {
                         PlayerPrefs.SetInt("visLtdLimit", 
-                                            int.Parse(commandBreakdown[commandBreakdown.Length - 5]));
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 6]));
                         PlayerPrefs.SetInt("invisLtdLimit", 
-                                            int.Parse(commandBreakdown[commandBreakdown.Length - 4]));
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 5]));
                         PlayerPrefs.SetInt("visPresetLimit", 
-                                            int.Parse(commandBreakdown[commandBreakdown.Length - 3]));
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 4]));
                         PlayerPrefs.SetInt("invisPresetLimit", 
-                                            int.Parse(commandBreakdown[commandBreakdown.Length - 2]));
+                                            int.Parse(commandBreakdown[commandBreakdown.Length - 3]));
                         PlayerPrefs.SetFloat("dockFoldSpeed", 
+                                            float.Parse(commandBreakdown[commandBreakdown.Length - 2]));
+                        PlayerPrefs.SetFloat("clippingCheckTime", 
                                             float.Parse(commandBreakdown[commandBreakdown.Length - 1]));
                     }
                 }

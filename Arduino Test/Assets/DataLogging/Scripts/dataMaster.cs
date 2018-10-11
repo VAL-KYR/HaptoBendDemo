@@ -55,6 +55,7 @@ public class dataMaster : MonoBehaviour {
 		dataRecordingController dataLogPrefs = newDataLogger.GetComponent<dataRecordingController>();
 
 		newDataLogger.name = "DataLogger_" + loggerName;
+		newDataLogger.GetComponent<dataRecordingController>().clippingCheckTime = GetComponent<testDataGUI>().clippingCheckTime;
 		newDataLogger.GetComponent<dataRecordingController>().testCateg.VisLtdLimit = GetComponent<testDataGUI>().VisLtdRandom;
 		newDataLogger.GetComponent<dataRecordingController>().testCateg.InvisLtdLimit = GetComponent<testDataGUI>().InvisLtdRandom;
 		newDataLogger.GetComponent<dataRecordingController>().testCateg.VisPresetLimit = GetComponent<testDataGUI>().VisPresets;

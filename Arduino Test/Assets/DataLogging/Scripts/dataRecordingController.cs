@@ -58,6 +58,9 @@ public class dataRecordingController : MonoBehaviour {
     // New dock solver
     public List<GameObject> checkObjects = new List<GameObject>();
     public List<GameObject> allClippingObjects = new List<GameObject>();
+    public bool clippingProblem = false;
+    public float clippingCheckTime = 2f;
+    private float clippingCheckTimer = 0f;
     public List<float> nextDockAngles = new List<float>();
     public float dockFoldSpeed = 3.0f;
 
@@ -221,10 +224,21 @@ public class dataRecordingController : MonoBehaviour {
                   
         }
 
+        clippingCheckTimer += Time.deltaTime;
+
+        // Clipping calculator that triggers every few frames 
+        if (clippingCheckTimer >= clippingCheckTime)
+        {
+            Debug.Log("checking clipping");
+            clippingCheckTimer = 0;
+            clippingProblem = ClippingChecker();
+        }
+        
+
         // Automatically Creates and Starts new tests
         if (!testsDone)
         {
-            if (currTest.GetComponent<dataRecorder>().anglesRecorded && !ClippingChecker())
+            if (currTest.GetComponent<dataRecorder>().anglesRecorded && !clippingProblem)
             {
                 deviceReset = !deviceReset;
                 NewTest(deviceReset);
@@ -251,8 +265,8 @@ public class dataRecordingController : MonoBehaviour {
         // Check what the current test is
         SetCurrTest();
 
-        // Check for clipping and correct by choosing a new dock of the same dock style
-        if (ClippingChecker())
+        // if there is clipping, correct by choosing a new dock of the same dock style
+        if (clippingProblem)
         {
             // Set Box State
             UiBox.box.index = 2;

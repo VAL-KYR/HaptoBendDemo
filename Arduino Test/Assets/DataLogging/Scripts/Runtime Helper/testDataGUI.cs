@@ -206,6 +206,7 @@ public class testDataGUI : MonoBehaviour {
                                 GUI.GetNameOfFocusedControl() == "console")
                             {
                                 ExecuteCmd(debug.cmd);
+                                GUI.FocusControl("");
                             }
                             
                         GUILayout.EndVertical();

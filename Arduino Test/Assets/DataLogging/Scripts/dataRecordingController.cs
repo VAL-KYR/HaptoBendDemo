@@ -137,11 +137,13 @@ public class dataRecordingController : MonoBehaviour {
             testsDone = true;
         }
 
+        Debug.Log("Pedal: " + Input.GetAxis("Pedal"));
+
         // Inputs during test
         if (inputTime > inputTimer)
         {
             
-            if ((Input.GetButton("ExecuteTest") || Input.GetButton("Pedal")) && !testsDone)
+            if ((Input.GetButton("ExecuteTest") || Input.GetAxis("Pedal") > 0.9f)  && !testsDone)
             {
                 if (!currTest.GetComponent<dataRecorder>().recordAngles)
                 {

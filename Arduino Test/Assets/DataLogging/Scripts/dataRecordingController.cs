@@ -143,7 +143,7 @@ public class dataRecordingController : MonoBehaviour {
         if (inputTime > inputTimer)
         {
             
-            if ((Input.GetButton("ExecuteTest") || Input.GetAxis("Pedal") > 0.9f)  && !testsDone)
+            if ((Input.GetButton("ExecuteTest") || Input.GetAxis("Pedal") > 0.9f)  && !testsDone && !ClippingChecker())
             {
                 if (!currTest.GetComponent<dataRecorder>().recordAngles)
                 {

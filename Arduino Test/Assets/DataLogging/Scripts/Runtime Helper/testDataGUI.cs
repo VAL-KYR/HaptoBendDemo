@@ -19,6 +19,7 @@ public class testDataGUI : MonoBehaviour {
         public bool allTrials = false;
         public bool trialsSum = false;
         public string cmd = "";
+        public bool exitCmdOnSend = false;
     }
     public Debugger debug = new Debugger();
 
@@ -206,7 +207,8 @@ public class testDataGUI : MonoBehaviour {
                                 GUI.GetNameOfFocusedControl() == "console")
                             {
                                 ExecuteCmd(debug.cmd);
-                                GUI.FocusControl("");
+                                if (debug.exitCmdOnSend)
+                                    GUI.FocusControl("");
                             }
                             
                         GUILayout.EndVertical();

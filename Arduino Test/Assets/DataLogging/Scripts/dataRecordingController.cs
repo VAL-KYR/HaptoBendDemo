@@ -70,6 +70,8 @@ public class dataRecordingController : MonoBehaviour {
     {
         public bool automateTypes = true;
         
+        public int testIterator = 0;
+
         public int VisLtdLimit;
         public int InvisLtdLimit;
         public int VisPresetLimit;
@@ -83,7 +85,7 @@ public class dataRecordingController : MonoBehaviour {
             0,
             0
         };
-
+        
         public List<GameObject> VisLtdRandom;
         public List<GameObject> InvisLtdRandom;
         public List<GameObject> VisPresets;
@@ -491,12 +493,8 @@ public class dataRecordingController : MonoBehaviour {
 
 
         // Name the TestObject
-        test.name = "Test_" + 
-                    (testCateg.VisLtdRandom.Count + 
-                    testCateg.InvisLtdRandom.Count + 
-                    testCateg.VisPresets.Count + 
-                    testCateg.InvisPresets.Count);
-
+        test.name = "Test_" + testCateg.testIterator;
+        
         // Tag that trial
         test.tag = "trial";
         // Give a trial ID
@@ -514,6 +512,10 @@ public class dataRecordingController : MonoBehaviour {
             activeDockStyle = "ZEROING DATA";
             virtualDeviceVisible = true;
             FlipDeviceVisibilityInHMD(virtualDeviceVisible);
+        }
+        else
+        {
+            testCateg.testIterator++;
         }
 
         TestCatCheck();

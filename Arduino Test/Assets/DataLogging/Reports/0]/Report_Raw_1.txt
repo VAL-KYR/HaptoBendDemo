@@ -1,0 +1,60 @@
+
+Angles Over Time
+Frames	Rotate	ChildRotate	RotateInverse	ChildRotateInverse	Docking x	Docking y	Docking z	
+0	0.2344284	0	0	0.7032928	0	0	0	
+1	0.2344284	0	0	0.2344285	0	0	0	
+2	0.4688645	-1.641022	0	1.406593	0	0	0	
+3	-0.4688721	0	0	0	0	0	0	
+4	0.2344284	-0.4688721	0	0	0	0	0	
+5	0.4688645	-0.9377136	0	0.2344284	0	0	0	
+6	-0.234436	-1.17215	0	0	0	0	0	
+7	-0.4688721	-3.985352	0	3.750915	0	0	0	
+8	-3.282043	-0.7032776	0	0.7032926	0	0	0	
+9	-0.4688721	-0.9377136	0	0.2344282	0	0	0	
+10	-0.4688721	-1.17215	0	0.2344282	0	0	0	
+11	-0.234436	-0.9377136	0	0.7032926	0	0	0	
+12	-0.9377441	-3.047607	0	2.57875	0	0	0	
+13	-3.047607	-0.9377136	0	0.4688642	0	0	0	
+14	-0.7033081	-1.641022	0	0.2344282	0	0	0	
+15	-0.4688721	-0.9377136	0	-2.401233E-07	0	0	0	
+16	-0.4688721	-0.7032776	0	0.2344282	0	0	0	
+17	-0.4688721	-0.234436	0	-2.401233E-07	0	0	0	
+18	-0.4688721	-1.17215	0	2.109886	0	0	0	
+19	-1.17218	-0.234436	0	0.2344282	0	0	0	
+20	0.4688642	-2.668037E-08	0	0.2344282	0	0	0	
+21	0.4688642	-0.4688721	0	-1.473749E-07	0	0	0	
+
+
+Angle MV instances
+Rotate	2.813171	2.813171	2.109863	2.344299	
+ChildRotate	2.813202	3.282074	2.109894	2.109894	
+RotateInverse	
+ChildRotateInverse	3.750915	3.047622	2.109886	2.109886	
+Docking x	
+Docking y	
+Docking z	
+Total MV Amount	31.41388
+
+
+Angle TRE instances
+Rotate	
+ChildRotate	
+RotateInverse	1	
+ChildRotateInverse	
+Docking x	
+Docking y	
+Docking z	
+Total TRE Count	0
+
+
+Correct Angles	Rotate	ChildRotate	RotateInverse	ChildRotateInverse	Docking x	Docking y	Docking z
+	-90	-90	0	90	-73.80161	-108.0636	107.7463
+
+Angle Error	Rotate	ChildRotate	RotateInverse	ChildRotateInverse	Docking x	Docking y	Docking z
+	90.46886	89.76556	0	89.76557	73.80161	108.0636	107.7463
+
+Time Taken	Hours	Minutes	Seconds	Milliseconds	Seconds float	Completion time
+	0	0	1	154	1.153808	00h:00m:01s:154ms
+
+Final Results	Tester Name	Time of Test	Dock Shape Style	Virtual Device Visible	Time Taken	Shape Precision %	Orientation Precision %	Overall Precision %	Efficiency %	Difficulty	Total MV	Total TRE	
+	0]	2018-10-30_15:50:50	Presets_dockPreset_2	False	00h:00m:01s:154ms	62.5	60.0352	55.58639	99.08724	0.6217906	31.41388	0	

@@ -65,6 +65,9 @@ public class testDataGUI : MonoBehaviour {
         // Graphical Settings for Command Prompt Input
         guiStyleI.font = font;
         guiStyleI.alignment = TextAnchor.UpperLeft;
+
+        // Automatically loat from preferences on load
+        PrefsToLogger();
     }
 
     public void OnGUI()
@@ -343,14 +346,7 @@ public class testDataGUI : MonoBehaviour {
                     // update.logger.prefs
                     if (commandBreakdown.Contains("prefs"))
                     {
-                        VisLtdRandom = PlayerPrefs.GetInt("visLtdLimit");
-                        InvisLtdRandom = PlayerPrefs.GetInt("invisLtdLimit");
-                        VisPresets = PlayerPrefs.GetInt("visPresetLimit");
-                        InvisPresets = PlayerPrefs.GetInt("invisPresetLimit");
-                        dockFoldSpeed = PlayerPrefs.GetFloat("dockFoldSpeed");
-                        clippingCheckTime = PlayerPrefs.GetFloat("clippingCheckTime");//++
-
-                        AddElement(actionList, "PlayerPrefs loaded into UI");
+                        PrefsToLogger();
                     }
 
                     if (GetComponent<dataMaster>().currentLogger)
@@ -470,8 +466,48 @@ public class testDataGUI : MonoBehaviour {
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
+            // set inputdead
+            else if (commandBreakdown.Contains("inputdead"))
+            {
+                if (commandBreakdown.Contains("get"))
+                {
+                    if (GetComponent<dataMaster>().dataLoggers.Count > 0)
+                    {
+                        foreach(GameObject logger in GetComponent<dataMaster>().dataLoggers)
+                        {
+                            AddElement(actionList, logger.name + " inputdead of: " + logger.GetComponent<dataRecordingController>().inputTimer);
+                        }
+                    }
+                    else
+                    {
+                        AddElement(actionList, "No Loggers present, please create one!");
+                    }
+                }
+                else if (commandBreakdown.Contains("set"))
+                {
+                    foreach(GameObject logger in GetComponent<dataMaster>().dataLoggers)
+                    {
+                        logger.GetComponent<dataRecordingController>().inputTimer = float.Parse(commandBreakdown[commandBreakdown.Length - 1]);
+                    }
+                    
+                    AddElement(actionList, "all loggers inputdead set to: " + commandBreakdown[commandBreakdown.Length - 1]);
+                }
+                
+            }
         }
        
+    }
+
+    public void PrefsToLogger()
+    {
+        VisLtdRandom = PlayerPrefs.GetInt("visLtdLimit");
+        InvisLtdRandom = PlayerPrefs.GetInt("invisLtdLimit");
+        VisPresets = PlayerPrefs.GetInt("visPresetLimit");
+        InvisPresets = PlayerPrefs.GetInt("invisPresetLimit");
+        dockFoldSpeed = PlayerPrefs.GetFloat("dockFoldSpeed");
+        clippingCheckTime = PlayerPrefs.GetFloat("clippingCheckTime");//++
+
+        AddElement(actionList, "PlayerPrefs loaded into UI");
     }
 
     public void FetchAction(string action)

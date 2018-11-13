@@ -39,7 +39,7 @@ public class dataRecordingController : MonoBehaviour {
 
     public bool errorGathered = false;
 
-    public float inputTimer = 1f;
+    public float inputTimer = 1.3f;
     float inputTime = 0f;
 
     public string testerName; //** change this with a text field
